@@ -1,5 +1,7 @@
 import React from 'react';
 
-const MainPage = (): React.ReactElement => <div>Hello Main page</div>;
+import { MainTemplate } from '../../templates/MainTemplate';
+
+const MainPage = (): React.ReactElement => <MainTemplate />;
 
 export default MainPage;

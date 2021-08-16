@@ -3,7 +3,7 @@ import { BaseModel } from './baseModel';
 export type CampfireParams = {
   topic: string;
   description: string;
-  openTo: 'Everyone' | 'Invite Only';
+  openTo?: 'Everyone' | 'Invite Only';
   scheduleToStart: Date;
   hidden: boolean;
   status?: 'pending' | 'invited' | '';
