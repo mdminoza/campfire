@@ -1,1 +1,3 @@
-export const campfireBackground = require('./images/campfireBackground/campfireBackground.png');
+import campfireBackground from './images/campfireBackground/campfireBackground.png';
+
+export { campfireBackground };

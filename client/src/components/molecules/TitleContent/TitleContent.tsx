@@ -9,7 +9,7 @@ import { FireOutline } from '../../atoms/Icons';
 // import { Button } from '../../atoms/Button';
 
 import { theme } from '../../../constants';
-// import themes from '../../../constants/themes';
+import { campfireBackground } from '../../../assets';
 
 const { useBreakpoint } = Grid;
 
@@ -32,7 +32,7 @@ const Container = styled.div`
   justify-content: center;
   height: 500px;
   flex-direction: column;
-  background: url(/assets/images/campfireBackground/campfireBackground.png);
+  background: url(${campfireBackground});
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;

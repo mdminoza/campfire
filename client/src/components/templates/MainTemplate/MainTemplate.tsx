@@ -1,18 +1,17 @@
 /* eslint-disable no-nested-ternary */
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Layout, Row, Col, Spin, Empty, Divider, Drawer, Grid } from 'antd';
+import { Layout, Row, Col, Spin, Empty, Divider, Grid } from 'antd';
 import styled from 'styled-components';
 
 import { theme } from '../../../constants';
 import { TextInput } from '../../atoms/TextInput';
 import { Search } from '../../atoms/Icons';
-import { StyledLink } from '../../atoms/StyledLink';
 import { TitleContent } from '../../molecules/TitleContent';
 import { CreateCampfireForm } from '../../organisms/CreateCampfireForm';
-import { CampfireHeader } from '../../organisms/CampfireHeader';
 import { CampfireTab } from '../../organisms/CampfireTab';
 import { TopicCard } from '../../organisms/TopicCard';
 import { SponsoredTopicCard } from '../../organisms/SponsoredTopicCard';
+
 import { Campfire } from '../../../../common/domain/entities/campfire';
 
 import {
@@ -86,6 +85,7 @@ const LoaderWrapper = styled.div`
 
 const MainTemplate = (): React.ReactElement => {
   const [breakPoint, setBreakPoint] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState<string>('publicCampfire');
   const CreateCampfireRef = useRef<any>();
   const screens = useBreakpoint();
   const [searchValue, setSearchValue] = useState('');
@@ -117,7 +117,7 @@ const MainTemplate = (): React.ReactElement => {
   };
 
   const onTabChange = (key: string) => {
-    console.log(key);
+    setActiveTab(key);
   };
 
   const handleClick = (e: any) => {
@@ -181,7 +181,7 @@ const MainTemplate = (): React.ReactElement => {
           topic: 'Hayia of the People',
           description: 'Lorem Ipsum Dolor',
           openTo: 'Everyone',
-          scheduleToStart: new Date(),
+          scheduleToStart: new Date('09/09/2021'),
           hidden: false,
           status: '',
           createdAt: new Date(),
@@ -199,7 +199,7 @@ const MainTemplate = (): React.ReactElement => {
           topic: 'Sample topic',
           description: 'Lorem Ipsum Dolor',
           openTo: 'Everyone',
-          scheduleToStart: new Date(),
+          scheduleToStart: new Date('09/09/2021'),
           hidden: false,
           status: 'pending',
           createdAt: new Date(),
@@ -217,7 +217,7 @@ const MainTemplate = (): React.ReactElement => {
           topic: 'Sample topic',
           description: 'Lorem Ipsum Dolor',
           openTo: 'Everyone',
-          scheduleToStart: new Date(),
+          scheduleToStart: new Date('09/09/2021'),
           hidden: false,
           status: 'pending',
           createdAt: new Date(),
