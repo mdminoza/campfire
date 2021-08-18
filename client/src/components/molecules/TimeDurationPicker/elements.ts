@@ -33,13 +33,13 @@ export const TimeWrapper = styled.div`
 
 export const TextStyle = styled.text`
   color: ${(props: { isSelected?: boolean }): string =>
-    props?.isSelected ? theme.colors.blue.primary : theme.colors.gray.gray989};
+    props?.isSelected ? theme.colors.red.light : theme.colors.gray.gray989};
   font-weight: ${(props: { isSelected?: boolean }): string =>
     props?.isSelected ? '700' : '100'};
   font-family: ${theme.fonts.fontFamily};
   font-size: 1.1rem;
   &:hover {
-    color: ${theme.colors.blue.primary};
+    color: ${theme.colors.red.light};
     font-weight: 700;
     cursor: pointer;
   }
@@ -48,7 +48,7 @@ export const TextStyle = styled.text`
 export const BtnStyle = {
   padding: '13px 0px',
   flex: 1,
-  background: theme.colors.blue.blue007,
+  background: theme.colors.red.light,
   color: theme.colors.mainWhite,
   fontWeight: 700,
   fontSize: 15,

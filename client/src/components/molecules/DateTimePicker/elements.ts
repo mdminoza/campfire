@@ -62,18 +62,18 @@ export const TextWrapper = styled.div`
 
 export const TextStyle = styled.text`
   color: ${(props: { isSelected?: boolean }): string =>
-    props?.isSelected ? theme.colors.blue.primary : theme.colors.gray.gray989};
+    props?.isSelected ? theme.colors.red.light : theme.colors.gray.gray989};
   font-weight: ${(props: { isSelected?: boolean }): string =>
     props?.isSelected ? '700' : '100'};
   font-family: ${theme.fonts.fontFamily};
   font-size: 1.1rem;
   ${TimeWrapper}:hover & {
-    color: ${theme.colors.blue.primary};
+    color: ${theme.colors.red.light};
     font-weight: 700;
     cursor: pointer;
   }
   ${TextWrapper}:hover & {
-    color: ${theme.colors.blue.primary};
+    color: ${theme.colors.red.light};
     font-weight: 700;
     cursor: pointer;
   }
@@ -82,12 +82,12 @@ export const TextStyle = styled.text`
 export const TextStyle2 = styled.text`
   font-family: ${theme.fonts.fontFamily};
   color: ${(props: { isSelected?: boolean }): string =>
-    props?.isSelected ? theme.colors.blue.primary : theme.colors.mainBlack};
+    props?.isSelected ? theme.colors.red.light : theme.colors.mainBlack};
   font-size: 1.2rem;
   font-weight: 600;
   line-height: 35px;
   ${TextWrapper}:hover & {
-    color: ${theme.colors.blue.primary};
+    color: ${theme.colors.red.light};
     font-weight: 700;
     cursor: pointer;
   }
@@ -97,7 +97,7 @@ export const BtnStyle = {
   paddingTop: 13,
   paddingBottom: 13,
   flex: 1,
-  background: theme.colors.blue.blue007,
+  background: theme.colors.red.light,
   color: theme.colors.mainWhite,
   fontWeight: 700,
   fontSize: 18,

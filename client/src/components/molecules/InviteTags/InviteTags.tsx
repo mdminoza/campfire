@@ -51,17 +51,22 @@ function DebounceSelect({ debounceTimeout = 800, ...props }) {
   );
 }
 
-// async function fetchUserList(username) {
-//   console.log('fetching user', username);
-//   return fetch('https://randomuser.me/api/?results=5')
-//     .then((response) => response.json())
-//     .then((body) =>
-//       body.results.map((user) => ({
-//         label: `${user.name.first} ${user.name.last}`,
-//         value: user.login.username,
-//       })),
-//     );
-// }
+async function fetchUserLists(username: any) {
+  console.log('fetching user', username);
+  return fetch('https://randomuser.me/api/?results=5')
+    .then((response) => response.json())
+    .then((body) =>
+      body.results.map(
+        (user: {
+          name: { first: any; last: any };
+          login: { username: any };
+        }) => ({
+          label: `${user.name.first} ${user.name.last}`,
+          value: user.login.username,
+        }),
+      ),
+    );
+}
 
 // const InviteTags = ({ setInvite }: Props) => {
 //   const [value, setValue] = React.useState([]);
@@ -96,7 +101,7 @@ const InviteTags = ({
             mode="multiple"
             value={value}
             placeholder="Select users"
-            fetchOptions={fetchUserList}
+            fetchOptions={fetchUserLists}
             onChange={(newValue: any) => {
               setValue(newValue);
             }}

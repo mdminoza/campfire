@@ -15,7 +15,7 @@ export const CheckboxContainer = styled.div`
   vertical-align: middle;
   display: block;
   .ant-checkbox-checked .ant-checkbox-inner {
-    background-color: ${theme.colors.blue.primary};
+    background-color: ${theme.colors.red.light};
     border-radius: 0;
   }
   .ant-checkbox-checked {

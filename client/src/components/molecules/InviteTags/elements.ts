@@ -19,7 +19,7 @@ export const SelectionWrapper = styled.div`
     align-items: center;
     font-size: 1.1rem;
     font-weight: 400;
-    color: ${theme.colors.blue.dark};
+    color: ${theme.colors.red.light};
   }
 
   .ant-radio-wrapper-checked {
@@ -27,7 +27,7 @@ export const SelectionWrapper = styled.div`
   }
 
   .ant-select-multiple .ant-select-selection-item {
-    background: ${theme.colors.blue.dark};
+    background: ${theme.colors.red.light};
     height: 32px;
     line-height: 28px;
   }
@@ -65,7 +65,7 @@ export const BtnStyle = {
   paddingTop: 13,
   paddingBottom: 13,
   flex: 1,
-  background: theme.colors.blue.blue007,
+  background: theme.colors.red.light,
   color: theme.colors.mainWhite,
   fontWeight: 700,
   fontSize: 18,
