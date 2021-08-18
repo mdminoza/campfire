@@ -3,8 +3,7 @@ import { Row, Col, Divider } from 'antd';
 import { theme } from '../../../constants';
 
 export const Container = styled.div`
-  background: ${(props: { toggled?: boolean }): string =>
-    props.toggled ? theme.colors.gray.gray29 : theme.colors.blue.primary};
+  background: ${theme.colors.gray.gray29};
   flex-direction: column;
   width: 100%;
 `;
@@ -99,7 +98,7 @@ export const BtnWrapper = styled.div`
 export const ToggleWrapper = styled.div`
   display: ${(props: { toggled?: boolean }): string =>
     props.toggled ? 'block' : 'none'};
-  background: ${theme.colors.blue.primary};
+  background: ${theme.colors.gray.gray29};
   padding: 0 30px 15px 30px;
 `;
 
@@ -192,7 +191,10 @@ export const CreateCampireBtnStyle2 = {
   paddingTop: 13,
   paddingBottom: 13,
   flex: 1,
-  background: theme.colors.blue.blue007,
+  border: 1,
+  borderStyle: 'solid',
+  background: theme.colors.gray.gray29,
+  borderColor: theme.colors.mainWhite,
   color: theme.colors.mainWhite,
   fontWeight: 700,
   fontSize: 18,

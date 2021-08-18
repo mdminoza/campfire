@@ -535,9 +535,12 @@ const MainTemplate = (): React.ReactElement => {
       ),
     },
   ];
+  if (CreateCampfireRef.current) {
+    console.log(CreateCampfireRef.current, 'ref');
+  }
 
   return (
-    <StyledLayout campfireToggled={false}>
+    <StyledLayout campfireToggled={isToggled}>
       <TitleWrapper CampfireToggled={isToggled}>
         <TitleContent />
       </TitleWrapper>

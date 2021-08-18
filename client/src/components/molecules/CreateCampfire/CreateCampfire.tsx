@@ -152,14 +152,14 @@ const CreateCampfire = ({
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleClick = (e: { target: any }) => {
+  const handleClick = (e: any) => {
     if (!scheduleWrapperRef?.current.contains(e.target)) {
       setShowPicker(false);
     }
 
-    if (!inviteWrapperRef?.current.contains(e.target)) {
-      setShowInvites(false);
-    }
+    // if (!inviteWrapperRef?.current.contains(e.target)) {
+    //   setShowInvites(false);
+    // }
 
     if (!durationWrapperRef?.current.contains(e.target)) {
       setDurationPicker(false);
@@ -219,7 +219,7 @@ const CreateCampfire = ({
   };
 
   return (
-    <Container toggled={!toggled}>
+    <Container>
       <Wrapper>
         <StyledRow gutter={[8, 0]}>
           <Col xs={24} sm={24} md={8}>
@@ -349,7 +349,10 @@ const CreateCampfire = ({
             <Button
               disabled={showPicker || showInvites || showDurationPicker}
               onClick={onPressSubmit}
-              style={CreateCampireBtnStyle2}>
+              style={{
+                ...CreateCampireBtnStyle2,
+                fontSize: breakPoint.length <= 1 ? 14 : 18,
+              }}>
               CREATE A CAMPFIRE
             </Button>
           )}
