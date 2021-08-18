@@ -46,6 +46,7 @@ type Props = {
   // profileUrl?: string;
   checked?: boolean;
   toggled?: boolean;
+  isInviteTagOpen?: boolean;
   fetchUserList?: (username: string) => void;
   onChangeCheckbox: () => void;
   onPress: () => void;
@@ -55,6 +56,7 @@ type Props = {
   onChangeScheduleTostart: (value: string) => void;
   onChangeOpenTo: (type: string, invited: Object[]) => void;
   onChangeDuration: (duration: string) => void;
+  onClickShowInvites?: (value: boolean) => void;
   topicValue: string;
   descriptionValue: string;
   isLoading?: boolean;
@@ -69,6 +71,8 @@ const CreateCampfire = ({
   toggled = false,
   isLoading = false,
   fetchUserList = () => null,
+  onClickShowInvites = () => {},
+  isInviteTagOpen = false,
   onChangeCheckbox,
   onPress,
   onPressSubmit,
@@ -82,13 +86,13 @@ const CreateCampfire = ({
 }: Props): React.ReactElement => {
   const [scheduleText, setScheduleText] = useState('IMMEDIATELY');
   const [showPicker, setShowPicker] = useState(false);
-  const [showInvites, setShowInvites] = useState(false);
   const [showDurationPicker, setDurationPicker] = useState(false);
   const [radioVal, setRadioVal] = React.useState<'Everyone' | 'Invite Only'>(
     'Everyone',
   );
   const [hour, setHour] = useState('01');
   const [minutes, setMinutes] = useState('00');
+  const [dropdownVisible, setDropdownVisible] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [breakPoint, setBreakPoint] = useState<any[]>([]);
   const screens = useBreakpoint();
@@ -137,7 +141,7 @@ const CreateCampfire = ({
   const handleSelectInvite = (selected: Object[], type: string) => {
     if (type === 'Everyone' || (type === 'Invite Only' && selected.length)) {
       onChangeOpenTo(type, selected);
-      setShowInvites(false);
+      onClickShowInvites(false);
     }
   };
 
@@ -157,9 +161,11 @@ const CreateCampfire = ({
       setShowPicker(false);
     }
 
-    // if (!inviteWrapperRef?.current.contains(e.target)) {
-    //   setShowInvites(false);
-    // }
+    if (!inviteWrapperRef?.current.contains(e.target)) {
+      if (!dropdownVisible) {
+        onClickShowInvites(false);
+      }
+    }
 
     if (!durationWrapperRef?.current.contains(e.target)) {
       setDurationPicker(false);
@@ -167,19 +173,19 @@ const CreateCampfire = ({
   };
 
   const handleShowInvites = () => {
-    setShowInvites(true);
+    onClickShowInvites(true);
     setShowPicker(false);
     setDurationPicker(false);
   };
 
   const handleShowSchedulePicker = () => {
-    setShowInvites(false);
+    onClickShowInvites(false);
     setShowPicker(true);
     setDurationPicker(false);
   };
 
   const handleShowDurationPicker = () => {
-    setShowInvites(false);
+    onClickShowInvites(false);
     setShowPicker(false);
     setDurationPicker(true);
   };
@@ -311,13 +317,14 @@ const CreateCampfire = ({
             <InvitePickerWrapper
               ref={inviteWrapperRef}
               className="InviteWrapper"
-              toggled={showInvites}
+              toggled={isInviteTagOpen}
               isSmallScreen={breakPoint.length < 2}>
               <InviteTags
                 radioVal={radioVal}
                 onChangeRadio={onChangeRadio}
                 setInvite={handleSelectInvite}
                 fetchUserList={fetchUserList}
+                onDropdownVisibleChange={setDropdownVisible}
               />
             </InvitePickerWrapper>
           </StyledCol>
@@ -347,7 +354,7 @@ const CreateCampfire = ({
             <LoadingOutlined style={loaderStyle} />
           ) : (
             <Button
-              disabled={showPicker || showInvites || showDurationPicker}
+              disabled={showPicker || isInviteTagOpen || showDurationPicker}
               onClick={onPressSubmit}
               style={{
                 ...CreateCampireBtnStyle2,
