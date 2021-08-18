@@ -91,6 +91,7 @@ const MainTemplate = (): React.ReactElement => {
   const [searchValue, setSearchValue] = useState('');
   const [isToggled, setCampfireToggled] = useState<boolean>(false);
   const [isDrawerVisible, setDrawerVisible] = useState<boolean>(false);
+  const [showInvites, setShowInvites] = useState(false);
   const isCampfiresLoading = false;
 
   const handleToggle = useCallback(() => setCampfireToggled(!isToggled), [
@@ -111,7 +112,7 @@ const MainTemplate = (): React.ReactElement => {
   };
 
   const handleSearchValue = (val: any) => {
-    // setSearchValue(val);
+    setSearchValue(val);
     // searchVal(val);
     console.log(val);
   };
@@ -122,7 +123,9 @@ const MainTemplate = (): React.ReactElement => {
 
   const handleClick = (e: any) => {
     if (!CreateCampfireRef?.current.contains(e.target)) {
-      setCampfireToggled(false);
+      if (!showInvites) {
+        setCampfireToggled(false);
+      }
     }
   };
 
@@ -551,6 +554,8 @@ const MainTemplate = (): React.ReactElement => {
               toggle={isToggled}
               onPress={handleToggle}
               onSubmit={handleSubmit}
+              onClickShowInvites={setShowInvites}
+              isInviteTagOpen={showInvites}
               // isLoading={isLoading}
               // didSucceed={didSucceed}
               // fetchUserList={fetchUserList}

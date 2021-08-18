@@ -11,6 +11,7 @@ type Props = {
   fetchUserList?: (username: string) => void;
   radioVal?: 'Invite Only' | 'Everyone';
   onChangeRadio?: (e: any) => void;
+  onDropdownVisibleChange?: (value: boolean) => void;
 };
 
 function DebounceSelect({ debounceTimeout = 800, ...props }) {
@@ -18,7 +19,7 @@ function DebounceSelect({ debounceTimeout = 800, ...props }) {
   const [options, setOptions] = React.useState([]);
   const fetchRef = React.useRef(0);
 
-  const { fetchOptions } = props;
+  const { fetchOptions, onDropdownVisibleChange } = props;
 
   const debounceFetcher = React.useMemo(() => {
     const loadOptions = (value: any) => {
@@ -47,6 +48,7 @@ function DebounceSelect({ debounceTimeout = 800, ...props }) {
       notFoundContent={fetching ? <Spin size="small" /> : null}
       {...props}
       options={options}
+      onDropdownVisibleChange={onDropdownVisibleChange}
     />
   );
 }
@@ -75,6 +77,7 @@ const InviteTags = ({
   setInvite,
   fetchUserList = () => {},
   onChangeRadio = () => {},
+  onDropdownVisibleChange = () => {},
   radioVal = 'Everyone',
 }: Props): React.ReactElement => {
   const [value, setValue] = React.useState([]);
@@ -106,6 +109,7 @@ const InviteTags = ({
               setValue(newValue);
             }}
             style={SelectStyle}
+            onDropdownVisibleChange={onDropdownVisibleChange}
           />
         )}
       </SelectionWrapper>

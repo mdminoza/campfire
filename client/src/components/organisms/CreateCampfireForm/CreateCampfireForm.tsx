@@ -10,6 +10,8 @@ type Props = {
   onSubmit: (values: CampfireParams) => void;
   onPress: () => void;
   fetchUserList?: (username: string) => void;
+  onClickShowInvites?: (value: boolean) => void;
+  isInviteTagOpen?: boolean;
   toggle: boolean;
   isLoading?: boolean;
   didSucceed?: boolean;
@@ -19,6 +21,8 @@ const CreateCampfireForm = ({
   onSubmit,
   onPress,
   fetchUserList = () => {},
+  onClickShowInvites = () => {},
+  isInviteTagOpen = false,
   toggle,
   isLoading = false,
   didSucceed = false,
@@ -85,6 +89,8 @@ const CreateCampfireForm = ({
           onChangeDuration={(duration) => {
             setFieldValue('duration', duration);
           }}
+          onClickShowInvites={onClickShowInvites}
+          isInviteTagOpen={isInviteTagOpen}
         />
       )}
     </Formik>
