@@ -5,7 +5,8 @@ export const fetchCampfires = async (req, res) => {
     // res.send('THIS WORKS!');
     try {
         const campfires = await Campfire.find();
-        res.status(200).json(campfires);
+        res.status(200).json({ success: true, data: campfires });
+
     } catch (error) {
         res.status(404).json({ message: error.message });
     }

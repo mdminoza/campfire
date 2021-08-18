@@ -1,14 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import 'antd/dist/antd.css';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 import RootNavigator from './navigators/root/RootNavigator';
 
+import { CampfireHooksContext } from './hooks/campfire';
+import * as combinedCampfireHooks from './hooks/campfire/combined';
+
+const queryClient = new QueryClient();
+
 ReactDOM.render(
   <React.StrictMode>
-    <RootNavigator />
+    <QueryClientProvider client={queryClient}>
+      <CampfireHooksContext.Provider value={combinedCampfireHooks}>
+        <RootNavigator />
+      </CampfireHooksContext.Provider>
+    </QueryClientProvider>
   </React.StrictMode>,
   document.getElementById('root'),
 );

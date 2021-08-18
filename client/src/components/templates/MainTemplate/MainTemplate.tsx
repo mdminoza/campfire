@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Layout, Row, Col, Spin, Empty, Divider, Grid } from 'antd';
 import styled from 'styled-components';
+import { useQuery } from 'react-query';
 
 import { theme } from '../../../constants';
 import { TextInput } from '../../atoms/TextInput';
@@ -11,8 +12,9 @@ import { CreateCampfireForm } from '../../organisms/CreateCampfireForm';
 import { CampfireTab } from '../../organisms/CampfireTab';
 import { TopicCard } from '../../organisms/TopicCard';
 import { SponsoredTopicCard } from '../../organisms/SponsoredTopicCard';
-
 import { Campfire } from '../../../../common/domain/entities/campfire';
+
+import { useCampfireAction } from '../../../hooks/campfire';
 
 import {
   SponsoredContainer,
@@ -94,6 +96,14 @@ const MainTemplate = (): React.ReactElement => {
   const [showInvites, setShowInvites] = useState(false);
   const isCampfiresLoading = false;
 
+  const { fetchCampfires } = useCampfireAction();
+
+  const { refetch } = useQuery('campfires', () => fetchCampfires(), {
+    onSuccess: (res) => {
+      console.log(res, 'res');
+    },
+  });
+
   const handleToggle = useCallback(() => setCampfireToggled(!isToggled), [
     isToggled,
   ]);
@@ -144,6 +154,10 @@ const MainTemplate = (): React.ReactElement => {
       console.log(err);
     }
   }, [screens]);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   const campfires: {
     publicCampfire: { data: Campfire[]; lastId: undefined };
@@ -538,9 +552,6 @@ const MainTemplate = (): React.ReactElement => {
       ),
     },
   ];
-  if (CreateCampfireRef.current) {
-    console.log(CreateCampfireRef.current, 'ref');
-  }
 
   return (
     <StyledLayout campfireToggled={isToggled}>
