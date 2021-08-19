@@ -3,7 +3,7 @@ import axios from 'axios';
 import urls from '../constants/urls';
 
 const instance = axios.create({
-  baseURL: urls.baseUrl,
+  baseURL: urls.campfireBaseUrl,
 });
 
 instance.interceptors.request.use(

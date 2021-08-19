@@ -8,16 +8,20 @@ import reportWebVitals from './reportWebVitals';
 import RootNavigator from './navigators/root/RootNavigator';
 
 import { CampfireHooksContext } from './hooks/campfire';
+import { UserHooksContext } from './hooks/user';
 import * as combinedCampfireHooks from './hooks/campfire/combined';
+import * as combinedUserHooks from './hooks/user/combined';
 
 const queryClient = new QueryClient();
 
 ReactDOM.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <CampfireHooksContext.Provider value={combinedCampfireHooks}>
-        <RootNavigator />
-      </CampfireHooksContext.Provider>
+      <UserHooksContext.Provider value={combinedUserHooks}>
+        <CampfireHooksContext.Provider value={combinedCampfireHooks}>
+          <RootNavigator />
+        </CampfireHooksContext.Provider>
+      </UserHooksContext.Provider>
     </QueryClientProvider>
   </React.StrictMode>,
   document.getElementById('root'),

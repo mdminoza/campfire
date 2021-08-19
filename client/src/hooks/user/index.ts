@@ -3,7 +3,7 @@ import { useClient } from '../client';
 
 export type UserHooks = {
   useUserAction(): {
-    fetchUsers: () => Promise<[] | undefined>;
+    fetchCurrentUser: () => Promise<[] | undefined>;
   };
 };
 

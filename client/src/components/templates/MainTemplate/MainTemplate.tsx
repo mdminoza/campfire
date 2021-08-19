@@ -15,6 +15,7 @@ import { SponsoredTopicCard } from '../../organisms/SponsoredTopicCard';
 import { Campfire } from '../../../../common/domain/entities/campfire';
 
 import { useCampfireAction } from '../../../hooks/campfire';
+import { useUserAction } from '../../../hooks/user';
 
 import {
   SponsoredContainer,
@@ -96,6 +97,7 @@ const MainTemplate = (): React.ReactElement => {
   const [showInvites, setShowInvites] = useState(false);
   const isCampfiresLoading = false;
 
+  const { fetchCurrentUser } = useUserAction();
   const { fetchCampfires } = useCampfireAction();
 
   const { refetch } = useQuery('campfires', () => fetchCampfires(), {
@@ -103,6 +105,16 @@ const MainTemplate = (): React.ReactElement => {
       console.log(res, 'res');
     },
   });
+
+  const { refetch: refetchCurrentUser } = useQuery(
+    'user',
+    () => fetchCurrentUser(),
+    {
+      onSuccess: (res) => {
+        console.log(res, 'success user');
+      },
+    },
+  );
 
   const handleToggle = useCallback(() => setCampfireToggled(!isToggled), [
     isToggled,
@@ -156,8 +168,9 @@ const MainTemplate = (): React.ReactElement => {
   }, [screens]);
 
   useEffect(() => {
+    refetchCurrentUser();
     refetch();
-  }, [refetch]);
+  }, [refetch, refetchCurrentUser]);
 
   const campfires: {
     publicCampfire: { data: Campfire[]; lastId: undefined };
