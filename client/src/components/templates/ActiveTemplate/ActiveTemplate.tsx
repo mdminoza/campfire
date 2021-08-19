@@ -8,7 +8,8 @@ import { TitleContent } from '../../molecules/TitleContent';
 import { SpeakersArea } from '../../organisms/SpeakersArea';
 import { CampfireFooter } from '../../organisms/CampfireFooter';
 import { MembersList } from '../../organisms/MembersList';
-import { MemberItemParams } from '../../molecules/MemberItem/types';
+// import { MemberItemParams } from '../../molecules/MemberItem/types';
+import { DUMMY_MEMBERS } from './stories';
 
 const ActiveSpeakersWrapper = styled.div`
   margin: -70px 0 24px;
@@ -45,67 +46,45 @@ const LogoutButton = styled.button`
   padding: 0 8px;
 `;
 
-type Props = {
-  id: string;
-  profileUrl: string;
-  topic: string;
-  description: string;
-  selectedId: string;
-  scheduleToStart?: Date | undefined;
-  speakers: MemberItemParams[];
-  members: MemberItemParams[];
-  invites?: MemberItemParams[];
-  isSpeaker: boolean;
-  isRaising?: boolean;
-  isTalking?: boolean;
-  isMuted?: boolean;
-  onClickRaiseHand: (id: string) => void;
-  onClickMuteMe?: (id: string, isMuted: boolean) => void;
-  onClickEmoji?: (
-    id: string,
-    emojiType: 'wink' | 'smile' | 'sweat' | 'cool',
-  ) => void;
-  onClickLogout?: () => void;
-  onClickMember: (id: string) => void;
-  isDurationLoading?: boolean;
-  duration?: string;
-  onClickStartDuration?: (campfireId: string) => void;
-  campfireId?: string;
-  durationStartDate?: Date | undefined;
-  isCreator?: boolean;
-  onClickMic?: () => void;
-};
+// type Props = {
+//   id: string;
+//   profileUrl: string;
+//   topic: string;
+//   description: string;
+//   selectedId: string;
+//   scheduleToStart?: Date | undefined;
+//   speakers: MemberItemParams[];
+//   members: MemberItemParams[];
+//   invites?: MemberItemParams[];
+//   isSpeaker: boolean;
+//   isRaising?: boolean;
+//   isTalking?: boolean;
+//   isMuted?: boolean;
+//   onClickRaiseHand: (id: string) => void;
+//   onClickMuteMe?: (id: string, isMuted: boolean) => void;
+//   onClickEmoji?: (
+//     id: string,
+//     emojiType: 'wink' | 'smile' | 'sweat' | 'cool',
+//   ) => void;
+//   onClickLogout?: () => void;
+//   onClickMember: (id: string) => void;
+//   isDurationLoading?: boolean;
+//   duration?: string;
+//   onClickStartDuration?: (campfireId: string) => void;
+//   // campfireId?: string;
+//   durationStartDate?: Date | undefined;
+//   // isCreator?: boolean;
+//   onClickMic?: () => void;
+// };
 
 const { useBreakpoint } = Grid;
 
+const members = [...DUMMY_MEMBERS].splice(0, 2);
+const speakers = [...DUMMY_MEMBERS].splice(0, 2);
+const id = '';
+
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const ActiveTemplate = ({
-  id,
-  speakers,
-  members,
-  invites,
-  profileUrl,
-  topic,
-  description,
-  selectedId,
-  isSpeaker = false,
-  isRaising = false,
-  isTalking = false,
-  isMuted = false,
-  onClickRaiseHand,
-  onClickMuteMe = () => {},
-  onClickEmoji = () => {},
-  onClickLogout = () => {},
-  onClickMember,
-  onClickStartDuration = () => {},
-  onClickMic = () => {},
-  isDurationLoading = false,
-  duration = '',
-  campfireId = '',
-  durationStartDate = undefined,
-  isCreator = false,
-  scheduleToStart,
-}: Props) => {
+const ActiveTemplate = () => {
   const [isDrawerVisible, setDrawerVisible] = useState<boolean>(false);
   const [avatarSize, setAvatarSize] = useState<number>();
   const [breakPoint, setBreakPoint] = useState<string>('');
@@ -228,20 +207,10 @@ const ActiveTemplate = ({
     }
   }, [screens]);
 
-  const handleOnClickRaiseHand = (userId: string) => {
-    onClickRaiseHand(userId);
-  };
-
   const handleOnClickEmoji = (
     selectedUserId: string,
     type: 'wink' | 'smile' | 'sweat' | 'cool',
-  ) => onClickEmoji(selectedUserId, type);
-
-  const handleOnClickMenu = (key: string) => {
-    if (key === 'logout') {
-      onClickLogout();
-    }
-  };
+  ) => console.log(selectedUserId, type);
 
   const handleOnClickBurgerMenu = () => {
     setDrawerVisible(!isDrawerVisible);
@@ -254,45 +223,45 @@ const ActiveTemplate = ({
   return (
     <Layout>
       <TitleContent
-        title={topic.toLocaleUpperCase()}
-        description={description}
+        title="Bike for Jesus"
+        description="Description"
         onActive
-        onClickStartDuration={onClickStartDuration}
-        duration={duration}
-        campfireId={campfireId}
-        isDurationLoading={isDurationLoading}
-        durationStartDate={durationStartDate}
-        isCreator={isCreator}
-        scheduleToStart={scheduleToStart}
+        onClickStartDuration={() => console.log('campfireId')}
+        duration="duration"
+        campfireId=""
+        isDurationLoading={false}
+        durationStartDate={undefined}
+        isCreator={false}
+        scheduleToStart={undefined}
       />
       <ActiveSpeakersWrapper>
         <SpeakersArea
           data={speakers || []}
-          onClick={onClickMember}
-          selectedId={selectedId}
-          invites={invites}
+          onClick={() => console.log(id)}
+          selectedId=""
+          invites={[]}
           size={avatarSize}
         />
       </ActiveSpeakersWrapper>
       <AudienceWrapper>
         <MembersList
-          onClick={onClickMember}
-          selectedId={selectedId}
+          onClick={() => console.log(id)}
+          selectedId=""
           data={members}
           size={avatarSize}
         />
       </AudienceWrapper>
       <CampfireFooter
         id={id}
-        profileUrl={profileUrl}
-        isMuted={isMuted}
-        isRaising={isRaising}
-        isSpeaker={isSpeaker}
-        isTalking={isTalking}
-        onClickRaiseHand={handleOnClickRaiseHand}
-        onClickMuteMe={onClickMuteMe}
+        profileUrl="https://dummyimage.com/263x263/4a4a4a/ffffff"
+        isMuted={false}
+        isRaising={false}
+        isSpeaker={false}
+        isTalking={false}
+        onClickRaiseHand={() => console.log(id)}
+        onClickMuteMe={() => console.log(id, false)}
         onClickEmoji={handleOnClickEmoji}
-        onClickMic={onClickMic}
+        onClickMic={() => console.log('mic pressed!')}
       />
       <Drawer
         placement="right"
@@ -311,7 +280,6 @@ const ActiveTemplate = ({
           ))}
         </LinkWrapper>
         <Divider />
-        <LogoutButton onClick={onClickLogout}>Logout</LogoutButton>
       </Drawer>
       {/* <RoomControls /> */}
     </Layout>
