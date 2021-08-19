@@ -6,7 +6,7 @@ import { DUMMY_SPEAKERS } from '../../organisms/SpeakersArea/stories';
 
 import { MemberItemParams } from '../../molecules/MemberItem/types';
 
-const DUMMY_MEMBERS: Array<MemberItemParams> = [
+export const DUMMY_MEMBERS: Array<MemberItemParams> = [
   {
     profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
     onClickMenu: () => {},
@@ -111,8 +111,6 @@ const DUMMY_MEMBERS: Array<MemberItemParams> = [
 const Component = () => {
   const [selectedId, setSelectedId] = useState<string>('');
 
-  const handleClickMember = (id: string) => setSelectedId(id);
-
   useEffect(() => {
     const onClickEvent = (e: any) => {
       if (e.target && e.target.id !== '_memberCard') {
@@ -126,19 +124,19 @@ const Component = () => {
 
   return (
     <ActiveTemplate
-      selectedId={selectedId}
-      onClickMember={handleClickMember}
-      id="jKKOi8t"
-      speakers={[...DUMMY_SPEAKERS].splice(0, 2)}
-      members={[...DUMMY_MEMBERS].splice(0, 2)}
-      profileUrl="https://dummyimage.com/155x155/000/fff"
-      isSpeaker={false}
-      isRaising={false}
-      isTalking={false}
-      isMuted={false}
-      onClickRaiseHand={(id) => console.log(id)}
-      topic="Money in the bible"
-      description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ultricies vulputate vestibulum, sed tempus. Justo"
+    // selectedId={selectedId}
+    // onClickMember={handleClickMember}
+    // id="jKKOi8t"
+    // speakers={[...DUMMY_SPEAKERS].splice(0, 2)}
+    // members={[...DUMMY_MEMBERS].splice(0, 2)}
+    // profileUrl="https://dummyimage.com/155x155/000/fff"
+    // isSpeaker={false}
+    // isRaising={false}
+    // isTalking={false}
+    // isMuted={false}
+    // onClickRaiseHand={(id) => console.log(id)}
+    // topic="Money in the bible"
+    // description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ultricies vulputate vestibulum, sed tempus. Justo"
     />
   );
 };
