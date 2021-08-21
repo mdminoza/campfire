@@ -1,5 +1,7 @@
 import React from 'react';
 
-const ActivePage = (): React.ReactElement => <div>Hello Active Page</div>;
+import { ActiveTemplate } from '../../templates/ActiveTemplate';
+
+const ActivePage = (): React.ReactElement => <ActiveTemplate />;
 
 export default ActivePage;
