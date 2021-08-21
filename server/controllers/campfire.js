@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
 import Campfire from '../models/campfire.js';
 
 export const fetchCampfires = async (req, res) => {
-    // res.send('THIS WORKS!');
     try {
         const campfires = await Campfire.find();
         res.status(200).json({ success: true, data: campfires });
