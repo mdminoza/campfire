@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import React, { useState, useEffect } from 'react';
 import { storiesOf } from '@storybook/react';
 import { BrowserRouter } from 'react-router-dom';
 import ActiveTemplate from './ActiveTemplate';
-import { DUMMY_SPEAKERS } from '../../organisms/SpeakersArea/stories';
+// import { DUMMY_SPEAKERS } from '../../organisms/SpeakersArea/stories';
 
 import { MemberItemParams } from '../../molecules/MemberItem/types';
 
