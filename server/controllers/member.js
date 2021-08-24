@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import Member from '../models/member.js';
-import { handleValidationError } from '../middleware/error.js';
 
 export const fetchMemberById = async (req, res, next) => {
     const { id } = req.params;
