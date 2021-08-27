@@ -28,7 +28,7 @@ export const addMember = async (req, res, next) => {
         const member = req.body;
         const newMember = new Member(member);
         await newMember.save();
-        res.status(200).json(newMember);
+        res.status(201).json(newMember);
     } catch (error) {
         next(error);
     }
@@ -52,7 +52,7 @@ export const deleteMember = async (req, res) => {
     try {
         if (!mongoose.Types.ObjectId.isValid(_id)) throw new Error('Invalid id.');
         await Member.findByIdAndDelete(_id);
-        res.status(200).json({ message: 'Member removed successfully' });
+        res.status(200).json({ message: 'Member removed successfully!' });
     } catch (error) {
         next(error);
     }

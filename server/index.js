@@ -6,6 +6,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import campfireRoutes from './routes/campfire.js';
 import memberRoutes from './routes/member.js';
+import baseRoute from './routes/base.js';
 import { errorHandler } from './controllers/error.js';
 
 dotenv.config();
@@ -22,6 +23,7 @@ app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: false }));
 app.use(cors(corsOptions));
 
+app.use('/api', baseRoute);
 app.use('/api', campfireRoutes);
 app.use('/api', memberRoutes);
 

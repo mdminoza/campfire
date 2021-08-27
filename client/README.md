@@ -2,6 +2,13 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Run Campfire API docs
+
+1. Navigate to todo-list directory ```cd client```
+2. Install the dependencies ```yarn install```. Make sure yarn is already installed, if not you can refer here https://classic.yarnpkg.com/en/docs/install/#mac-stable
+3. It is recommended to install ```docsify-cli``` globally, which helps initializing and previewing the website locally. Run ```npm i docsify-cli -g``` to install it globally.
+4. Run the local server with the command ```yarn docs```.
+
 ## Available Scripts
 
 In the project directory, you can run:

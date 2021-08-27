@@ -44,7 +44,8 @@
     "prettier:check": "prettier --check \"./src/**/*.{jsx,js,json,md,ts,tsx}\"",
     "prettier:fix": "prettier --write \"./src/**/*.{jsx,js,json,md,ts,tsx}\"",
     "storybook": "start-storybook -p 4000 -c .storybook watch-css -s ./src,./public",
-    "build-storybook": "build-storybook -c .storybook watch-css -s ./src,./public -o build_story"
+    "build-storybook": "build-storybook -c .storybook watch-css -s ./src,./public -o build_story",
+    "docs": "docsify serve docs -o -p 8080"
   },
   "eslintConfig": {
     "extends": [
