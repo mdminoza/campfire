@@ -8,8 +8,8 @@ export const useCampfireAction: CampfireHooks['useCampfireAction'] = () => {
   const fetchCampfires = useCallback(async () => {
     try {
       const res = await axios.get(`${urls.campfire}`);
-      return res.data;
-    } catch (e) {
+      return res.data.data;
+    } catch (e: any) {
       throw new Error(e);
     }
   }, []);

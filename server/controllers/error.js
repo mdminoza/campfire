@@ -16,7 +16,6 @@ const handleValidationError = async (error, res) => {
 
 //error controller function
 export const errorHandler = async (error, req, res, next) => {
-  console.log(error.status, 'congrats you hit the error middleware');
   if(error.name === 'ValidationError') return error = handleValidationError(error, res); 
   if(error.code && error.code == 11000) return error = handleDuplicateKeyError(error, res);
   res.status(error.status || 500);

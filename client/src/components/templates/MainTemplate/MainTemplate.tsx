@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-nested-ternary */
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Layout, Row, Col, Spin, Empty, Divider, Grid } from 'antd';
@@ -25,13 +26,13 @@ import {
 
 const { useBreakpoint } = Grid;
 
-const TabWrapper = styled.div<{ CampfireToggled: boolean }>`
+const TabWrapper = styled.div<{ campfiretoggled: boolean }>`
   margin: 0 40px;
-  z-index: ${(props) => (props.CampfireToggled ? '-1;' : 'auto')};
+  z-index: ${(props) => (props.campfiretoggled ? '-1;' : 'auto')};
 `;
 
-const TitleWrapper = styled.div<{ CampfireToggled: boolean }>`
-  z-index: ${(props) => (props.CampfireToggled ? '-1;' : 'auto')};
+const TitleWrapper = styled.div<{ campfiretoggled: boolean }>`
+  z-index: ${(props) => (props.campfiretoggled ? '-1;' : 'auto')};
 `;
 
 const SearchIconWrapper = styled.div`
@@ -70,11 +71,11 @@ const Wrapper = styled.div`
   width: 100%;
 `;
 
-const StyledLayout = styled(Layout)<{ campfireToggled: boolean }>`
+const StyledLayout = styled(Layout)<{ campfiretoggled?: boolean }>`
   .campfiretabs: {
-    z-index: ${(props) => (props.campfireToggled ? '-1' : 'auto')};
+    z-index: ${(props) => (props.campfiretoggled ? '-1' : 'auto')};
   }
-  background: ${(props) => (props.campfireToggled ? 'rgb(0 0 0 / 45%)' : '')};
+  background: ${(props) => (props.campfiretoggled ? 'rgb(0 0 0 / 45%)' : '')};
   z-index: 9;
   position: inherit;
 `;
@@ -96,25 +97,29 @@ const MainTemplate = (): React.ReactElement => {
   const [isDrawerVisible, setDrawerVisible] = useState<boolean>(false);
   const [showInvites, setShowInvites] = useState(false);
   const isCampfiresLoading = false;
+  const [campfires, setCampfires] = useState<Campfire[]>([]);
 
   const { fetchCurrentUser } = useUserAction();
   const { fetchCampfires } = useCampfireAction();
 
   const { refetch } = useQuery('campfires', () => fetchCampfires(), {
     onSuccess: (res) => {
-      console.log(res, 'res');
+      if (res && res.length > 0) {
+        console.log(res, 'acascsc');
+        setCampfires(res);
+      }
     },
   });
 
-  const { refetch: refetchCurrentUser } = useQuery(
-    'user',
-    () => fetchCurrentUser(),
-    {
-      onSuccess: (res) => {
-        console.log(res, 'success user');
-      },
-    },
-  );
+  // const { refetch: refetchCurrentUser } = useQuery(
+  //   'user',
+  //   () => fetchCurrentUser(),
+  //   {
+  //     onSuccess: (res) => {
+  //       console.log(res, 'success user');
+  //     },
+  //   },
+  // );
 
   const handleToggle = useCallback(() => setCampfireToggled(!isToggled), [
     isToggled,
@@ -168,57 +173,17 @@ const MainTemplate = (): React.ReactElement => {
   }, [screens]);
 
   useEffect(() => {
-    refetchCurrentUser();
+    // refetchCurrentUser();
     refetch();
-  }, [refetch, refetchCurrentUser]);
+  }, []);
 
-  const campfires: {
+  const campfiresMock: {
     publicCampfire: { data: Campfire[]; lastId: undefined };
     privateCampfire: { data: Campfire[]; lastId: undefined };
     ownedCampfire: { data: Campfire[]; lastId: undefined };
   } = {
     publicCampfire: {
-      data: [
-        {
-          id: 'wxE8hMeXl',
-          creatorId: 'sBWOg4xXZvG',
-          topic: 'Sample topic',
-          description: 'Lorem Ipsum Dolor',
-          openTo: 'Everyone',
-          scheduleToStart: new Date('09/09/2021'),
-          hidden: false,
-          status: '',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          isDeleted: false,
-        },
-        {
-          id: 'wxE8hMeXl',
-          creatorId: 'sBWOg4xXZvG',
-          topic: 'Sample topic',
-          description: 'Lorem Ipsum Dolor',
-          openTo: 'Everyone',
-          scheduleToStart: new Date('09/09/2021'),
-          hidden: false,
-          status: 'pending',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          isDeleted: false,
-        },
-        {
-          id: 'wxE8h123MeXl',
-          creatorId: 'sBWOg4123xXZvG',
-          topic: 'Hayia of the People',
-          description: 'Lorem Ipsum Dolor',
-          openTo: 'Everyone',
-          scheduleToStart: new Date('09/09/2021'),
-          hidden: false,
-          status: '',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          isDeleted: false,
-        },
-      ],
+      data: campfires,
       lastId: undefined,
     },
     privateCampfire: {
@@ -271,12 +236,15 @@ const MainTemplate = (): React.ReactElement => {
     isOwnedCampfire?: boolean,
   ) => {
     const today = new Date();
-    const startedCampfires = campfireTopics.filter(
-      (campfire) => today > campfire.scheduleToStart,
-    );
-    const upcomingCampfires = campfireTopics.filter(
-      (campfire) => today < campfire.scheduleToStart,
-    );
+
+    const startedCampfires = campfireTopics.filter((campfire) => {
+      const schedToStart = new Date(campfire.scheduleToStart);
+      return today > schedToStart;
+    });
+    const upcomingCampfires = campfireTopics.filter((campfire) => {
+      const schedToStart = new Date(campfire.scheduleToStart);
+      return today < schedToStart;
+    });
 
     // TODO: SPONSORED CAMPFIRE UI NEEDS REFACTOR
     const sponsoredCampfire = startedCampfires.filter(
@@ -438,7 +406,7 @@ const MainTemplate = (): React.ReactElement => {
     return [sponsored, featureCampfires, divider, upcomingCampfiresCol];
   };
 
-  const { publicCampfire, privateCampfire, ownedCampfire } = campfires;
+  const { publicCampfire, privateCampfire, ownedCampfire } = campfiresMock;
 
   const tabs = [
     {
@@ -567,8 +535,8 @@ const MainTemplate = (): React.ReactElement => {
   ];
 
   return (
-    <StyledLayout campfireToggled={isToggled}>
-      <TitleWrapper CampfireToggled={isToggled}>
+    <StyledLayout campfiretoggled={isToggled}>
+      <TitleWrapper campfiretoggled={isToggled}>
         <TitleContent />
       </TitleWrapper>
       <Cover>
@@ -587,7 +555,7 @@ const MainTemplate = (): React.ReactElement => {
           </CreateCampFireWrapper>
         </Wrapper>
       </Cover>
-      <TabWrapper CampfireToggled={isToggled}>
+      <TabWrapper campfiretoggled={isToggled}>
         <CampfireTab tabs={tabs} onChange={onTabChange} />
       </TabWrapper>
     </StyledLayout>

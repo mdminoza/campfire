@@ -16,7 +16,7 @@ export const useUserAction: UserHooks['useUserAction'] = () => {
         headers: { Authorization: `Bearer ${tempToken}` },
       });
       return res.data;
-    } catch (e) {
+    } catch (e: any) {
       throw new Error(e);
     }
   }, []);

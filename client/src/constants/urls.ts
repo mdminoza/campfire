@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
   // baseUrl: 'https://staging.godtribe.com/wp-json/api/v1/',
-  campfireBaseUrl: 'http://localhost:5000/',
+  campfireBaseUrl: 'https://staging-campfire-api.azurewebsites.net/api/',
   web: {
     dev: 'https://staging.godtribe.com/wp-json/api/v1/',
     prod: 'https://godtribe.com/wp-json/api/v1/',
