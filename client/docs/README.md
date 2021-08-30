@@ -13,27 +13,76 @@
 
 **200: OK**
 
-    {   
-        success: true,
-        data: [
-            {
-                updatedAt: Date,
-                createdAt: Date,
-                scheduleToStart: Date,
-                openTo: string,
-                _id: string,
-                topic: string,
-                altTopic: string,
-                duration: string,
-                description: string,
-                hidden: boolean,
-                isDeleted: boolean,
-                creatorId: string,
-            },
-            { ... },
-            { ... },
-        ]
-    }
+    [
+        {
+            _id: string,
+            topic: string,
+            altTopic: string,
+            duration: string,
+            description: string,
+            creatorId: string,
+            hidden: boolean,
+            scheduleToStart: Date,
+            openTo: string,
+            members: [Object]
+            createdAt: Date,
+            updatedAt: Date,
+        },
+        { ... },
+        { ... },
+    ]
+
+### **Get Owned Campfires**
+
+[GET] https://staging-campfire-api.azurewebsites.net/api/campfires/owned?cid=:cid
+
+#### *Response*
+
+**200: OK**
+
+    [
+        {
+            _id: string,
+            topic: string,
+            altTopic: string,
+            duration: string,
+            description: string,
+            creatorId: string,
+            hidden: boolean,
+            scheduleToStart: Date,
+            openTo: string,
+            createdAt: Date,
+            updatedAt: Date,
+        },
+        { ... },
+        { ... },
+    ]
+
+### **Get Public Campfires**
+
+[GET] https://staging-campfire-api.azurewebsites.net/api/campfires/public?cid=:cid
+
+#### *Response*
+
+**200: OK**
+
+    [
+        {
+            _id: string,
+            topic: string,
+            altTopic: string,
+            duration: string,
+            description: string,
+            creatorId: string,
+            hidden: boolean,
+            scheduleToStart: Date,
+            openTo: string,
+            createdAt: Date,
+            updatedAt: Date,
+        },
+        { ... },
+        { ... },
+    ]
 
 ### **Get Campfire**
 
@@ -44,42 +93,43 @@
 **200: OK**
 
     {   
-        updatedAt: Date,
-        createdAt: Date,
-        scheduleToStart: Date,
-        openTo: string,
         _id: string,
         topic: string,
         altTopic: string,
         duration: string,
         description: string,
-        hidden: boolean,
-        isDeleted: boolean,
         creatorId: string,
+        hidden: boolean,
+        scheduleToStart: Date,
+        openTo: string,
+        createdAt: Date,
+        updatedAt: Date,
     }
 
 ### **Get Campfire Members**
 
-[GET] https://staging-campfire-api.azurewebsites.net/api/campfires/:id/members
+[GET] https://staging-campfire-api.azurewebsites.net/api/campfires/:id/member
 
 #### *Response*
 
 **200: OK**
 
-    [
-        {
-            status: number,
-            role: string,
-            _id: string,
-            profileUrl: string,
-            name: string,
-            campfire: string,
-            updatedAt: date,
-            createdAt: date,
-        }
-        { ... },
-        { ... },
-    ]
+    {
+        _id: string,
+        members: [
+            {
+                uid: string,
+                profileUrl: string,
+                name: string,
+                status: string,
+                role: string,
+                campfire: string,
+                _id: string,
+            },
+            { ... },
+            { ... },
+        ],
+    }
 
 ### **Add Campfire**
 
@@ -105,27 +155,26 @@ Object
 | description | string | true |
 | creatorId | string | true |
 | hidden | boolean | optional |
-| isDeleted | boolean | optional |
 | scheduleToStart | Date | optional |
-| openTo | string | optional |
+| openTo | string | Everyone = default, Invite Only |
 
 #### *Response*
 
 **201: Created**
 
     {   
-        updatedAt: Date,
-        createdAt: Date,
-        scheduleToStart: Date,
-        openTo: string,
-        _id: string,
         topic: string,
         altTopic: string,
         duration: string,
         description: string,
-        hidden: boolean,
-        isDeleted: boolean,
         creatorId: string,
+        hidden: boolean,
+        scheduleToStart: Date,
+        openTo: string,
+        _id: string,
+        members: [],
+        createdAt: Date,
+        updatedAt: Date,
     }
 
 ### **Update Campfire**
@@ -151,27 +200,25 @@ Object
 | duration | string | optional |
 | description | string | true |
 | hidden | boolean | optional |
-| isDeleted | boolean | optional |
 | scheduleToStart | Date | optional |
-| openTo | string | optional |
+| openTo | string | Everyone = default, Invite Only |
 
 #### *Response*
 
 **200: OK**
 
     {   
-        updatedAt: Date,
-        createdAt: Date,
-        scheduleToStart: Date,
-        openTo: string,
         _id: string,
         topic: string,
         altTopic: string,
         duration: string,
         description: string,
-        hidden: boolean,
-        isDeleted: boolean,
         creatorId: string,
+        hidden: boolean,
+        scheduleToStart: Date,
+        openTo: string,
+        createdAt: Date,
+        updatedAt: Date,
     }
 
 ### **Delete Campfire**
@@ -190,26 +237,7 @@ Object
 
 ### **Get member**
 
-[GET] https://staging-campfire-api.azurewebsites.net/api/member/:id
-
-#### *Response*
-
-**200: OK**
-
-    {
-        status: string,
-        role: string,
-        _id: string,
-        profileUrl: string,
-        name: string,
-        campfire: string,
-        updatedAt: date,
-        createdAt: date,
-    }
-
-### **Add member**
-
-[POST] https://staging-campfire-api.azurewebsites.net/api/member
+[POST] https://staging-campfire-api.azurewebsites.net/api/member/get
 
 #### *Request*
 
@@ -223,32 +251,63 @@ Object
 
 Object
 
-| Name | Type | Required |
-| --- | --- | --- |
-| profileUrl | string | true |
-| name | string | true |
-| status | string | optional |
-| role | string | optional |
-| campfire | string | true |
+| Name | Description | Type | Required |
+| --- | --- | --- | --- |
+| id | Campfire id *(Note: Campfire must exist)* | string | true |
+| uid | user id |  string | true |
+
+#### *Response*
+
+**200: OK**
+
+    {
+        uid: string,
+        profileUrl: string,
+        name: string,
+        status: string,
+        role: string,
+        campfire: string,
+        _id: string,
+    }
+
+### **Add member**
+
+[PATCH] https://staging-campfire-api.azurewebsites.net/api/member/push
+
+#### *Request*
+
+**Request Headers**
+
+| Name | Value |
+| --- | --- |
+| Content-Type | application/json |
+
+**Request Body**
+
+Object
+
+| Name | Description | Type | Required |
+| --- | --- | --- | --- |
+| member | member details | Object{ **profileUrl**: string, **name**: string, **campfire**: string, **uid**: string } | true |
+| id | Campfire id *(Note: Campfire must exist)* | string | true |
 
 #### *Response*
 
 **201: Created**
 
     {
-        status: string,
-        role: string,
-        _id: string,
+        uid: string,
         profileUrl: string,
         name: string,
+        status: string,
+        role: string,
         campfire: string,
-        updatedAt: date,
-        createdAt: date,
+        _id: string,
     }
 
-### **Update member**
+### **Update member status**
 
-[PATCH] https://staging-campfire-api.azurewebsites.net/api/member/:id
+[PATCH] https://staging-campfire-api.azurewebsites.net/api/member/set/status
 
 #### *Request*
 
@@ -262,37 +321,76 @@ Object
 
 Object
 
-| Name | Type | Required |
-| --- | --- | --- |
-| profileUrl | string | true |
-| name | string | true |
-| status | string | optional |
-| role | string | optional |
-| campfire | string | true |
+| Name | Description | Type | Required |
+| --- | --- | --- | --- |
+| status | member status | pending, invited | true |
+| uid | User id | string | true |
+| id | Campfire id *(Note: Campfire must exist)* | string | true |
 
 #### *Response*
 
 **200: OK**
 
     {
-        status: string,
-        role: string,
-        _id: string,
-        profileUrl: string,
-        name: string,
-        campfire: string,
-        updatedAt: date,
-        createdAt: date,
+        uid: string
     }
 
-### **Delete member**
+### **Update member role**
 
-[DELETE] https://staging-campfire-api.azurewebsites.net/api/member/:id
+[PATCH] https://staging-campfire-api.azurewebsites.net/api/member/set/role
+
+#### *Request*
+
+**Request Headers**
+
+| Name | Value |
+| --- | --- |
+| Content-Type | application/json |
+
+**Request Body**
+
+Object
+
+| Name | Description | Type | Required |
+| --- | --- | --- | --- |
+| role | member role | speaker, moderator, audience | true |
+| uid | User id | string | true |
+| id | Campfire id *(Note: Campfire must exist)* | string | true |
 
 #### *Response*
 
 **200: OK**
 
     {
+        uid: string
+    }
+
+### **Delete campfire member**
+
+[PATCH] https://staging-campfire-api.azurewebsites.net/api/member/pull
+
+#### *Request*
+
+**Request Headers**
+
+| Name | Value |
+| --- | --- |
+| Content-Type | application/json |
+
+**Request Body**
+
+Object
+
+| Name | Description | Type | Required |
+| --- | --- | --- | --- |
+| uid | User id | string | true |
+| id | Campfire id *(Note: Campfire must exist)* | string | true |
+
+#### *Response*
+
+**200: OK**
+
+    {
+        uid: string,
         message: 'Member removed successfully!'
     }

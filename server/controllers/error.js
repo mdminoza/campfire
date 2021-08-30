@@ -1,8 +1,7 @@
-const handleDuplicateKeyError = async (err, res) => {
-  const field = Object.keys(err.keyValue);
+const handleDuplicateKeyError = async (res) => {
   const code = 409;
-  const error = `An account with that ${field} already exists.`;
-  return res.status(code).send({messages: error, fields: field});
+    const error = 'Topic already exist.';
+    return res.status(code).send({message: error});
 }
 
 //handle field formatting, empty fields, and mismatched passwords 
@@ -17,7 +16,7 @@ const handleValidationError = async (error, res) => {
 //error controller function
 export const errorHandler = async (error, req, res, next) => {
   if(error.name === 'ValidationError') return error = handleValidationError(error, res); 
-  if(error.code && error.code == 11000) return error = handleDuplicateKeyError(error, res);
+  if(error.code && error.code == 11000) return error = handleDuplicateKeyError(res);
   res.status(error.status || 500);
   res.json({
     error: {

@@ -19,6 +19,7 @@ export const getBase = async (req, res, next) => {
                 topic: {
                   type: 'string',
                   required: true,
+                  unique: true,
                 },
                 altTopic: {
                   type: 'string',
@@ -37,7 +38,6 @@ export const getBase = async (req, res, next) => {
                   required: true,
                 },
                 hidden: Boolean,
-                isDeleted: Boolean,
                 scheduleToStart: {
                   type: Date,
                   default: new Date(),
@@ -50,6 +50,26 @@ export const getBase = async (req, res, next) => {
             },
           ],
           link: 'https://staging-campfire-api.azurewebsites.net/api/campfires',
+        },
+        '/api/campfires/owned?cid=:cid': {
+          methods: ['GET'],
+          endpoints: [
+            {
+              method: 'GET',
+              args: {},
+            },
+          ],
+          link: 'https://staging-campfire-api.azurewebsites.net/api/campfires/owned?cid=:cid',
+        },
+        '/api/campfires/public?cid=:cid': {
+          methods: ['GET'],
+          endpoints: [
+            {
+              method: 'GET',
+              args: {},
+            },
+          ],
+          link: 'https://staging-campfire-api.azurewebsites.net/api/campfires/public?cid=:cid',
         },
         '/api/campfires/:id': {
           methods: [
@@ -68,6 +88,7 @@ export const getBase = async (req, res, next) => {
                 topic: {
                   type: 'string',
                   required: true,
+                  unique: true,
                 },
                 altTopic: {
                   type: 'string',
@@ -81,7 +102,6 @@ export const getBase = async (req, res, next) => {
                   required: true,
                 },
                 hidden: Boolean,
-                isDeleted: Boolean,
                 scheduleToStart: {
                   type: Date,
                   default: new Date(),
@@ -89,6 +109,7 @@ export const getBase = async (req, res, next) => {
                 openTo: {
                   type: 'string',
                   default: 'Everyone',
+                  options: 'Everyone' | 'Invite Only'
                 },
               },
             },
@@ -99,7 +120,7 @@ export const getBase = async (req, res, next) => {
           ],
           link: 'https://staging-campfire-api.azurewebsites.net/api/campfires/:id',
         },
-        '/api/campfires/:id/members': {
+        '/api/campfires/:id/member': {
           methods: [
             'GET',
           ],
@@ -109,9 +130,9 @@ export const getBase = async (req, res, next) => {
               args: {},
             },
           ],
-          link: 'https://staging-campfire-api.azurewebsites.net/api/campfires/:id/members',
+          link: 'https://staging-campfire-api.azurewebsites.net/api/campfires/:id/member',
         },
-        '/api/member': {
+        '/api/member/get': {
           methods: [
             'POST',
           ],
@@ -119,67 +140,122 @@ export const getBase = async (req, res, next) => {
             {
               method: 'POST',
               args: {
-                profileUrl: {
+                id: {
                   type: 'string',
                   required: true,
-                },
-                name: {
-                  type: 'string',
-                  required: true,
-                },
-                status: {
-                  type: 'string',
-                  default: 'pending'
-                },
-                role: {
-                  type: 'string',
-                  default: 'audience'
-                },
-                campfire: {
-                  type: 'string',
                   ref: 'Campfire',
+                },
+                uid: {
+                  type: 'string',
                   required: true,
                 },
               },
             },
           ],
-          link: 'https://staging-campfire-api.azurewebsites.net/api/member',
+          link: 'https://staging-campfire-api.azurewebsites.net/api/member/get',
         },
-        '/api/member/:id': {
+        '/api/member/push': {
           methods: [
-            'GET',
             'PATCH',
-            'DELETE'
           ],
           endpoints: [
             {
-              method: 'GET',
-              args: {},
+              method: 'PATCH',
+              args: {
+                id: {
+                  type: 'string',
+                  required: true,
+                  ref: 'Campfire',
+                },
+                member: {
+                  type: {
+                    profileUrl: 'string',
+                    name: 'string',
+                    campfire: 'string',
+                    uid: 'string',
+                  },
+                  required: true
+                },
+              },
             },
+          ],
+          link: 'https://staging-campfire-api.azurewebsites.net/api/member/push',
+        },
+        '/api/member/pull': {
+          methods: [
+            'PATCH',
+          ],
+          endpoints: [
+            {
+              method: 'PATCH',
+              args: {
+                id: {
+                  type: 'string',
+                  required: true,
+                  ref: 'Campfire',
+                },
+                uid: {
+                  type: 'string',
+                  required: true,
+                },
+              },
+            },
+          ],
+          link: 'https://staging-campfire-api.azurewebsites.net/api/member/pull',
+        },
+        '/api/member/set/status': {
+          methods: [
+            'PATCH',
+          ],
+          endpoints: [
             {
               method: 'PATCH',
               args: {
                 status: {
                   type: 'string',
-                  default: 'pending'
+                  required: true,
+                  options: 'pending' | 'invited',
                 },
-                role: {
+                id: {
                   type: 'string',
-                  default: 'audience'
-                },
-                campfire: {
-                  type: 'string',
+                  required: true,
                   ref: 'Campfire',
+                },
+                uid: {
+                  type: 'string',
                   required: true,
                 },
               },
             },
+          ],
+          link: 'https://staging-campfire-api.azurewebsites.net/api/member/set/status',
+        },
+        '/api/member/set/role': {
+          methods: [
+            'PATCH',
+          ],
+          endpoints: [
             {
-              method: 'DELETE',
-              args: {},
+              method: 'PATCH',
+              args: {
+                role: {
+                  type: 'string',
+                  required: true,
+                  options: 'speaker' | 'moderator' | 'audience',
+                },
+                id: {
+                  type: 'string',
+                  required: true,
+                  ref: 'Campfire',
+                },
+                uid: {
+                  type: 'string',
+                  required: true,
+                },
+              },
             },
           ],
-          link: 'https://staging-campfire-api.azurewebsites.net/api/member/:id',
+          link: 'https://staging-campfire-api.azurewebsites.net/api/member/set/role',
         },
       },
     };
