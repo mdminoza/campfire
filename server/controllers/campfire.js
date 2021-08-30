@@ -23,7 +23,7 @@ export const fetchPublicCampfires = async (req, res, next) => {
     try {
         const campfires = await Campfire.find(
             {
-                creatorId: { $ne: cid },
+                'creator.uid': { $ne: cid },
                 createdAt: { 
                     $lt: new Date(), 
                     $gte: new Date(new Date().setDate(new Date().getDate()-1)),
@@ -43,7 +43,7 @@ export const fetchOwnCampfires = async (req, res, next) => {
     try {
         const campfires = await Campfire.find(
             {
-                creatorId: cid,
+                'creator.uid': cid,
                 createdAt: { 
                     $lt: new Date(), 
                     $gte: new Date(new Date().setDate(new Date().getDate()-1))
@@ -175,7 +175,7 @@ export const fetchCampfireMember = async (req, res, next) => {
             },
             { '_id': 0, 'members': { '$elemMatch': { uid } } },
         );
-        if (data === null) throw new Error('Campfire does not exist.');
+        if (data === null) throw new Error('Campfire or user id does not exist.');
         const filter = data.members[0];
         res.status(200).json(filter);
     } catch (error) {
@@ -210,7 +210,7 @@ export const updateCampfireMemberStatus = async (req, res, next) => {
             uid,
             { 'members.$.status': status, }   
         );
-        if (updatedData === null) throw new Error('Campfire does not exist.');
+        if (updatedData === null) throw new Error('Campfire or user id does not exist.');
         res.status(200).json({
             uid,
         });
@@ -228,7 +228,7 @@ export const updateCampfireMemberRole = async (req, res, next) => {
             uid,
             { 'members.$.role': role, }   
         );
-        if (updatedData === null) throw new Error('Campfire does not exist.');
+        if (updatedData === null) throw new Error('Campfire or user id does not exist.');
         res.status(200).json({
             uid,
         });
@@ -248,7 +248,7 @@ export const removeCampfireMember = async (req, res, next) => {
             },
             { multi: true, new: true, projection: { members: 1 } },
         )
-        if (newMember === null) throw new Error('Campfire does not exist.');
+        if (newMember === null) throw new Error('Campfire or user id does not exist.');
         res.status(200).json({ uid, message: 'Member removed successfully!' });
     } catch (error) {
         next(error);

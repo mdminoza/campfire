@@ -31,9 +31,24 @@ const campfireSchema = new Schema({
             message: props => 'Description must not start or end with whitespace.'
         },
     },
-    creatorId: {
-        type: String,
-        required: [true, 'Creator id is required.'],
+    creator: {
+        type: {
+            uid: {
+                type: String,
+                required: true,
+                unique: true,
+            },
+            profileUrl: {
+                type: String,
+                required: true,
+            },
+            name: {
+                type: String,
+                required: true,
+            },
+        },
+        '_id': false,
+        required: [true, 'Creator is required.'],
     },
     hidden: Boolean,
     scheduleToStart: {
@@ -73,7 +88,8 @@ const campfireSchema = new Schema({
             campfire: {
                 type: String,
                 required: true,
-            }
+            },
+            '_id': false,
         }
     ]
 }, { timestamps: true });

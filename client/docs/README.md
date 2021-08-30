@@ -20,7 +20,11 @@
             altTopic: string,
             duration: string,
             description: string,
-            creatorId: string,
+            creator: {
+                uid: string,
+                profileUrl: string,
+                name: string,
+            },
             hidden: boolean,
             scheduleToStart: Date,
             openTo: string,
@@ -47,7 +51,11 @@
             altTopic: string,
             duration: string,
             description: string,
-            creatorId: string,
+            creator: {
+                uid: string,
+                profileUrl: string,
+                name: string,
+            },
             hidden: boolean,
             scheduleToStart: Date,
             openTo: string,
@@ -73,7 +81,11 @@
             altTopic: string,
             duration: string,
             description: string,
-            creatorId: string,
+            creator: {
+                uid: string,
+                profileUrl: string,
+                name: string,
+            },
             hidden: boolean,
             scheduleToStart: Date,
             openTo: string,
@@ -98,7 +110,11 @@
         altTopic: string,
         duration: string,
         description: string,
-        creatorId: string,
+        creator: {
+            uid: string,
+            profileUrl: string,
+            name: string,
+        },
         hidden: boolean,
         scheduleToStart: Date,
         openTo: string,
@@ -124,7 +140,6 @@
                 status: string,
                 role: string,
                 campfire: string,
-                _id: string,
             },
             { ... },
             { ... },
@@ -153,7 +168,7 @@ Object
 | altTopic | string | true |
 | duration | string | optional |
 | description | string | true |
-| creatorId | string | true |
+| creator | Object{ **uid**: string, **profileUrl**: string, **name**: string } | true |
 | hidden | boolean | optional |
 | scheduleToStart | Date | optional |
 | openTo | string | Everyone = default, Invite Only |
@@ -167,7 +182,11 @@ Object
         altTopic: string,
         duration: string,
         description: string,
-        creatorId: string,
+        creator: {
+            uid: string,
+            profileUrl: string,
+            name: string,
+        },
         hidden: boolean,
         scheduleToStart: Date,
         openTo: string,
@@ -213,7 +232,11 @@ Object
         altTopic: string,
         duration: string,
         description: string,
-        creatorId: string,
+        creator: {
+            uid: string,
+            profileUrl: string,
+            name: string,
+        },
         hidden: boolean,
         scheduleToStart: Date,
         openTo: string,
@@ -267,7 +290,6 @@ Object
         status: string,
         role: string,
         campfire: string,
-        _id: string,
     }
 
 ### **Add member**
@@ -302,7 +324,6 @@ Object
         status: string,
         role: string,
         campfire: string,
-        _id: string,
     }
 
 ### **Update member status**
