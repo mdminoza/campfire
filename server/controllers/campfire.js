@@ -5,12 +5,14 @@ import { conn } from '../dbConn.js'
 
 export const fetchCampfires = async (req, res, next) => {
     try {
-        const campfires = await Campfire.find({
-            createdAt: { 
-                $lt: new Date(), 
-                $gte: new Date(new Date().setDate(new Date().getDate()-1))
-            },
-        });
+        const campfires = await Campfire.find(
+            {
+                createdAt: { 
+                    $lt: new Date(), 
+                    $gte: new Date(new Date().setDate(new Date().getDate()-1))
+                },
+            }
+        );
         res.status(200).json(campfires);
     } catch (error) {
         error.status = 400;

@@ -48,7 +48,7 @@ export const getBase = async (req, res, next) => {
                     },
                   },
                   required: true,
-                }
+                },
                 hidden: Boolean,
                 scheduleToStart: {
                   type: Date,
