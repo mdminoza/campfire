@@ -32,11 +32,23 @@ export const getBase = async (req, res, next) => {
                   type: 'string',
                   required: true,
                 },
-                creatorId: {
-                  type: 'string',
-                  ref: 'User',
+                creator: {
+                  type: {
+                    uid: {
+                      type: 'string',
+                      required: true,
+                    },
+                    profileUrl: {
+                      type: 'string',
+                      required: true,
+                    },
+                    name: {
+                      type: 'string',
+                      required: true,
+                    },
+                  },
                   required: true,
-                },
+                }
                 hidden: Boolean,
                 scheduleToStart: {
                   type: Date,
