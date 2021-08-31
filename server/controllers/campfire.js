@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 // import jwt from 'jsonwebtoken';
 import Campfire from '../models/campfire.js';
-import { conn } from '../dbConn.js'
 
 export const fetchCampfires = async (req, res, next) => {
     try {
