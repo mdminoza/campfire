@@ -66,9 +66,69 @@
         { ... },
     ]
 
+### **Filter Owned Campfires By Topic**
+
+[GET] https://staging-campfire-api.azurewebsites.net/api/campfires/owned?cid=:cid&tpc=:topic
+
+#### *Response*
+
+**200: OK**
+
+    [
+        {
+            _id: string,
+            topic: string,
+            altTopic: string,
+            duration: string,
+            description: string,
+            creator: {
+                uid: string,
+                profileUrl: string,
+                name: string,
+            },
+            hidden: boolean,
+            scheduleToStart: Date,
+            openTo: string,
+            createdAt: Date,
+            updatedAt: Date,
+        },
+        { ... },
+        { ... },
+    ]
+
 ### **Get Public Campfires**
 
 [GET] https://staging-campfire-api.azurewebsites.net/api/campfires/public?cid=:cid
+
+#### *Response*
+
+**200: OK**
+
+    [
+        {
+            _id: string,
+            topic: string,
+            altTopic: string,
+            duration: string,
+            description: string,
+            creator: {
+                uid: string,
+                profileUrl: string,
+                name: string,
+            },
+            hidden: boolean,
+            scheduleToStart: Date,
+            openTo: string,
+            createdAt: Date,
+            updatedAt: Date,
+        },
+        { ... },
+        { ... },
+    ]
+
+### **Filter Public Campfires By Topic**
+
+[GET] https://staging-campfire-api.azurewebsites.net/api/campfires/public?cid=:cid&tpc=:topic
 
 #### *Response*
 

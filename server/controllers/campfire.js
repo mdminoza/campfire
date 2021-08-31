@@ -21,7 +21,8 @@ export const fetchCampfires = async (req, res, next) => {
 };
 
 export const fetchPublicCampfires = async (req, res, next) => {
-    const { cid } = req.query;
+    const { cid, tpc } = req.query;
+    const filterTopic = tpc ? { topic: { $regex: '^' + tpc, $options: 'i' } } : {}; 
     try {
         const campfires = await Campfire.find(
             {
@@ -30,6 +31,7 @@ export const fetchPublicCampfires = async (req, res, next) => {
                     $lt: new Date(), 
                     $gte: new Date(new Date().setDate(new Date().getDate()-1)),
                 },
+                ...filterTopic,
             },
             { members: 0 },
         );
@@ -41,7 +43,8 @@ export const fetchPublicCampfires = async (req, res, next) => {
 }
 
 export const fetchOwnCampfires = async (req, res, next) => {
-    const { cid } = req.query;
+    const { cid, tpc } = req.query;
+    const filterTopic = tpc ? { topic: { $regex: '^' + tpc, $options: 'i' } } : {}; 
     try {
         const campfires = await Campfire.find(
             {
@@ -49,7 +52,8 @@ export const fetchOwnCampfires = async (req, res, next) => {
                 createdAt: { 
                     $lt: new Date(), 
                     $gte: new Date(new Date().setDate(new Date().getDate()-1))
-                }
+                },
+                ...filterTopic,
             },
             { members: 0 },
         );

@@ -83,6 +83,26 @@ export const getBase = async (req, res, next) => {
           ],
           link: 'https://staging-campfire-api.azurewebsites.net/api/campfires/public?cid=:cid',
         },
+        '/api/campfires/owned?cid=:cid&tpc=:topic': {
+          methods: ['GET'],
+          endpoints: [
+            {
+              method: 'GET',
+              args: {},
+            },
+          ],
+          link: 'https://staging-campfire-api.azurewebsites.net/api/campfires/owned?cid=:cid&tpc=:topic',
+        },
+        '/api/campfires/public?cid=:cid&tpc=:topic': {
+          methods: ['GET'],
+          endpoints: [
+            {
+              method: 'GET',
+              args: {},
+            },
+          ],
+          link: 'https://staging-campfire-api.azurewebsites.net/api/campfires/public?cid=:cid&tpc=:topic',
+        },
         '/api/campfires/:id': {
           methods: [
             'GET',
