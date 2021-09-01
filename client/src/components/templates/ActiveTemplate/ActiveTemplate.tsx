@@ -18,6 +18,9 @@ const ActiveSpeakersWrapper = styled.div`
 
 const AudienceWrapper = styled.div`
   margin: 0 40px 150px;
+  @media (min-width: 500px) {
+    margin: 0 10px 100px;
+  }
 `;
 
 const LinkWrapper = styled.div`
@@ -79,10 +82,6 @@ const LogoutButton = styled.button`
 
 const { useBreakpoint } = Grid;
 
-const members = [...DUMMY_MEMBERS].splice(0, 2);
-const speakers = [...DUMMY_MEMBERS].splice(0, 2);
-const id = '';
-
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const ActiveTemplate = () => {
   const [isDrawerVisible, setDrawerVisible] = useState<boolean>(false);
@@ -123,72 +122,80 @@ const ActiveTemplate = () => {
     },
   ];
 
+  const members = [...DUMMY_MEMBERS].splice(0, 9);
+  const speakers = [...DUMMY_MEMBERS].splice(0, 1);
+  const id = '';
+
   useEffect(() => {
     // eslint-disable-next-line no-undef
     // eslint-disable-next-line no-restricted-globals
     const screenWidth = screen.width;
+    const size =
+      members.length > speakers.length ? members.length : speakers.length;
     switch (breakPoint) {
       case 'xxl':
       case 'xl':
       case 'lg':
-        if (members.length <= 1) {
-          setAvatarSize(500);
-        } else if (members.length <= 2) {
-          setAvatarSize(screenWidth * 0.5);
-        } else if (members.length <= 3) {
-          setAvatarSize(250);
-        } else if (members.length >= 4 && members.length <= 8) {
-          setAvatarSize(200);
-        } else if (members.length >= 9 && members.length >= 12) {
-          setAvatarSize(150);
-        } else if (members.length >= 13 && members.length >= 28) {
-          setAvatarSize(120);
-        } else if (members.length >= 29) {
-          setAvatarSize(110);
+        if (size <= 1) {
+          setAvatarSize(screenWidth * 0.4);
+        } else if (size <= 2) {
+          setAvatarSize(screenWidth * 0.35);
+        } else if (size <= 3) {
+          setAvatarSize(screenWidth * 0.3);
+        } else if (size >= 4 && size <= 8) {
+          setAvatarSize(screenWidth * 0.2);
+        } else if (size >= 9 && size <= 12) {
+          setAvatarSize(screenWidth * 0.14);
+        } else if (size >= 13 && size <= 28) {
+          setAvatarSize(screenWidth * 0.12);
+        } else if (size >= 29) {
+          setAvatarSize(screenWidth * 0.11);
         }
         break;
       case 'md':
-        if (members.length <= 1) {
-          setAvatarSize(300);
-        } else if (members.length <= 2) {
-          setAvatarSize(250);
-        } else if (members.length <= 3) {
+        console.log('MD!!');
+        if (size <= 1) {
+          setAvatarSize(screenWidth * 0.4);
+        } else if (size <= 2) {
+          setAvatarSize(screenWidth * 0.35);
+        } else if (size <= 3) {
+          setAvatarSize(screenWidth * 0.2);
           setAvatarSize(200);
-        } else if (members.length >= 4 && members.length <= 8) {
+        } else if (size >= 4 && size <= 8) {
           setAvatarSize(150);
-        } else if (members.length >= 9 && members.length >= 12) {
+        } else if (size >= 9 && size >= 12) {
           setAvatarSize(120);
-        } else if (members.length >= 13) {
+        } else if (size >= 13) {
           setAvatarSize(110);
         }
         break;
       case 'sm':
         console.log('AYALASM?');
-        if (members.length <= 1) {
+        if (size <= 1) {
           setAvatarSize(250);
-        } else if (members.length <= 2) {
+        } else if (size <= 2) {
           setAvatarSize(200);
-        } else if (members.length <= 3) {
+        } else if (size <= 3) {
           setAvatarSize(150);
-        } else if (members.length >= 4 && members.length <= 8) {
+        } else if (size >= 4 && size <= 8) {
           setAvatarSize(120);
-        } else if (members.length >= 9) {
+        } else if (size >= 9) {
           setAvatarSize(110);
         }
         break;
       case 'xs':
         console.log('XS usa ta dol');
-        if (members.length === 1) {
-          console.log('1', members.length);
+        if (size === 1) {
+          console.log('1', size);
           setAvatarSize(200);
-        } else if (members.length <= 2) {
-          console.log('2', members.length);
+        } else if (size <= 2) {
+          console.log('2', size);
           setAvatarSize(150);
-        } else if (members.length <= 3) {
-          console.log('3', members.length);
+        } else if (size <= 3) {
+          console.log('3', size);
           setAvatarSize(120);
-        } else if (members.length >= 4) {
-          console.log('4', members.length);
+        } else if (size >= 4) {
+          console.log('4', size);
           setAvatarSize(110);
         }
         break;
@@ -196,7 +203,7 @@ const ActiveTemplate = () => {
         setAvatarSize(110);
         console.log('5');
     }
-  }, [speakers, members.length, breakPoint]);
+  }, [speakers, members.length, speakers.length, breakPoint]);
 
   useEffect(() => {
     const fooz = Object.entries(screens).filter((screen) => !!screen[1]);

@@ -6,6 +6,10 @@ export const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: inherit;
+  .styledAvatar {
+    display: inline-block;
+  }
 `;
 
 export const ItemWrapper = styled.div`
