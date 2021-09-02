@@ -11,7 +11,11 @@ export type CampfireParams = {
   invited?: Object[];
   isSponsored?: boolean;
   duration?: string;
-  durationStartedAt?: Date;
+  creator?: {
+    uid: string;
+    profileUrl: string;
+    name: string;
+  };
 };
 
-export type Campfire = CampfireParams & { creatorId: string } & BaseModel;
+export type Campfire = CampfireParams & BaseModel;

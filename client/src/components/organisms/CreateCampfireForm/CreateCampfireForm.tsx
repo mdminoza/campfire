@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { Formik } from 'formik';
+import { v4 } from 'uuid';
 
 import { CreateCampfire } from '../../molecules/CreateCampfire';
 
@@ -78,10 +79,10 @@ const CreateCampfireForm = ({
           fetchUserList={fetchUserList}
           onChangeOpenTo={(type, invited) => {
             const invitedData = invited.map((val: any) => ({
-              id: val[0],
-              name: val[1],
-              profileUrl: val[2],
-              altName: val[3],
+              uid: v4(),
+              name: val,
+              profileUrl:
+                'https://staging.godtribe.com/app/plugins/buddyboss-platform/bp-core/images/mystery-man.jpg',
             }));
             setFieldValue('openTo', type);
             setFieldValue('invited', type === 'Everyone' ? [] : invitedData);

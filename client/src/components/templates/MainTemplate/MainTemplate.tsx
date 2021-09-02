@@ -1,9 +1,10 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-nested-ternary */
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Layout, Row, Col, Spin, Empty, Divider, Grid } from 'antd';
 import styled from 'styled-components';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation } from 'react-query';
 
 import { theme } from '../../../constants';
 import { TextInput } from '../../atoms/TextInput';
@@ -13,10 +14,13 @@ import { CreateCampfireForm } from '../../organisms/CreateCampfireForm';
 import { CampfireTab } from '../../organisms/CampfireTab';
 import { TopicCard } from '../../organisms/TopicCard';
 import { SponsoredTopicCard } from '../../organisms/SponsoredTopicCard';
-import { Campfire } from '../../../../common/domain/entities/campfire';
+import {
+  Campfire,
+  CampfireParams,
+} from '../../../../common/domain/entities/campfire';
 
 import { useCampfireAction } from '../../../hooks/campfire';
-import { useUserAction } from '../../../hooks/user';
+import { useUserState } from '../../../hooks/user';
 
 import {
   SponsoredContainer,
@@ -97,33 +101,77 @@ const MainTemplate = (): React.ReactElement => {
   const [isDrawerVisible, setDrawerVisible] = useState<boolean>(false);
   const [showInvites, setShowInvites] = useState(false);
   const isCampfiresLoading = false;
-  const [campfires, setCampfires] = useState<Campfire[]>([]);
+  const [privateCampfires, setPrivateCampfires] = useState<Campfire[]>([]);
+  const [publicCampfires, setPublicCampfires] = useState<Campfire[]>([]);
+  const [ownedCampfires, setOwnedCampfires] = useState<Campfire[]>([]);
 
-  const { fetchCurrentUser } = useUserAction();
-  const { fetchCampfires } = useCampfireAction();
+  const {
+    fetchOwnedCampfires,
+    fetchPublicCampfires,
+    fetchPrivateCampfires,
+    addCampfire,
+  } = useCampfireAction();
+  const { currentUser } = useUserState();
 
-  const { refetch } = useQuery('campfires', () => fetchCampfires(), {
-    onSuccess: (res) => {
-      if (res && res.length > 0) {
-        console.log(res, 'acascsc');
-        setCampfires(res);
-      }
+  const { refetch: refetchOwnedCampfires } = useQuery(
+    'campfires',
+    () => fetchOwnedCampfires(currentUser?.id || ''),
+    {
+      onSuccess: (res) => {
+        if (res && res.length > 0) {
+          setOwnedCampfires(res);
+        }
+      },
     },
-  });
+  );
 
-  // const { refetch: refetchCurrentUser } = useQuery(
-  //   'user',
-  //   () => fetchCurrentUser(),
-  //   {
-  //     onSuccess: (res) => {
-  //       console.log(res, 'success user');
-  //     },
-  //   },
-  // );
+  const { refetch: refetchPublicCampfires } = useQuery(
+    'public-campfires',
+    () => fetchPublicCampfires(currentUser?.id || ''),
+    {
+      onSuccess: (res) => {
+        if (res && res.length > 0) {
+          setPublicCampfires(res);
+        }
+      },
+    },
+  );
+
+  const { refetch: refetchPrivateCampfires } = useQuery(
+    'private-campfires',
+    () => fetchPrivateCampfires(currentUser?.id || ''),
+    {
+      onSuccess: (res) => {
+        if (res && res.length > 0) {
+          setPrivateCampfires(res);
+        }
+      },
+    },
+  );
+
+  const {
+    mutate: addCampfireMutation,
+    isLoading: isAddingCampfire,
+    isSuccess: isCampfireAdded,
+  } = useMutation((values: CampfireParams) => addCampfire(values));
 
   const handleToggle = useCallback(() => setCampfireToggled(!isToggled), [
     isToggled,
   ]);
+
+  const handleAddCampfire = useCallback(
+    (values: CampfireParams) => {
+      addCampfireMutation(values, {
+        onSuccess: (res: Campfire | undefined) => {
+          if (res) {
+            setOwnedCampfires([...ownedCampfires, res]);
+            setCampfireToggled(false);
+          }
+        },
+      });
+    },
+    [ownedCampfires],
+  );
 
   const handleOnClick = (
     campfireId: string,
@@ -135,7 +183,39 @@ const MainTemplate = (): React.ReactElement => {
   };
 
   const handleSubmit = (values: any) => {
-    console.log(values);
+    const {
+      topic,
+      description,
+      duration,
+      scheduleToStart,
+      openTo,
+      hidden,
+      invited,
+    } = values;
+
+    const details = {
+      topic,
+      description,
+      duration,
+      scheduleToStart,
+      openTo,
+      hidden,
+      altTopic: topic,
+    };
+
+    const creator = {
+      uid: currentUser?.id || '',
+      profileUrl: currentUser?.profileUrl || '',
+      name: currentUser?.name || '',
+    };
+
+    const params = {
+      ...details,
+      creator,
+      members: invited,
+    };
+
+    handleAddCampfire(params);
   };
 
   const handleSearchValue = (val: any) => {
@@ -173,9 +253,17 @@ const MainTemplate = (): React.ReactElement => {
   }, [screens]);
 
   useEffect(() => {
-    // refetchCurrentUser();
-    refetch();
-  }, []);
+    if (activeTab === 'publicCampfire') {
+      refetchPublicCampfires();
+    }
+    if (activeTab === 'ownedCampfire') {
+      refetchOwnedCampfires();
+    }
+    if (activeTab === 'privateCampfire') {
+      refetchPrivateCampfires();
+    }
+    console.log(activeTab, 'activeTab');
+  }, [activeTab]);
 
   const campfiresMock: {
     publicCampfire: { data: Campfire[]; lastId: undefined };
@@ -183,43 +271,15 @@ const MainTemplate = (): React.ReactElement => {
     ownedCampfire: { data: Campfire[]; lastId: undefined };
   } = {
     publicCampfire: {
-      data: campfires,
+      data: publicCampfires,
       lastId: undefined,
     },
     privateCampfire: {
-      data: [
-        {
-          id: 'wxE8hMeXl',
-          creatorId: 'sBWOg4xXZvG',
-          topic: 'Sample topic',
-          description: 'Lorem Ipsum Dolor',
-          openTo: 'Everyone',
-          scheduleToStart: new Date('09/09/2021'),
-          hidden: false,
-          status: 'pending',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          isDeleted: false,
-        },
-      ],
+      data: privateCampfires,
       lastId: undefined,
     },
     ownedCampfire: {
-      data: [
-        {
-          id: 'wxE8hMeXl',
-          creatorId: 'sBWOg4xXZvG',
-          topic: 'Sample topic',
-          description: 'Lorem Ipsum Dolor',
-          openTo: 'Everyone',
-          scheduleToStart: new Date('09/09/2021'),
-          hidden: false,
-          status: 'pending',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          isDeleted: false,
-        },
-      ],
+      data: ownedCampfires,
       lastId: undefined,
     },
   };
@@ -273,7 +333,7 @@ const MainTemplate = (): React.ReactElement => {
                 isLoading={startedCampfires[i]?.isLoading}
                 onClick={() =>
                   handleOnClick(
-                    startedCampfires[i].id,
+                    startedCampfires[i]._id,
                     startedCampfires[i].status || '',
                     type,
                     isOwnedCampfire,
@@ -298,7 +358,7 @@ const MainTemplate = (): React.ReactElement => {
                 isLoading={startedCampfires[i]?.isLoading}
                 onClick={() =>
                   handleOnClick(
-                    startedCampfires[i].id,
+                    startedCampfires[i]._id,
                     startedCampfires[i].status || '',
                     type,
                     isOwnedCampfire,
@@ -357,7 +417,7 @@ const MainTemplate = (): React.ReactElement => {
                 isLoading={campfire?.isLoading}
                 onClick={() =>
                   handleOnClick(
-                    campfire.id,
+                    campfire._id,
                     campfire.status || '',
                     type,
                     isOwnedCampfire,
@@ -384,7 +444,7 @@ const MainTemplate = (): React.ReactElement => {
                 isLoading={campfire?.isLoading}
                 onClick={(isOwned) =>
                   handleOnClick(
-                    campfire.id,
+                    campfire._id,
                     campfire.status || '',
                     type,
                     isOwned,
@@ -548,8 +608,8 @@ const MainTemplate = (): React.ReactElement => {
               onSubmit={handleSubmit}
               onClickShowInvites={setShowInvites}
               isInviteTagOpen={showInvites}
-              // isLoading={isLoading}
-              // didSucceed={didSucceed}
+              isLoading={isAddingCampfire}
+              didSucceed={isCampfireAdded}
               // fetchUserList={fetchUserList}
             />
           </CreateCampFireWrapper>

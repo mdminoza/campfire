@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import axios from 'axios';
+import axiosInstance from '../../../config/axios';
 import { UserHooks } from '../index';
 // import axios from '../../../config/axios';
 import urls from '../../../constants/urls';
@@ -7,7 +8,7 @@ import urls from '../../../constants/urls';
 
 const userUrl = urls.native.dev + urls.user.current;
 const tempToken =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjg0LCJuYW1lIjoiZGVlYiIsImlhdCI6MTYyOTM4Mjg2MCwiZXhwIjoxNzg3MDYyODYwfQ.5D6O9jfIypC3CotSCGYY2nr31-lhjgu83EdVJNo4YWk';
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvc3RhZ2luZy5nb2R0cmliZS5jb20iLCJpYXQiOjE2MzAzMTcwNTQsIm5iZiI6MTYzMDMxNzA1NCwiZXhwIjoxNjMwOTIxODU0LCJkYXRhIjp7InVzZXIiOnsiaWQiOiI4MiJ9fX0.nv51JGoz6VT3BSXX1XcyT7NiQhdEaGxPl8kZIo3krqY';
 
 export const useUserAction: UserHooks['useUserAction'] = () => {
   const fetchCurrentUser = useCallback(async () => {
@@ -21,7 +22,17 @@ export const useUserAction: UserHooks['useUserAction'] = () => {
     }
   }, []);
 
+  const fetchRandomTestUser = useCallback(async () => {
+    try {
+      const res = await axiosInstance.get(urls.user.randomTestUser);
+      return res.data;
+    } catch (e: any) {
+      throw new Error(e);
+    }
+  }, []);
+
   return {
     fetchCurrentUser,
+    fetchRandomTestUser,
   };
 };

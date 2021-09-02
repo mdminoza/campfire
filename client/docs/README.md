@@ -156,6 +156,66 @@
         { ... },
     ]
 
+### **Get Private Campfires**
+
+[GET] https://staging-campfire-api.azurewebsites.net/api/campfires/private?cid=:cid
+
+#### *Response*
+
+**200: OK**
+
+    [
+        {
+            _id: string,
+            topic: string,
+            altTopic: string,
+            duration: string,
+            description: string,
+            creator: {
+                uid: string,
+                profileUrl: string,
+                name: string,
+            },
+            hidden: boolean,
+            scheduleToStart: Date,
+            openTo: string,
+            createdAt: Date,
+            updatedAt: Date,
+        },
+        { ... },
+        { ... },
+    ]
+
+### **Filter Private Campfires By Topic**
+
+[GET] https://staging-campfire-api.azurewebsites.net/api/campfires/private?cid=:cid&tpc=:topic
+
+#### *Response*
+
+**200: OK**
+
+    [
+        {
+            _id: string,
+            topic: string,
+            altTopic: string,
+            duration: string,
+            description: string,
+            creator: {
+                uid: string,
+                profileUrl: string,
+                name: string,
+            },
+            hidden: boolean,
+            scheduleToStart: Date,
+            openTo: string,
+            createdAt: Date,
+            updatedAt: Date,
+        },
+        { ... },
+        { ... },
+    ]
+
 ### **Get Campfire**
 
 [GET] https://staging-campfire-api.azurewebsites.net/api/campfires/:id
@@ -252,6 +312,68 @@ Object
         openTo: string,
         _id: string,
         members: [],
+        createdAt: Date,
+        updatedAt: Date,
+    }
+
+### **Add Campfire with Members**
+
+[POST] https://staging-campfire-api.azurewebsites.net/api/campfires
+
+#### *Request*
+
+**Request Headers**
+
+| Name | Value |
+| --- | --- |
+| Content-Type | application/json |
+
+**Request Body**
+
+Object
+
+| Name | Type | Required |
+| --- | --- | --- |
+| topic | string | true |
+| altTopic | string | true |
+| duration | string | optional |
+| description | string | true |
+| creator | Object{ **uid**: string, **profileUrl**: string, **name**: string } | true |
+| members | Array{ **profileUrl**: string, **name**: string, **uid**: string } | true |
+| hidden | boolean | optional |
+| scheduleToStart | Date | optional |
+| openTo | string | Everyone = default, Invite Only |
+
+#### *Response*
+
+**201: Created**
+
+    {   
+        topic: string,
+        altTopic: string,
+        duration: string,
+        description: string,
+        creator: {
+            uid: string,
+            profileUrl: string,
+            name: string,
+        },
+        hidden: boolean,
+        scheduleToStart: Date,
+        openTo: string,
+        _id: string,
+        members: [
+            {
+                uid: string,
+                profileUrl: string,
+                name: string,
+                status: string,
+                role: string,
+                campfire: string,
+            },
+            { ... },
+            { ... },
+        ],
         createdAt: Date,
         updatedAt: Date,
     }

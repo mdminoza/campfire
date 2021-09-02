@@ -2,6 +2,7 @@
 export default {
   // baseUrl: 'https://staging.godtribe.com/wp-json/api/v1/',
   campfireBaseUrl: 'https://staging-campfire-api.azurewebsites.net/api/',
+  // campfireBaseUrl: 'http://localhost:5000/api/',
   web: {
     dev: 'https://staging.godtribe.com/wp-json/api/v1/',
     prod: 'https://godtribe.com/wp-json/api/v1/',
@@ -13,6 +14,12 @@ export default {
   user: {
     subscribed: 'users/subscribed',
     current: 'users/current',
+    randomTestUser: 'user/random/test',
   },
-  campfire: 'campfires/',
+  campfire: {
+    main: 'campfires/',
+    owned: 'campfires/owned/',
+    public: 'campfires/public/',
+    private: 'campfires/private/',
+  },
 };

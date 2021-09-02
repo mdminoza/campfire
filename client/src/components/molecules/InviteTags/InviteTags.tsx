@@ -19,7 +19,7 @@ function DebounceSelect({ debounceTimeout = 800, ...props }) {
   const [options, setOptions] = React.useState([]);
   const fetchRef = React.useRef(0);
 
-  const { fetchOptions, onDropdownVisibleChange } = props;
+  const { fetchoptions, onDropdownVisibleChange } = props;
 
   const debounceFetcher = React.useMemo(() => {
     const loadOptions = (value: any) => {
@@ -27,7 +27,7 @@ function DebounceSelect({ debounceTimeout = 800, ...props }) {
       const fetchId = fetchRef.current;
       setOptions([]);
       setFetching(true);
-      fetchOptions(value).then((newOptions: any) => {
+      fetchoptions(value).then((newOptions: any) => {
         if (fetchId !== fetchRef.current) {
           // for fetch callback order
           return;
@@ -39,7 +39,7 @@ function DebounceSelect({ debounceTimeout = 800, ...props }) {
     };
 
     return debounce(loadOptions, debounceTimeout);
-  }, [debounceTimeout, setOptions, fetchOptions]);
+  }, [debounceTimeout, setOptions, fetchoptions]);
   return (
     <Select
       // labelInValue
@@ -104,7 +104,7 @@ const InviteTags = ({
             mode="multiple"
             value={value}
             placeholder="Select users"
-            fetchOptions={fetchUserLists}
+            fetchoptions={fetchUserLists}
             onChange={(newValue: any) => {
               setValue(newValue);
             }}
