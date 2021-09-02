@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { ObjectId } from 'mongodb';
 // import jwt from 'jsonwebtoken';
 import Campfire from '../models/campfire.js';
 
@@ -85,8 +86,29 @@ export const fetchCampfireById = async (req, res, next) => {
 };
 
 export const createCampfire = async (req, res, next) => {
-    const campfire = req.body;
-    const newCampfire = new Campfire(campfire);
+    const { members, ...campfire } = req.body;
+    const _id = new ObjectId();
+    let campfireParams = {};
+
+    if (members && members.length > 0) {
+        const filteredMember = members.map(val => ({
+            ...val,
+            campfire: _id,   
+        }));
+
+        campfireParams = {
+            ...campfire,
+            members: filteredMember,
+            _id,
+        };
+    } else {
+        campfireParams = {
+            ...campfire,
+            _id,
+        };
+    }
+
+    const newCampfire = new Campfire(campfireParams);
     try {
         await newCampfire.save();
         res.status(201).json(newCampfire);
