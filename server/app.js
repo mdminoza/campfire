@@ -15,8 +15,8 @@ const app = express();
 const corsOptions = {
 	origin: ['http://localhost:3000', 'https://campfire.godtribe.com'],
 	methods: ['GET', 'POST', 'PATCH', 'DELETE'],
-	// allowedHeaders: ['Content-Type'],
-	credentials: true,
+	allowedHeaders: ['Content-Type'],
+	// credentials: true,
 };
 
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
