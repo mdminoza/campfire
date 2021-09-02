@@ -27,6 +27,30 @@ export const fetchPublicCampfires = async (req, res, next) => {
         const campfires = await Campfire.find(
             {
                 'creator.uid': { $ne: cid },
+                openTo: 'Everyone',
+                createdAt: { 
+                    $lt: new Date(), 
+                    $gte: new Date(new Date().setDate(new Date().getDate()-1)),
+                },
+                ...filterTopic,
+            },
+            { members: 0 },
+        );
+        res.status(200).json(campfires);
+    } catch (error) {
+        error.status = 400;
+        next(error);
+    }
+}
+
+export const fetchPrivateCampfires = async (req, res, next) => {
+    const { cid, tpc } = req.query;
+    const filterTopic = tpc ? { topic: { $regex: '^' + tpc, $options: 'i' } } : {}; 
+    try {
+        const campfires = await Campfire.find(
+            {
+                'creator.uid': { $ne: cid },
+                openTo: 'Invite Only',
                 createdAt: { 
                     $lt: new Date(), 
                     $gte: new Date(new Date().setDate(new Date().getDate()-1)),
