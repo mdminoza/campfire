@@ -139,7 +139,7 @@ const MainTemplate = (): React.ReactElement => {
   );
 
   const { refetch: refetchSearchPublicCampfires } = useQuery(
-    'public-search-campfires',
+    'public-search-public-campfires',
     () => searchCampfires(currentUser?.id || '', searchValue, 'public'),
     {
       onSuccess: (res) => {
@@ -151,7 +151,7 @@ const MainTemplate = (): React.ReactElement => {
   );
 
   const { refetch: refetchSearchPrivateCamfires } = useQuery(
-    'public-search-campfires',
+    'public-search-private-campfires',
     () => searchCampfires(currentUser?.id || '', searchValue, 'private'),
     {
       onSuccess: (res) => {
@@ -163,7 +163,7 @@ const MainTemplate = (): React.ReactElement => {
   );
 
   const { refetch: refetchSearchOwnedCampfires } = useQuery(
-    'public-search-campfires',
+    'public-search-owned-campfires',
     () => searchCampfires(currentUser?.id || '', searchValue, 'owned'),
     {
       onSuccess: (res) => {
