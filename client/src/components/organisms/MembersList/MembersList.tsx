@@ -16,7 +16,7 @@ type Props = {
 
 const MembersList = ({ data, selectedId, onClick, size }: Props) => (
   <Container>
-    <Row gutter={[24, 32]} justify="center" style={{ maxWidth: 1100 }}>
+    <Row gutter={[24, 32]} justify="center">
       {data && data.length > 0 ? (
         data.map((_data: MemberItemParams) => (
           <ItemCol>
