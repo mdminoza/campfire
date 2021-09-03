@@ -8,7 +8,7 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   (config) => {
-    config.timeout = 5000;
+    // config.timeout = 5000;
     // const token = localStorage.getItem('access_token');
     // if (token) {
     //   config.headers.Authorization = `JWT ${token}`;
@@ -18,6 +18,8 @@ instance.interceptors.request.use(
     config.headers.Authorization = null;
     config.headers['Content-Type'] = 'application/json';
     config.headers.accept = 'application/json';
+    config.headers['Access-Control-Allow-Origin'] = '*';
+    config.headers['Access-Control-Allow-Methods'] = 'GET,POST,DELETE,PATCH';
     return config;
   },
   (error: any) => Promise.reject(error),

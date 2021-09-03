@@ -168,6 +168,9 @@ const MainTemplate = (): React.ReactElement => {
             setCampfireToggled(false);
           }
         },
+        onError: (err) => {
+          console.log(err, 'err');
+        },
       });
     },
     [ownedCampfires],
