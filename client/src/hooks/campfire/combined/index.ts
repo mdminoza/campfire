@@ -66,11 +66,35 @@ export const useCampfireAction: CampfireHooks['useCampfireAction'] = () => {
     }
   }, []);
 
+  const searchCampfires = useCallback(
+    async (cid: string, tpc: string, type: 'public' | 'private' | 'owned') => {
+      try {
+        const url =
+          // eslint-disable-next-line no-nested-ternary
+          type === 'owned'
+            ? `${urls.campfire.owned}`
+            : type === 'private'
+              ? `${urls.campfire.private}`
+              : `${urls.campfire.public}`;
+
+        const res = await axios.get(`${url}?cid=${cid}&tpc=${tpc}`);
+        if (res && res?.status === 200) {
+          return res.data;
+        }
+        return null;
+      } catch (e: any) {
+        throw new Error(e);
+      }
+    },
+    [],
+  );
+
   return {
     fetchCampfires,
     fetchOwnedCampfires,
     fetchPublicCampfires,
     fetchPrivateCampfires,
     addCampfire,
+    searchCampfires,
   };
 };

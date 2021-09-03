@@ -110,6 +110,7 @@ const MainTemplate = (): React.ReactElement => {
     fetchPublicCampfires,
     fetchPrivateCampfires,
     addCampfire,
+    searchCampfires,
   } = useCampfireAction();
   const { currentUser } = useUserState();
 
@@ -132,6 +133,42 @@ const MainTemplate = (): React.ReactElement => {
       onSuccess: (res) => {
         if (res && res.length > 0) {
           setPublicCampfires(res);
+        }
+      },
+    },
+  );
+
+  const { refetch: refetchSearchPublicCampfires } = useQuery(
+    'search-public-campfires',
+    () => searchCampfires(currentUser?.id || '', searchValue, 'public'),
+    {
+      onSuccess: (res) => {
+        if (res) {
+          setPublicCampfires(res);
+        }
+      },
+    },
+  );
+
+  const { refetch: refetchSearchPrivateCamfires } = useQuery(
+    'search-private-campfires',
+    () => searchCampfires(currentUser?.id || '', searchValue, 'private'),
+    {
+      onSuccess: (res) => {
+        if (res) {
+          setPrivateCampfires(res);
+        }
+      },
+    },
+  );
+
+  const { refetch: refetchSearchOwnedCampfires } = useQuery(
+    'search-owned-campfires',
+    () => searchCampfires(currentUser?.id || '', searchValue, 'owned'),
+    {
+      onSuccess: (res) => {
+        if (res) {
+          setOwnedCampfires(res);
         }
       },
     },
@@ -256,17 +293,36 @@ const MainTemplate = (): React.ReactElement => {
   }, [screens]);
 
   useEffect(() => {
-    if (activeTab === 'publicCampfire') {
-      refetchPublicCampfires();
+    if (!searchValue) {
+      if (activeTab === 'publicCampfire') {
+        refetchPublicCampfires();
+      }
+      if (activeTab === 'ownedCampfire') {
+        refetchOwnedCampfires();
+      }
+      if (activeTab === 'privateCampfire') {
+        refetchPrivateCampfires();
+      }
     }
-    if (activeTab === 'ownedCampfire') {
-      refetchOwnedCampfires();
-    }
-    if (activeTab === 'privateCampfire') {
-      refetchPrivateCampfires();
-    }
+
     console.log(activeTab, 'activeTab');
-  }, [activeTab]);
+  }, [activeTab, searchValue]);
+
+  let timeout: any;
+
+  useEffect(() => {
+    if (searchValue)
+      timeout = setTimeout(() => {
+        if (activeTab === 'publicCampfire') {
+          refetchSearchPublicCampfires();
+        } else if (activeTab === 'privateCampfire') {
+          refetchSearchPrivateCamfires();
+        } else if (activeTab === 'ownedCampfire') {
+          refetchSearchOwnedCampfires();
+        }
+      }, 850);
+    return () => clearTimeout(timeout);
+  }, [searchValue]);
 
   const campfiresMock: {
     publicCampfire: { data: Campfire[]; lastId: undefined };
