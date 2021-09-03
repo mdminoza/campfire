@@ -12,6 +12,11 @@ export type CampfireHooks = {
     fetchOwnedCampfires: (cid: string) => Promise<[] | undefined>;
     fetchPublicCampfires: (cid: string) => Promise<[] | undefined>;
     fetchPrivateCampfires: (cid: string) => Promise<[] | undefined>;
+    searchCampfires: (
+      cid: string,
+      tpc: string,
+      type: 'public' | 'private' | 'owned',
+    ) => Promise<[] | undefined>;
   };
 };
 
