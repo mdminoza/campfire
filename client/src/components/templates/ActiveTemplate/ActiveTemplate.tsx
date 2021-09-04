@@ -122,8 +122,8 @@ const ActiveTemplate = () => {
     },
   ];
 
-  const members = [...DUMMY_MEMBERS].splice(0, 9);
-  const speakers = [...DUMMY_MEMBERS].splice(0, 1);
+  const members = [...DUMMY_MEMBERS].splice(0, 2);
+  const speakers = [...DUMMY_MEMBERS].splice(0, 2);
   const id = '';
 
   useEffect(() => {

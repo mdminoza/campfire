@@ -24,6 +24,7 @@ const colors = {
     grayEE: '#EEEEEE',
     grayCE: '#CECECE',
     gray29: '#292929',
+    gray2C: '#2C2C2C',
   },
   red: {
     light: '#C92E19',
@@ -31,6 +32,7 @@ const colors = {
   green: {
     primary: '#008a00',
   },
+  orange: '#E75A0B',
 };
 
 const fonts = {
