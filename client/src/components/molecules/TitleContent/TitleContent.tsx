@@ -40,7 +40,7 @@ const Container = styled.div`
   position: relative;
 `;
 
-const Title = styled.span`
+export const Title = styled.span`
   font-family: ${theme.fonts.fontFamily};
   font-style: normal;
   font-weight: bold;
@@ -55,9 +55,10 @@ const Title = styled.span`
     padding?: string | number;
   }) => props?.padding || 0};
   z-index: 1;
+  text-align: center;
 `;
 
-const Description = styled.p`
+export const Description = styled.p`
   font-family: ${theme.fonts.fontFamily};
   font-style: normal;
   font-size: ${(props: { width?: string; fontSize?: string }) =>
