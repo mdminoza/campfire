@@ -11,6 +11,18 @@ const tempToken =
   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvc3RhZ2luZy5nb2R0cmliZS5jb20iLCJpYXQiOjE2MzAzMTcwNTQsIm5iZiI6MTYzMDMxNzA1NCwiZXhwIjoxNjMwOTIxODU0LCJkYXRhIjp7InVzZXIiOnsiaWQiOiI4MiJ9fX0.nv51JGoz6VT3BSXX1XcyT7NiQhdEaGxPl8kZIo3krqY';
 
 export const useUserAction: UserHooks['useUserAction'] = () => {
+  const loginUser = useCallback(async (username: string, password: string) => {
+    try {
+      const res = await axios.post(urls.web.jwt, {
+        username,
+        password,
+      });
+      return res.data;
+    } catch (e: any) {
+      throw new Error(e);
+    }
+  }, []);
+
   const fetchCurrentUser = useCallback(async () => {
     try {
       const res = await axios.get(userUrl, {
@@ -32,6 +44,7 @@ export const useUserAction: UserHooks['useUserAction'] = () => {
   }, []);
 
   return {
+    loginUser,
     fetchCurrentUser,
     fetchRandomTestUser,
   };

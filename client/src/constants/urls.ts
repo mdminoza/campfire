@@ -6,6 +6,7 @@ export default {
   web: {
     dev: 'https://staging.godtribe.com/wp-json/api/v1/',
     prod: 'https://godtribe.com/wp-json/api/v1/',
+    jwt: 'https://staging.godtribe.com/wp-json/jwt-auth/v1/token',
   },
   native: {
     dev: 'https://staging.godtribe.com/wp-json/wp/v2/',

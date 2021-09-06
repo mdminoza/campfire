@@ -1,11 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
+import { useMutation } from 'react-query';
+import { Spin } from 'antd';
+import { Formik } from 'formik';
 import { theme } from '../../../constants';
 import { FireOutline } from '../../atoms/Icons';
 import { TextInput } from '../../atoms/TextInput';
 import { Button } from '../../atoms/Button';
 import { Title, Description } from '../../molecules/TitleContent/TitleContent';
+
+import { useUserAction } from '../../../hooks/user';
+import { LoginSchema } from './validation';
 
 const Container = styled.div`
   background: ${theme.colors.gray.gray2C};
@@ -45,6 +51,16 @@ const ButtonWrapper = styled.div`
   justify-content: center;
 `;
 
+const ErrorLabel = styled.span`
+  font-family: Open Sans;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: #ff7373;
+  height: 19px;
+`;
+
 const LoginButtonStyle = {
   background: theme.colors.orange,
   width: 150,
@@ -54,33 +70,72 @@ const LoginButtonStyle = {
 };
 
 const LoginTemplate = (): React.ReactElement => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  // const {};
+  const { loginUser } = useUserAction();
+
+  const { mutate: refetchLoginUser, isLoading } = useMutation(
+    (user: { username: string; password: string }) =>
+      loginUser(user.username, user.password),
+    {
+      onSuccess: (res) => {
+        console.log('Response: ', res);
+      },
+      onError: (error) => {
+        console.log('Error: ', error);
+      },
+    },
+  );
 
   return (
     <Container>
-      <Wrapper>
-        <TitleContainer>
-          <FireOutline width={75} height={106} />
-          <Title>CAMPFIRES</Title>
-          <Description width="100%" fontSize="0.9rem">
-            AUDIO ONLY MEETING ROOMS
-          </Description>
-        </TitleContainer>
-        <InputWrapper>
-          <InputTitle>Username</InputTitle>
-          <TextInput onChange={(val) => setUsername(val)} value={username} />
-        </InputWrapper>
-        <InputWrapper>
-          <InputTitle>Password</InputTitle>
-          <TextInput onChange={(val) => setPassword(val)} value={password} />
-        </InputWrapper>
-        <ButtonWrapper>
-          <Button onClick={() => console.log('Login')} style={LoginButtonStyle}>
-            Login
-          </Button>
-        </ButtonWrapper>
-      </Wrapper>
+      <Formik
+        initialValues={{ username: '', password: '' }}
+        validationSchema={LoginSchema}
+        onSubmit={(values) => {
+          console.log('onSumbit: ', values);
+          refetchLoginUser({
+            username: values.username,
+            password: values.password,
+          });
+        }}>
+        {({ values, errors, handleChange, handleSubmit }) => (
+          <Wrapper>
+            <TitleContainer>
+              <FireOutline width={75} height={106} />
+              <Title>CAMPFIRES</Title>
+              <Description width="100%" fontSize="0.9rem">
+                AUDIO ONLY MEETING ROOMS
+              </Description>
+            </TitleContainer>
+            <InputWrapper>
+              <InputTitle>Username</InputTitle>
+              <TextInput
+                onChange={handleChange('username')}
+                value={values.username}
+              />
+              <ErrorLabel>{errors.username}</ErrorLabel>
+            </InputWrapper>
+            <InputWrapper>
+              <InputTitle>Password</InputTitle>
+              <TextInput
+                onChange={handleChange('password')}
+                value={values.password}
+                type="password"
+              />
+              <ErrorLabel>{errors.password}</ErrorLabel>
+            </InputWrapper>
+            <ButtonWrapper>
+              {!isLoading ? (
+                <Button onClick={handleSubmit} style={LoginButtonStyle}>
+                  Login
+                </Button>
+              ) : (
+                <Spin />
+              )}
+            </ButtonWrapper>
+          </Wrapper>
+        )}
+      </Formik>
     </Container>
   );
 };
