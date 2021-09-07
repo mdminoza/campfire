@@ -28,7 +28,8 @@ const Navigator = () => {
   const { setCurrentUser, setIsLoading } = useUserState();
   const { fetchRandomTestUser } = useUserAction();
 
-  const token = localStorage.getItem('currentId');
+  // TODO: temp
+  const token = localStorage.getItem('access-token');
 
   const { refetch: fetchCurrentUser, isLoading } = useQuery(
     'current-user',
@@ -43,6 +44,11 @@ const Navigator = () => {
       },
     },
   );
+
+  // TODO: Temp
+  useEffect(() => {
+    localStorage.setItem('access-token', 'qwertyu32121');
+  }, []);
 
   useEffect(() => {
     if (token) {
