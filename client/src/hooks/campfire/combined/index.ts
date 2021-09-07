@@ -2,7 +2,10 @@ import { useCallback } from 'react';
 import { CampfireHooks } from '../index';
 import axios from '../../../config/axios';
 import urls from '../../../constants/urls';
-import { CampfireParams } from '../../../../common/domain/entities/campfire';
+import {
+  CampfireParams,
+  Campfire,
+} from '../../../../common/domain/entities/campfire';
 // import { TodoParams } from '../../../../common/domain/entities/todo';
 
 export const useCampfireAction: CampfireHooks['useCampfireAction'] = () => {
@@ -34,7 +37,20 @@ export const useCampfireAction: CampfireHooks['useCampfireAction'] = () => {
     try {
       const res = await axios.get(`${urls.campfire.public}?cid=${cid}`);
       if (res && res?.status === 200) {
-        return res.data;
+        const result: any = await Promise.all(
+          res.data.map(async (value: Campfire) => {
+            const member = await axios.post(`${urls.member.get}`, {
+              uid: cid,
+              // eslint-disable-next-line no-underscore-dangle
+              id: value._id,
+            });
+            return {
+              ...value,
+              status: member.data.status || 'uninvited',
+            };
+          }),
+        );
+        return result;
       }
       return [];
     } catch (e: any) {
@@ -46,7 +62,20 @@ export const useCampfireAction: CampfireHooks['useCampfireAction'] = () => {
     try {
       const res = await axios.get(`${urls.campfire.private}?cid=${cid}`);
       if (res && res?.status === 200) {
-        return res.data;
+        const result: any = await Promise.all(
+          res.data.map(async (value: Campfire) => {
+            const member = await axios.post(`${urls.member.get}`, {
+              uid: cid,
+              // eslint-disable-next-line no-underscore-dangle
+              id: value._id,
+            });
+            return {
+              ...value,
+              status: member.data.status || undefined,
+            };
+          }),
+        );
+        return result;
       }
       return [];
     } catch (e: any) {
@@ -74,12 +103,25 @@ export const useCampfireAction: CampfireHooks['useCampfireAction'] = () => {
           type === 'owned'
             ? `${urls.campfire.owned}`
             : type === 'private'
-              ? `${urls.campfire.private}`
-              : `${urls.campfire.public}`;
+            ? `${urls.campfire.private}`
+            : `${urls.campfire.public}`;
 
         const res = await axios.get(`${url}?cid=${cid}&tpc=${tpc}`);
         if (res && res?.status === 200) {
-          return res.data;
+          const result: any = await Promise.all(
+            res.data.map(async (value: Campfire) => {
+              const member = await axios.post(`${urls.member.get}`, {
+                uid: cid,
+                // eslint-disable-next-line no-underscore-dangle
+                id: value._id,
+              });
+              return {
+                ...value,
+                status: member.data.status || 'uninvited',
+              };
+            }),
+          );
+          return result;
         }
         return null;
       } catch (e: any) {

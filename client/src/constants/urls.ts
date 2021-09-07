@@ -23,4 +23,8 @@ export default {
     public: 'campfires/public/',
     private: 'campfires/private/',
   },
+  member: {
+    add: 'member/push',
+    get: 'member/get',
+  },
 };

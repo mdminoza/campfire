@@ -226,9 +226,9 @@ export const fetchCampfireMember = async (req, res, next) => {
             },
             { '_id': 0, 'members': { '$elemMatch': { uid } } },
         );
-        if (data === null) throw new Error('Campfire or user id does not exist.');
+        if (data === null) return res.status(200).json({ message: 'Campfire or user id does not exist.' });
         const filter = data.members[0];
-        res.status(200).json(filter);
+        return res.status(200).json(filter);
     } catch (error) {
         next(error);
     }

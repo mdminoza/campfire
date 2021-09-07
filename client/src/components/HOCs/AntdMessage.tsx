@@ -5,7 +5,7 @@ export const AntdMessage = (
   content: string,
 ) => {
   message[type]({
-    content: content,
+    content,
     style: {
       marginTop: '15vh',
     },

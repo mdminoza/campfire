@@ -1,6 +1,6 @@
 export const arrayToObject = (
   arr: Object[],
-  key = 'id',
+  key = '_id',
   mapFunction: Function = (obj: Object): Object => obj,
 ): Object =>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

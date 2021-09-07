@@ -8,10 +8,11 @@ import reportWebVitals from './reportWebVitals';
 import RootNavigator from './navigators/root/RootNavigator';
 
 import { CampfireHooksContext } from './hooks/campfire';
+import { MemberHooksContext } from './hooks/member';
 // import { UserHooksContext } from './hooks/user';
 import UserProvider from './hooks/user/provider';
 import * as combinedCampfireHooks from './hooks/campfire/combined';
-import * as combinedUserHooks from './hooks/user/combined';
+import * as combinedMemberHooks from './hooks/member/combined';
 
 const queryClient = new QueryClient();
 
@@ -20,7 +21,9 @@ ReactDOM.render(
     <QueryClientProvider client={queryClient}>
       <UserProvider>
         <CampfireHooksContext.Provider value={combinedCampfireHooks}>
-          <RootNavigator />
+          <MemberHooksContext.Provider value={combinedMemberHooks}>
+            <RootNavigator />
+          </MemberHooksContext.Provider>
         </CampfireHooksContext.Provider>
       </UserProvider>
     </QueryClientProvider>

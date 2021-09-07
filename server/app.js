@@ -12,10 +12,10 @@ import './dbConn.js';
 
 const app = express();
 
-// const allowedOrigins = ['http://localhost:3000', 'https://campfire.godtribe.com', 'http://staging.godtribe.com'];
+const allowedOrigins = ['http://localhost:3000', 'https://campfire.godtribe.com', 'http://staging.godtribe.com'];
 
 const corsOptions = {
-	origin: 'https://campfire.godtribe.com',
+	origin: allowedOrigins,
 	methods: ['GET', 'POST', 'PATCH', 'DELETE'],
 	allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
 	// credentials: true,

@@ -1,13 +1,13 @@
-import { BaseModel } from './baseModel';
-
 export type MemberParams = {
   profileUrl?: string;
   name?: string;
   email?: string;
-  status: 'pending' | 'invited';
-  role: 'speaker' | 'moderator' | 'audience';
+  status?: 'pending' | 'invited';
+  role?: 'speaker' | 'moderator' | 'audience';
   isRaising?: boolean;
   isMuted?: boolean;
+  uid: string;
+  campfire?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 };
-
-export type Member = MemberParams & BaseModel;

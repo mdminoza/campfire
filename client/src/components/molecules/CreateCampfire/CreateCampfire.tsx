@@ -157,17 +157,17 @@ const CreateCampfire = ({
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleClick = (e: any) => {
-    if (!scheduleWrapperRef?.current.contains(e.target)) {
+    if (!scheduleWrapperRef?.current?.contains(e.target)) {
       setShowPicker(false);
     }
 
-    if (!inviteWrapperRef?.current.contains(e.target)) {
+    if (!inviteWrapperRef?.current?.contains(e.target)) {
       if (!dropdownVisible) {
         onClickShowInvites(false);
       }
     }
 
-    if (!durationWrapperRef?.current.contains(e.target)) {
+    if (!durationWrapperRef?.current?.contains(e.target)) {
       setDurationPicker(false);
     }
   };

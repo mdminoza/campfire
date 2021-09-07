@@ -3,12 +3,15 @@
 /* eslint-disable no-nested-ternary */
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Layout, Row, Col, Spin, Empty, Divider, Grid } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useQuery, useMutation } from 'react-query';
 
 import { theme } from '../../../constants';
+import { arrayToObject } from '../../../utils/helpers/common';
 import { TextInput } from '../../atoms/TextInput';
 import { Search } from '../../atoms/Icons';
+import { Loader } from '../../atoms/Loader';
 import { TitleContent } from '../../molecules/TitleContent';
 import { CreateCampfireForm } from '../../organisms/CreateCampfireForm';
 import { CampfireTab } from '../../organisms/CampfireTab';
@@ -18,9 +21,11 @@ import {
   Campfire,
   CampfireParams,
 } from '../../../../common/domain/entities/campfire';
+import { MemberParams } from '../../../../common/domain/entities/member';
 
 import { useCampfireAction } from '../../../hooks/campfire';
 import { useUserState } from '../../../hooks/user';
+import { useMemberAction } from '../../../hooks/member';
 
 import {
   SponsoredContainer,
@@ -89,6 +94,10 @@ const LoaderWrapper = styled.div`
   align-items: center;
   justify-content: center;
   height: 300px;
+
+  .ant-spin-dot-item {
+    background-color: #e75a0b;
+  }
 `;
 
 const MainTemplate = (): React.ReactElement => {
@@ -100,10 +109,17 @@ const MainTemplate = (): React.ReactElement => {
   const [isToggled, setCampfireToggled] = useState<boolean>(false);
   const [isDrawerVisible, setDrawerVisible] = useState<boolean>(false);
   const [showInvites, setShowInvites] = useState(false);
-  const isCampfiresLoading = false;
-  const [privateCampfires, setPrivateCampfires] = useState<Campfire[]>([]);
-  const [publicCampfires, setPublicCampfires] = useState<Campfire[]>([]);
-  const [ownedCampfires, setOwnedCampfires] = useState<Campfire[]>([]);
+  const [privateCampfires, setPrivateCampfires] = useState<{
+    [_id: string]: Campfire;
+  }>({});
+  const [publicCampfires, setPublicCampfires] = useState<{
+    [_id: string]: Campfire;
+  }>({});
+  const [ownedCampfires, setOwnedCampfires] = useState<{
+    [_id: string]: Campfire;
+  }>({});
+
+  const navigate = useNavigate();
 
   const {
     fetchOwnedCampfires,
@@ -112,77 +128,104 @@ const MainTemplate = (): React.ReactElement => {
     addCampfire,
     searchCampfires,
   } = useCampfireAction();
-  const { currentUser } = useUserState();
+  const { addMember } = useMemberAction();
+  const { currentUser, isLoading } = useUserState();
 
-  const { refetch: refetchOwnedCampfires } = useQuery(
-    'campfires',
-    () => fetchOwnedCampfires(currentUser?.id || ''),
-    {
-      onSuccess: (res) => {
-        if (res && res.length > 0) {
-          setOwnedCampfires(res);
-        }
-      },
+  const {
+    refetch: refetchOwnedCampfires,
+    isLoading: isOwnedCampfiresLoading,
+  } = useQuery('campfires', () => fetchOwnedCampfires(currentUser?.id || ''), {
+    onSuccess: (res) => {
+      if (res && res.length > 0) {
+        const filtered = arrayToObject(res);
+        setOwnedCampfires(filtered as { [_id: string]: Campfire });
+      }
     },
-  );
+    enabled: false,
+  });
 
-  const { refetch: refetchPublicCampfires } = useQuery(
-    'public-campfires',
+  const {
+    refetch: refetchPublicCampfires,
+    isLoading: isPublicCampfiresLoading,
+  } = useQuery(
+    `public-campfires`,
     () => fetchPublicCampfires(currentUser?.id || ''),
     {
       onSuccess: (res) => {
         if (res && res.length > 0) {
-          setPublicCampfires(res);
+          const filtered = arrayToObject(res);
+          setPublicCampfires(filtered as { [_id: string]: Campfire });
         }
       },
+      enabled: false,
     },
   );
 
-  const { refetch: refetchSearchPublicCampfires } = useQuery(
+  const {
+    refetch: refetchSearchPublicCampfires,
+    isLoading: isSearchPublicCampfiresLoading,
+  } = useQuery(
     'search-public-campfires',
     () => searchCampfires(currentUser?.id || '', searchValue, 'public'),
     {
       onSuccess: (res) => {
         if (res) {
-          setPublicCampfires(res);
+          const filtered = arrayToObject(res);
+          setPublicCampfires(filtered as { [_id: string]: Campfire });
         }
       },
+      enabled: false,
     },
   );
 
-  const { refetch: refetchSearchPrivateCamfires } = useQuery(
+  const {
+    refetch: refetchSearchPrivateCamfires,
+    isLoading: isSearchPrivateCampfiresLoading,
+  } = useQuery(
     'search-private-campfires',
     () => searchCampfires(currentUser?.id || '', searchValue, 'private'),
     {
       onSuccess: (res) => {
         if (res) {
-          setPrivateCampfires(res);
+          const filtered = arrayToObject(res);
+          setPrivateCampfires(filtered as { [_id: string]: Campfire });
         }
       },
+      enabled: false,
     },
   );
 
-  const { refetch: refetchSearchOwnedCampfires } = useQuery(
+  const {
+    refetch: refetchSearchOwnedCampfires,
+    isLoading: isSearchOwnedCampfiresLoading,
+  } = useQuery(
     'search-owned-campfires',
     () => searchCampfires(currentUser?.id || '', searchValue, 'owned'),
     {
       onSuccess: (res) => {
         if (res) {
-          setOwnedCampfires(res);
+          const filtered = arrayToObject(res);
+          setOwnedCampfires(filtered as { [_id: string]: Campfire });
         }
       },
+      enabled: false,
     },
   );
 
-  const { refetch: refetchPrivateCampfires } = useQuery(
+  const {
+    refetch: refetchPrivateCampfires,
+    isLoading: isPrivateCampfiresLoading,
+  } = useQuery(
     'private-campfires',
     () => fetchPrivateCampfires(currentUser?.id || ''),
     {
       onSuccess: (res) => {
         if (res && res.length > 0) {
-          setPrivateCampfires(res);
+          const filtered = arrayToObject(res);
+          setPrivateCampfires(filtered as { [_id: string]: Campfire });
         }
       },
+      enabled: false,
     },
   );
 
@@ -191,6 +234,32 @@ const MainTemplate = (): React.ReactElement => {
     isLoading: isAddingCampfire,
     isSuccess: isCampfireAdded,
   } = useMutation((values: CampfireParams) => addCampfire(values));
+
+  const {
+    mutate: addMemberMutation,
+    isLoading: isAddingMember,
+    isSuccess: isMemberAdded,
+  } = useMutation(
+    (values: { member: MemberParams; id: string }) => addMember(values),
+    {
+      onSuccess: (data) => {
+        if (activeTab === 'publicCampfire') {
+          navigate(`/active/${data?.campfire}`);
+        }
+        if (activeTab === 'privateCampfire') {
+          if (data?.campfire) {
+            setPrivateCampfires({
+              ...privateCampfires,
+              [data.campfire]: {
+                ...privateCampfires?.[data.campfire],
+                status: data?.status,
+              },
+            });
+          }
+        }
+      },
+    },
+  );
 
   const handleToggle = useCallback(() => setCampfireToggled(!isToggled), [
     isToggled,
@@ -201,7 +270,12 @@ const MainTemplate = (): React.ReactElement => {
       addCampfireMutation(values, {
         onSuccess: (res: Campfire | undefined) => {
           if (res) {
-            setOwnedCampfires([...ownedCampfires, res]);
+            setOwnedCampfires({
+              ...ownedCampfires,
+              [res._id]: {
+                ...res,
+              },
+            });
             setCampfireToggled(false);
           }
         },
@@ -213,14 +287,33 @@ const MainTemplate = (): React.ReactElement => {
     [ownedCampfires],
   );
 
-  const handleOnClick = (
-    campfireId: string,
-    status: string,
-    type: 'public' | 'private' | 'owned',
-    isOwned?: boolean,
-  ) => {
-    console.log(campfireId, status, type, isOwned);
-  };
+  const handleOnClick = useCallback(
+    (
+      campfireId: string,
+      status: string,
+      type: 'public' | 'private' | 'owned',
+      isOwned?: boolean,
+    ) => {
+      const memberStatus =
+        type === 'public' && status === 'uninvited' ? 'invited' : 'pending';
+
+      if (isOwned || status === 'invited') {
+        navigate('/active/asds');
+      } else {
+        addMemberMutation({
+          member: {
+            profileUrl: currentUser?.profileUrl || '',
+            name: currentUser?.name || '',
+            uid: currentUser?.id || '',
+            campfire: campfireId,
+            status: memberStatus,
+          },
+          id: campfireId,
+        });
+      }
+    },
+    [publicCampfires],
+  );
 
   const handleSubmit = (values: any) => {
     const {
@@ -269,7 +362,7 @@ const MainTemplate = (): React.ReactElement => {
   };
 
   const handleClick = (e: any) => {
-    if (!CreateCampfireRef?.current.contains(e.target)) {
+    if (!CreateCampfireRef?.current?.contains(e.target)) {
       if (!showInvites) {
         setCampfireToggled(false);
       }
@@ -293,7 +386,7 @@ const MainTemplate = (): React.ReactElement => {
   }, [screens]);
 
   useEffect(() => {
-    if (!searchValue) {
+    if (!searchValue && !!currentUser?.id) {
       if (activeTab === 'publicCampfire') {
         refetchPublicCampfires();
       }
@@ -304,8 +397,6 @@ const MainTemplate = (): React.ReactElement => {
         refetchPrivateCampfires();
       }
     }
-
-    console.log(activeTab, 'activeTab');
   }, [activeTab, searchValue]);
 
   let timeout: any;
@@ -330,15 +421,15 @@ const MainTemplate = (): React.ReactElement => {
     ownedCampfire: { data: Campfire[]; lastId: undefined };
   } = {
     publicCampfire: {
-      data: publicCampfires,
+      data: [...(Object.values(publicCampfires || {}) as Campfire[])],
       lastId: undefined,
     },
     privateCampfire: {
-      data: privateCampfires,
+      data: [...(Object.values(privateCampfires || {}) as Campfire[])],
       lastId: undefined,
     },
     ownedCampfire: {
-      data: ownedCampfires,
+      data: [...(Object.values(ownedCampfires || {}) as Campfire[])],
       lastId: undefined,
     },
   };
@@ -470,7 +561,7 @@ const MainTemplate = (): React.ReactElement => {
                 title={campfire.topic}
                 desc={campfire.description}
                 date={campfire.scheduleToStart}
-                isStarted={new Date() > campfire.scheduleToStart}
+                isStarted={new Date() > new Date(campfire.scheduleToStart)}
                 isFeatured
                 status={campfire.status}
                 isLoading={campfire?.isLoading}
@@ -497,7 +588,7 @@ const MainTemplate = (): React.ReactElement => {
                 title={campfire.topic}
                 desc={campfire.description}
                 date={campfire.scheduleToStart}
-                isStarted={new Date() > campfire.scheduleToStart}
+                isStarted={new Date() > new Date(campfire.scheduleToStart)}
                 isFeatured={false}
                 status={campfire.status}
                 isLoading={campfire?.isLoading}
@@ -549,7 +640,7 @@ const MainTemplate = (): React.ReactElement => {
           </Col>
           <Col span={24}>
             <CardWrapper gutter={[16, 16]}>
-              {isCampfiresLoading ? (
+              {isPublicCampfiresLoading || isSearchPublicCampfiresLoading ? (
                 <Col span={24}>
                   <LoaderWrapper>
                     <Spin size="large" />
@@ -590,7 +681,7 @@ const MainTemplate = (): React.ReactElement => {
           </Col>
           <Col span={24}>
             <CardWrapper gutter={[16, 16]}>
-              {isCampfiresLoading ? (
+              {isPrivateCampfiresLoading || isSearchPrivateCampfiresLoading ? (
                 <Col span={24}>
                   <LoaderWrapper>
                     <Spin size="large" />
@@ -631,7 +722,7 @@ const MainTemplate = (): React.ReactElement => {
           </Col>
           <Col span={24}>
             <CardWrapper gutter={[16, 16]}>
-              {isCampfiresLoading ? (
+              {isOwnedCampfiresLoading || isSearchOwnedCampfiresLoading ? (
                 <Col span={24}>
                   <LoaderWrapper>
                     <Spin size="large" />
@@ -653,30 +744,47 @@ const MainTemplate = (): React.ReactElement => {
     },
   ];
 
+  const mainLoader = {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    zIndex: 1000,
+    backgroundColor: '#000000a6',
+  };
+
   return (
     <StyledLayout campfiretoggled={isToggled}>
-      <TitleWrapper campfiretoggled={isToggled}>
-        <TitleContent />
-      </TitleWrapper>
-      <Cover>
-        <Wrapper>
-          <CreateCampFireWrapper ref={CreateCampfireRef}>
-            <CreateCampfireForm
-              toggle={isToggled}
-              onPress={handleToggle}
-              onSubmit={handleSubmit}
-              onClickShowInvites={setShowInvites}
-              isInviteTagOpen={showInvites}
-              isLoading={isAddingCampfire}
-              didSucceed={isCampfireAdded}
-              // fetchUserList={fetchUserList}
-            />
-          </CreateCampFireWrapper>
-        </Wrapper>
-      </Cover>
-      <TabWrapper campfiretoggled={isToggled}>
-        <CampfireTab tabs={tabs} onChange={onTabChange} />
-      </TabWrapper>
+      {isLoading && !!currentUser?.id ? (
+        <Loader />
+      ) : (
+        <>
+          <TitleWrapper campfiretoggled={isToggled}>
+            <TitleContent />
+          </TitleWrapper>
+          <Cover>
+            <Wrapper>
+              <CreateCampFireWrapper ref={CreateCampfireRef}>
+                <CreateCampfireForm
+                  toggle={isToggled}
+                  onPress={handleToggle}
+                  onSubmit={handleSubmit}
+                  onClickShowInvites={setShowInvites}
+                  isInviteTagOpen={showInvites}
+                  isLoading={isAddingCampfire}
+                  didSucceed={isCampfireAdded}
+                  // fetchUserList={fetchUserList}
+                />
+              </CreateCampFireWrapper>
+            </Wrapper>
+          </Cover>
+          <TabWrapper campfiretoggled={isToggled}>
+            <CampfireTab tabs={tabs} onChange={onTabChange} />
+          </TabWrapper>
+        </>
+      )}
+      {isAddingMember && <Loader style={mainLoader} />}
     </StyledLayout>
   );
 };

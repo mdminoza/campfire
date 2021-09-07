@@ -90,7 +90,7 @@ const TopicCard = ({
         <BtnTitle>WAITING FOR APPROVAL</BtnTitle>
       </Button>
     ) : !isStarted && status === 'pending' ? (
-      <Button onClick={onClick} style={btnStylePreRegistered}>
+      <Button onClick={() => {}} style={btnStylePreRegistered}>
         <IconWrapper>
           {/* TODO: New Pre - RegisterFlow */}
           {/* {isFeatured && <Audio fill={'#ffffff'} />}
@@ -99,7 +99,7 @@ const TopicCard = ({
         </IconWrapper>
       </Button>
     ) : (
-      <Button onClick={onClick} style={btnStyleImInterested}>
+      <Button onClick={() => {}} style={btnStyleImInterested}>
         <IconWrapper>
           {/* {isFeatured && <Audio fill={'#ffffff'} />}
           {isFeatured && <Spacer />} */}

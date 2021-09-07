@@ -1,48 +1,34 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useQuery } from 'react-query';
-import { Col, Spin } from 'antd';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import styled from 'styled-components';
 
 import ErrorBoundary from '../../components/HOCs/ErrorBoundary';
+import { Loader } from '../../components/atoms/Loader';
 import { MainPage } from '../../components/pages/MainPage';
 import { ActivePage } from '../../components/pages/ActivePage';
 
 import { useUserState, useUserAction } from '../../hooks/user';
 
-const LoaderWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 300px;
-`;
-
-const LoadingScreen = () => (
-  <LoaderWrapper>
-    <Spin size="large" />
-  </LoaderWrapper>
-);
-
 const ProtectedRoutes = () => (
   <Routes>
-    <Route path="/*" element={<Navigate to="/main" />} />
-    <Route path="/main" element={<MainPage />} />
+    <Route path="/*" element={<Navigate to="/campfires" />} />
     <Route path="/active/:id" element={<ActivePage />} />
+    <Route path="/campfires" element={<MainPage />} />
   </Routes>
 );
 
 const UnprotectedRoutes = () => (
   <Routes>
     <Route path="/*" element={<Navigate to="/" />} />
-    <Route path="/" element={<LoadingScreen />} />
+    <Route path="/" element={<Loader />} />
   </Routes>
 );
 
 const Navigator = () => {
-  const { setCurrentUser, setIsLoading, currentUser } = useUserState();
+  const { setCurrentUser, setIsLoading } = useUserState();
   const { fetchRandomTestUser } = useUserAction();
 
-  const currentId = currentUser?.id;
+  const token = localStorage.getItem('currentId');
 
   const { refetch: fetchCurrentUser, isLoading } = useQuery(
     'current-user',
@@ -59,17 +45,26 @@ const Navigator = () => {
   );
 
   useEffect(() => {
-    fetchCurrentUser();
-  }, []);
+    if (token) {
+      fetchCurrentUser();
+    } else {
+      setCurrentUser(undefined);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
+
+  const isLoggedIn = !!token;
 
   useEffect(() => {
     setIsLoading(isLoading);
   }, [isLoading, setIsLoading]);
 
   return (
-    <ErrorBoundary fallback={(error) => <div>ERROR!!! {error?.message}</div>}>
+    <ErrorBoundary
+      fallback={(error: any) => <div>ERROR!!! {error?.message}</div>}>
       <BrowserRouter>
-        {currentId && !isLoading ? <ProtectedRoutes /> : <UnprotectedRoutes />}
+        {!isLoading &&
+          (isLoggedIn ? <ProtectedRoutes /> : <UnprotectedRoutes />)}
       </BrowserRouter>
     </ErrorBoundary>
   );
