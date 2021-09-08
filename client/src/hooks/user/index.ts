@@ -4,7 +4,7 @@ import { useClient } from '../client';
 export type UserHooks = {
   useUserAction(): {
     loginUser: (username: string, password: string) => Promise<{} | undefined>;
-    fetchCurrentUser: () => Promise<[] | undefined>;
+    fetchCurrentUser: (token: string) => Promise<[] | undefined>;
     fetchRandomTestUser: () => Promise<{
       id: string;
       name: string;
@@ -26,6 +26,8 @@ export type UserHooks = {
       name: string;
       email: string;
       profileUrl: string;
+      role: any;
+      username: string;
     }) => void;
     token: string;
     setToken: (val: string) => void;

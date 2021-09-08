@@ -6,10 +6,6 @@ import { UserHooks } from '../index';
 import urls from '../../../constants/urls';
 // import { TodoParams } from '../../../../common/domain/entities/todo';
 
-const userUrl = urls.native.dev + urls.user.current;
-const tempToken =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvc3RhZ2luZy5nb2R0cmliZS5jb20iLCJpYXQiOjE2MzAzMTcwNTQsIm5iZiI6MTYzMDMxNzA1NCwiZXhwIjoxNjMwOTIxODU0LCJkYXRhIjp7InVzZXIiOnsiaWQiOiI4MiJ9fX0.nv51JGoz6VT3BSXX1XcyT7NiQhdEaGxPl8kZIo3krqY';
-
 export const useUserAction: UserHooks['useUserAction'] = () => {
   const loginUser = useCallback(async (username: string, password: string) => {
     try {
@@ -23,10 +19,11 @@ export const useUserAction: UserHooks['useUserAction'] = () => {
     }
   }, []);
 
-  const fetchCurrentUser = useCallback(async () => {
+  const fetchCurrentUser = useCallback(async (token: string) => {
     try {
+      const userUrl = urls.web.dev + urls.user.current;
       const res = await axios.get(userUrl, {
-        headers: { Authorization: `Bearer ${tempToken}` },
+        headers: { Authorization: `Bearer ${token}` },
       });
       return res.data;
     } catch (e: any) {

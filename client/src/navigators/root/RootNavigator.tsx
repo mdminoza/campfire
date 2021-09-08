@@ -1,8 +1,10 @@
+/* eslint-disable no-nested-ternary */
 import React, { useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 import ErrorBoundary from '../../components/HOCs/ErrorBoundary';
+import { Loader } from '../../components/atoms/Loader';
 import { MainPage } from '../../components/pages/MainPage';
 import { ActivePage } from '../../components/pages/ActivePage';
 import { LoginPage } from '../../components/pages/LoginPage';
@@ -29,9 +31,9 @@ const Navigator = () => {
     setCurrentUser,
     setIsLoading,
     token: stateToken,
-    // setToken,
+    setToken,
   } = useUserState();
-  const { fetchRandomTestUser } = useUserAction();
+  const { fetchCurrentUser } = useUserAction();
 
   // TODO: use this to manually logout for testing purposes
   // localStorage.removeItem('access-token');
@@ -39,28 +41,55 @@ const Navigator = () => {
 
   const token = localStorage.getItem('access-token') || stateToken;
 
-  const { refetch: fetchCurrentUser, isLoading } = useQuery(
+  const { refetch: refetchCurrentUser, isLoading } = useQuery(
     'current-user',
-    () => fetchRandomTestUser(),
+    () => fetchCurrentUser(token),
     {
       enabled: false,
-      onSuccess: (response) => {
-        setCurrentUser(response);
+      onSuccess: (response: {
+        avatar: string;
+        firstName: string;
+        lastName: string;
+        role: [];
+        id: string;
+        email: string;
+        username: string;
+      }) => {
+        const {
+          id,
+          avatar,
+          firstName,
+          lastName,
+          role,
+          email,
+          username,
+        } = response;
+        const user = {
+          id,
+          name: `${firstName} ${lastName}`,
+          email,
+          profileUrl: avatar,
+          role,
+          username,
+        };
+        setCurrentUser(user);
       },
       onError: () => {
         setCurrentUser(undefined);
+        localStorage.removeItem('access-token');
+        setToken('');
       },
     },
   );
 
   useEffect(() => {
     if (token) {
-      fetchCurrentUser();
+      refetchCurrentUser();
     } else {
       setCurrentUser(undefined);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, [token, setCurrentUser, refetchCurrentUser]);
 
   const isLoggedIn = !!token;
 
@@ -72,8 +101,15 @@ const Navigator = () => {
     <ErrorBoundary
       fallback={(error: any) => <div>ERROR!!! {error?.message}</div>}>
       <BrowserRouter>
-        {!isLoading &&
-          (isLoggedIn ? <ProtectedRoutes /> : <UnprotectedRoutes />)}
+        {!isLoading ? (
+          isLoggedIn ? (
+            <ProtectedRoutes />
+          ) : (
+            <UnprotectedRoutes />
+          )
+        ) : (
+          <Loader />
+        )}
       </BrowserRouter>
     </ErrorBoundary>
   );
