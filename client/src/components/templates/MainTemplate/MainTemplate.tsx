@@ -9,6 +9,7 @@ import { useQuery, useMutation } from 'react-query';
 
 import { theme } from '../../../constants';
 import { arrayToObject } from '../../../utils/helpers/common';
+import { cipherText } from '../../../utils/helpers/crypto';
 import { TextInput } from '../../atoms/TextInput';
 import { Search } from '../../atoms/Icons';
 import { Loader } from '../../atoms/Loader';
@@ -107,7 +108,6 @@ const MainTemplate = (): React.ReactElement => {
   const screens = useBreakpoint();
   const [searchValue, setSearchValue] = useState('');
   const [isToggled, setCampfireToggled] = useState<boolean>(false);
-  const [isDrawerVisible, setDrawerVisible] = useState<boolean>(false);
   const [showInvites, setShowInvites] = useState(false);
   const [privateCampfires, setPrivateCampfires] = useState<{
     [_id: string]: Campfire;
@@ -244,7 +244,13 @@ const MainTemplate = (): React.ReactElement => {
     {
       onSuccess: (data) => {
         if (activeTab === 'publicCampfire') {
-          navigate(`/active/${data?.campfire}`);
+          const userDetail = {
+            name: currentUser?.name,
+            uid: currentUser?.id,
+            profileUrl: currentUser?.profileUrl,
+          };
+
+          navigate(`/active/${data?.campfire}?data=${cipherText(userDetail)}`);
         }
         if (activeTab === 'privateCampfire') {
           if (data?.campfire) {
@@ -294,11 +300,17 @@ const MainTemplate = (): React.ReactElement => {
       type: 'public' | 'private' | 'owned',
       isOwned?: boolean,
     ) => {
+      const userDetail = {
+        name: currentUser?.name,
+        uid: currentUser?.id,
+        profileUrl: currentUser?.profileUrl,
+      };
+
       const memberStatus =
         type === 'public' && status === 'uninvited' ? 'invited' : 'pending';
 
       if (isOwned || status === 'invited') {
-        navigate('/active/asds');
+        navigate(`/active/${campfireId}?data=${cipherText(userDetail)}`);
       } else {
         addMemberMutation({
           member: {
@@ -312,7 +324,7 @@ const MainTemplate = (): React.ReactElement => {
         });
       }
     },
-    [publicCampfires],
+    [publicCampfires, currentUser],
   );
 
   const handleSubmit = (values: any) => {
