@@ -3,7 +3,6 @@ import { useQuery } from 'react-query';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 import ErrorBoundary from '../../components/HOCs/ErrorBoundary';
-import { Loader } from '../../components/atoms/Loader';
 import { MainPage } from '../../components/pages/MainPage';
 import { ActivePage } from '../../components/pages/ActivePage';
 import { LoginPage } from '../../components/pages/LoginPage';
@@ -20,9 +19,8 @@ const ProtectedRoutes = () => (
 
 const UnprotectedRoutes = () => (
   <Routes>
-    <Route path="/*" element={<Navigate to="/login" />} />
-    <Route path="/" element={<Loader />} />
-    <Route path="/login" element={<LoginPage />} />
+    <Route path="/*" element={<Navigate to="/campfire-auth" />} />
+    <Route path="/campfire-auth" element={<LoginPage />} />
   </Routes>
 );
 
@@ -31,7 +29,7 @@ const Navigator = () => {
     setCurrentUser,
     setIsLoading,
     token: stateToken,
-    setToken,
+    // setToken,
   } = useUserState();
   const { fetchRandomTestUser } = useUserAction();
 
@@ -54,11 +52,6 @@ const Navigator = () => {
       },
     },
   );
-
-  // TODO: Temp
-  // useEffect(() => {
-  //   localStorage.setItem('access-token', 'qwertyu32121');
-  // }, []);
 
   useEffect(() => {
     if (token) {

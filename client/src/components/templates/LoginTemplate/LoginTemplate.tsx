@@ -50,6 +50,10 @@ const ButtonWrapper = styled.div`
   margin-top: 55px;
   display: flex;
   justify-content: center;
+
+  .ant-spin-dot-item {
+    background-color: #e75a0b;
+  }
 `;
 
 const ErrorLabel = styled.span`
