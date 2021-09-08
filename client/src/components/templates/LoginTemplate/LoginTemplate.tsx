@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import { useMutation } from 'react-query';
+import { useNavigate } from 'react-router-dom';
 import { Spin } from 'antd';
 import { Formik } from 'formik';
 import { theme } from '../../../constants';
@@ -10,7 +11,7 @@ import { TextInput } from '../../atoms/TextInput';
 import { Button } from '../../atoms/Button';
 import { Title, Description } from '../../molecules/TitleContent/TitleContent';
 
-import { useUserAction } from '../../../hooks/user';
+import { useUserAction, useUserState } from '../../../hooks/user';
 import { LoginSchema } from './validation';
 
 const Container = styled.div`
@@ -49,6 +50,10 @@ const ButtonWrapper = styled.div`
   margin-top: 55px;
   display: flex;
   justify-content: center;
+
+  .ant-spin-dot-item {
+    background-color: #e75a0b;
+  }
 `;
 
 const ErrorLabel = styled.span`
@@ -70,21 +75,31 @@ const LoginButtonStyle = {
 };
 
 const LoginTemplate = (): React.ReactElement => {
-  // const {};
+  const navigate = useNavigate();
   const { loginUser } = useUserAction();
+  const { setToken, token } = useUserState();
+  const [loginFail, setLoginFail] = useState(false);
 
   const { mutate: refetchLoginUser, isLoading } = useMutation(
     (user: { username: string; password: string }) =>
       loginUser(user.username, user.password),
     {
       onSuccess: (res) => {
-        console.log('Response: ', res);
+        localStorage.setItem('access-token', `${res}`);
+        setToken(`${res}`);
       },
       onError: (error) => {
         console.log('Error: ', error);
+        setLoginFail(true);
       },
     },
   );
+
+  useEffect(() => {
+    if (token) {
+      navigate('/campfires');
+    }
+  }, [token]);
 
   return (
     <Container>
@@ -124,6 +139,9 @@ const LoginTemplate = (): React.ReactElement => {
               />
               <ErrorLabel>{errors.password}</ErrorLabel>
             </InputWrapper>
+            {loginFail && (
+              <ErrorLabel>Incorrect usernamer / password.</ErrorLabel>
+            )}
             <ButtonWrapper>
               {!isLoading ? (
                 <Button onClick={handleSubmit} style={LoginButtonStyle}>
