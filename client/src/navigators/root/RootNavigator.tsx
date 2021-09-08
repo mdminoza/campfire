@@ -6,6 +6,7 @@ import ErrorBoundary from '../../components/HOCs/ErrorBoundary';
 import { Loader } from '../../components/atoms/Loader';
 import { MainPage } from '../../components/pages/MainPage';
 import { ActivePage } from '../../components/pages/ActivePage';
+import { LoginPage } from '../../components/pages/LoginPage';
 
 import { useUserState, useUserAction } from '../../hooks/user';
 
@@ -19,17 +20,26 @@ const ProtectedRoutes = () => (
 
 const UnprotectedRoutes = () => (
   <Routes>
-    <Route path="/*" element={<Navigate to="/" />} />
+    <Route path="/*" element={<Navigate to="/login" />} />
     <Route path="/" element={<Loader />} />
+    <Route path="/login" element={<LoginPage />} />
   </Routes>
 );
 
 const Navigator = () => {
-  const { setCurrentUser, setIsLoading } = useUserState();
+  const {
+    setCurrentUser,
+    setIsLoading,
+    token: stateToken,
+    setToken,
+  } = useUserState();
   const { fetchRandomTestUser } = useUserAction();
 
-  // TODO: temp
-  const token = localStorage.getItem('access-token');
+  // TODO: use this to manually logout for testing purposes
+  // localStorage.removeItem('access-token');
+  // setToken('');
+
+  const token = localStorage.getItem('access-token') || stateToken;
 
   const { refetch: fetchCurrentUser, isLoading } = useQuery(
     'current-user',
@@ -46,9 +56,9 @@ const Navigator = () => {
   );
 
   // TODO: Temp
-  useEffect(() => {
-    localStorage.setItem('access-token', 'qwertyu32121');
-  }, []);
+  // useEffect(() => {
+  //   localStorage.setItem('access-token', 'qwertyu32121');
+  // }, []);
 
   useEffect(() => {
     if (token) {

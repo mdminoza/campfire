@@ -17,7 +17,7 @@ export const useUserAction: UserHooks['useUserAction'] = () => {
         username,
         password,
       });
-      return res.data;
+      return res.data.token;
     } catch (e: any) {
       throw new Error(e);
     }

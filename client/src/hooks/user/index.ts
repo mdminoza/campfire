@@ -27,6 +27,13 @@ export type UserHooks = {
       email: string;
       profileUrl: string;
     }) => void;
+    token: string;
+    setToken: (val: string) => void;
+    auth: {
+      userAuth: boolean;
+      token: string;
+    };
+    setAuth: (auth?: { userAuth: boolean; token: string }) => void;
   };
 };
 
