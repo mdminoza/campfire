@@ -14,15 +14,15 @@ import { useUserState, useUserAction } from '../../hooks/user';
 const ProtectedRoutes = () => (
   <Routes>
     <Route path="/*" element={<Navigate to="/campfires" />} />
-    <Route path="/active/:id" element={<ActivePage />} />
+    <Route path="/campfires/active/:id" element={<ActivePage />} />
     <Route path="/campfires" element={<MainPage />} />
   </Routes>
 );
 
 const UnprotectedRoutes = () => (
   <Routes>
-    <Route path="/*" element={<Navigate to="/campfire-auth" />} />
-    <Route path="/campfire-auth" element={<LoginPage />} />
+    <Route path="/*" element={<Navigate to="/campfires/auth" />} />
+    <Route path="/campfires/auth" element={<LoginPage />} />
   </Routes>
 );
 

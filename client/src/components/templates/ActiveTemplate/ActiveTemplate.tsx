@@ -341,8 +341,8 @@ const ActiveTemplate = () => {
         />
       </AudienceWrapper>
       <CampfireFooter
-        id={id}
-        profileUrl="https://dummyimage.com/263x263/4a4a4a/ffffff"
+        id={activeUser?.uid || ''}
+        profileUrl={activeUser?.profileUrl || ''}
         isMuted={false}
         isRaising={false}
         isSpeaker={false}

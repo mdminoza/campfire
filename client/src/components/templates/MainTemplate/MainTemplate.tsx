@@ -251,7 +251,11 @@ const MainTemplate = (): React.ReactElement => {
             campfireId: data?.campfire,
           };
 
-          navigate(`/active/${data?.campfire}?data=${cipherText(userDetail)}`);
+          navigate(
+            `/campfires/active/${data?.campfire}?data=${cipherText(
+              userDetail,
+            )}`,
+          );
         }
         if (activeTab === 'privateCampfire') {
           if (data?.campfire) {
@@ -312,7 +316,9 @@ const MainTemplate = (): React.ReactElement => {
         type === 'public' && status === 'uninvited' ? 'invited' : 'pending';
 
       if (isOwned || status === 'invited') {
-        navigate(`/active/${campfireId}?data=${cipherText(userDetail)}`);
+        navigate(
+          `/campfires/active/${campfireId}?data=${cipherText(userDetail)}`,
+        );
       } else {
         addMemberMutation({
           member: {
