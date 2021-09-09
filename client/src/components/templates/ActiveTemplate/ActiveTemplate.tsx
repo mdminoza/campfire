@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Drawer, Divider, Grid } from 'antd';
+import { Layout, Drawer, Divider, Grid, Modal, Button } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { useQuery } from 'react-query';
 
+import { ErrorModal } from '../../HOCs/ErrorModal';
 import { StyledLink } from '../../atoms/StyledLink';
-// import { RoomControls } from '../../atoms/RoomControls';
+import { Loader } from '../../atoms/Loader';
 import { TitleContent } from '../../molecules/TitleContent';
 import { SpeakersArea } from '../../organisms/SpeakersArea';
 import { CampfireFooter } from '../../organisms/CampfireFooter';
 import { MembersList } from '../../organisms/MembersList';
 // import { MemberItemParams } from '../../molecules/MemberItem/types';
 import { DUMMY_MEMBERS } from './stories';
+
+import { useQueryData } from '../../../hooks/common';
+import { useCampfireAction } from '../../../hooks/campfire';
+import { decipherText } from '../../../utils/helpers/crypto';
 
 const ActiveSpeakersWrapper = styled.div`
   margin: -70px 0 24px;
@@ -87,7 +94,20 @@ const ActiveTemplate = () => {
   const [isDrawerVisible, setDrawerVisible] = useState<boolean>(false);
   const [avatarSize, setAvatarSize] = useState<number>();
   const [breakPoint, setBreakPoint] = useState<string>('');
+  const [isInvalidDecryptedValue, setInvalidDecryptedValue] = useState<boolean>(
+    false,
+  );
+  const [activeCampfireId, setActiveCampfireId] = useState<string>('');
+  const [activeUser, setActiveUser] = useState<
+    | { campfireId: string; name: string; profileUrl: string; uid: string }
+    | undefined
+  >(undefined);
+
   const screens = useBreakpoint();
+
+  const { fetchCampfire } = useCampfireAction();
+  const { data } = useQueryData();
+  const navigate = useNavigate();
 
   const links = [
     {
@@ -227,23 +247,87 @@ const ActiveTemplate = () => {
     marginBottom: 10,
   };
 
-  return (
+  const {
+    refetch: refetchCampfire,
+    data: campfire,
+    isLoading: isFetchingCampfireLoading,
+  } = useQuery(
+    ['campfire', activeCampfireId],
+    () => fetchCampfire(activeCampfireId),
+    {
+      onSuccess: (res) => {
+        console.log(res, 'active campfire');
+      },
+      onError: () => {
+        ErrorModal('Oops, something went wrong!', () => {
+          navigate(`/campfires`);
+        });
+      },
+      enabled: false,
+    },
+  );
+
+  useEffect(() => {
+    if (data) {
+      try {
+        const userInfo = decipherText(data);
+        console.log(userInfo, 'userInfo');
+        setInvalidDecryptedValue(false);
+        setActiveCampfireId(userInfo.campfireId);
+        setActiveUser(userInfo);
+      } catch (error) {
+        setInvalidDecryptedValue(true);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (activeCampfireId) {
+      refetchCampfire();
+    }
+  }, [activeCampfireId, refetchCampfire]);
+
+  console.log(activeCampfireId, 'activeCampfireId');
+
+  const mainLoader = {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    zIndex: 1000,
+    backgroundColor: '#000000d1',
+  };
+
+  return isInvalidDecryptedValue ? (
+    <>
+      <Loader />
+      <Modal
+        title="Error"
+        visible
+        closable={false}
+        footer={[
+          <Button key="back" danger onClick={() => navigate(`/campfires`)}>
+            Go Back
+          </Button>,
+        ]}>
+        <b>Malformed data. Please provide a valid data value.</b>
+      </Modal>
+    </>
+  ) : (
     <Layout>
       <TitleContent
-        title="Bike for Jesus"
-        description="Description"
+        title={campfire?.topic || ''}
+        description={campfire?.description || ''}
         onActive
         onClickStartDuration={() => console.log('campfireId')}
-        duration="duration"
-        campfireId=""
-        isDurationLoading={false}
-        durationStartDate={undefined}
-        isCreator={false}
-        scheduleToStart={undefined}
+        campfireId={activeCampfireId || ''}
+        scheduleToStart={campfire?.scheduleToStart}
       />
       <ActiveSpeakersWrapper>
         <SpeakersArea
-          data={speakers || []}
+          // data={speakers || []}
+          data={[]}
           onClick={() => console.log(id)}
           selectedId=""
           invites={[]}
@@ -254,7 +338,8 @@ const ActiveTemplate = () => {
         <MembersList
           onClick={() => console.log(id)}
           selectedId=""
-          data={members}
+          // data={members}
+          data={[]}
           size={avatarSize}
         />
       </AudienceWrapper>
@@ -289,6 +374,7 @@ const ActiveTemplate = () => {
         <Divider />
       </Drawer>
       {/* <RoomControls /> */}
+      {isFetchingCampfireLoading && <Loader style={mainLoader} />}
     </Layout>
   );
 };

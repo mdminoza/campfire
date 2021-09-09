@@ -248,6 +248,7 @@ const MainTemplate = (): React.ReactElement => {
             name: currentUser?.name,
             uid: currentUser?.id,
             profileUrl: currentUser?.profileUrl,
+            campfireId: data?.campfire,
           };
 
           navigate(`/active/${data?.campfire}?data=${cipherText(userDetail)}`);
@@ -304,6 +305,7 @@ const MainTemplate = (): React.ReactElement => {
         name: currentUser?.name,
         uid: currentUser?.id,
         profileUrl: currentUser?.profileUrl,
+        campfireId,
       };
 
       const memberStatus =

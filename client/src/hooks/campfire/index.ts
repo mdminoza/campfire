@@ -17,6 +17,7 @@ export type CampfireHooks = {
       tpc: string,
       type: 'public' | 'private' | 'owned',
     ) => Promise<[] | undefined>;
+    fetchCampfire: (id: string) => Promise<Campfire | undefined>;
   };
 };
 
