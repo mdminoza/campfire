@@ -271,7 +271,6 @@ const ActiveTemplate = () => {
     if (data) {
       try {
         const userInfo = decipherText(data);
-        console.log(userInfo, 'userInfo');
         setInvalidDecryptedValue(false);
         setActiveCampfireId(userInfo.campfireId);
         setActiveUser(userInfo);
@@ -286,8 +285,6 @@ const ActiveTemplate = () => {
       refetchCampfire();
     }
   }, [activeCampfireId, refetchCampfire]);
-
-  console.log(activeCampfireId, 'activeCampfireId');
 
   const mainLoader = {
     position: 'fixed',
