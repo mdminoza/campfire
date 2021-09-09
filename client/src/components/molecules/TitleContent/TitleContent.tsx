@@ -38,6 +38,12 @@ const Container = styled.div`
   background-repeat: no-repeat;
   text-align: center;
   position: relative;
+  @media (max-width: 768px) {
+    height: 400px;
+  }
+  @media (max-width: 576px) {
+    height: 300px;
+  }
 `;
 
 export const Title = styled.span`
@@ -56,6 +62,12 @@ export const Title = styled.span`
   }) => props?.padding || 0};
   z-index: 1;
   text-align: center;
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
+  @media (max-width: 576px) {
+    font-size: 1.2rem;
+  }
 `;
 
 export const Description = styled.p`
@@ -101,6 +113,12 @@ const Overlay = styled.div`
   background-color: ${theme.colors.mainBlack};
   opacity: 0.6;
   height: 500px;
+  @media (max-width: 768px) {
+    height: 400px;
+  }
+  @media (max-width: 576px) {
+    height: 300px;
+  }
 `;
 
 const EditWrapper = styled.div`
@@ -164,7 +182,7 @@ Props): React.ReactElement => {
   // const [currentTime, setCurrentTime] = useState(0);
   // const [durationFrame, setDurationFrame] = useState('00:00');
   const screens = useBreakpoint();
-  const { md } = screens;
+  const { md, sm } = screens;
   const [elapseTime, setElapseTime] = useState<string>('');
 
   const iconDimension = onActive
@@ -173,8 +191,10 @@ Props): React.ReactElement => {
         height: !md ? 71 : 81,
       }
     : {
-        width: 75,
-        height: 106,
+        width: !sm ? 40 : 75,
+        height: !sm ? 71 : 106,
+        // width: 75,
+        // height: 106,
       };
 
   useEffect(() => {
