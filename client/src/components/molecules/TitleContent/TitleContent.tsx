@@ -300,9 +300,9 @@ Props): React.ReactElement => {
       {onActive && (
         <>
           <StartedTime>{elapseTime}</StartedTime>
-          <EditWrapper>
+          {/* <EditWrapper>
             <EditButton>EDIT CAMPFIRE</EditButton>
-          </EditWrapper>
+          </EditWrapper> */}
         </>
       )}
     </Container>

@@ -105,7 +105,7 @@ const SpeakersArea = ({
                   emojiId={value.emojiId || ''}
                 />
                 <MemberItem
-                  id={value.id}
+                  id={value.uid}
                   profileUrl={value.profileUrl}
                   onClickMenu={value.onClickMenu}
                   speaker={value.speaker}
@@ -146,7 +146,7 @@ const SpeakersArea = ({
                 <InviteMemberItem
                   name={value.speaker}
                   selectedId={selectedId}
-                  id={value.id}
+                  id={value.uid}
                   url={value.profileUrl}
                   onClickMenu={value.onClickMenu}
                   onClick={onClick}

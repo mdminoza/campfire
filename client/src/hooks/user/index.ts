@@ -36,6 +36,8 @@ export type UserHooks = {
       token: string;
     };
     setAuth: (auth?: { userAuth: boolean; token: string }) => void;
+    activeCampfire: string | null;
+    setActiveCampfire: (val: string | null) => void;
   };
 };
 

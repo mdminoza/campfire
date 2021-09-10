@@ -27,7 +27,7 @@ const MembersList = ({ data, selectedId, onClick, size }: Props) => (
                 emojiId={_data.emojiId || ''}
               />
               <MemberItem
-                id={_data.id}
+                id={_data.uid}
                 selectedId={selectedId}
                 profileUrl={_data.profileUrl}
                 onClickMenu={_data.onClickMenu}

@@ -1,22 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import { Layout, Drawer, Divider, Grid, Modal, Button } from 'antd';
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React, { useState, useEffect, useRef } from 'react';
+import { Layout, Grid, Modal, Button, Result } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation } from 'react-query';
+import io from 'socket.io-client';
+import Peer from 'simple-peer';
 
 import { ErrorModal } from '../../HOCs/ErrorModal';
-import { StyledLink } from '../../atoms/StyledLink';
+import { ToastMessage } from '../../HOCs/ToastMessage';
+import { AntdMessage } from '../../HOCs/AntdMessage';
+import { ActiveResult } from '../../atoms/ActiveResult';
 import { Loader } from '../../atoms/Loader';
 import { TitleContent } from '../../molecules/TitleContent';
+import { MemberItemParams } from '../../molecules/MemberItem/types';
 import { SpeakersArea } from '../../organisms/SpeakersArea';
 import { CampfireFooter } from '../../organisms/CampfireFooter';
 import { MembersList } from '../../organisms/MembersList';
-// import { MemberItemParams } from '../../molecules/MemberItem/types';
-import { DUMMY_MEMBERS } from './stories';
 
 import { useQueryData } from '../../../hooks/common';
 import { useCampfireAction } from '../../../hooks/campfire';
+import { useMemberAction } from '../../../hooks/member';
+import { useUserState } from '../../../hooks/user';
 import { decipherText } from '../../../utils/helpers/crypto';
+
+import { MemberParams } from '../../../../common/domain/entities/member';
 
 const ActiveSpeakersWrapper = styled.div`
   margin: -70px 0 24px;
@@ -30,68 +41,21 @@ const AudienceWrapper = styled.div`
   }
 `;
 
-const LinkWrapper = styled.div`
+const NotSupportedContainer = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 `;
-
-const LogoutButton = styled.button`
-  padding: 0;
-  border: none;
-  background-color: transparent;
-  &:focus {
-    outline: none;
-    box-shadow: none;
-  }
-  font-style: normal;
-  font-weight: bold;
-  font-size: 1.18rem;
-  line-height: 25px;
-  color: #828282;
-
-  text-align: center;
-  letter-spacing: 0.02em;
-  text-decoration: none;
-  padding: 0 8px;
-`;
-
-// type Props = {
-//   id: string;
-//   profileUrl: string;
-//   topic: string;
-//   description: string;
-//   selectedId: string;
-//   scheduleToStart?: Date | undefined;
-//   speakers: MemberItemParams[];
-//   members: MemberItemParams[];
-//   invites?: MemberItemParams[];
-//   isSpeaker: boolean;
-//   isRaising?: boolean;
-//   isTalking?: boolean;
-//   isMuted?: boolean;
-//   onClickRaiseHand: (id: string) => void;
-//   onClickMuteMe?: (id: string, isMuted: boolean) => void;
-//   onClickEmoji?: (
-//     id: string,
-//     emojiType: 'wink' | 'smile' | 'sweat' | 'cool',
-//   ) => void;
-//   onClickLogout?: () => void;
-//   onClickMember: (id: string) => void;
-//   isDurationLoading?: boolean;
-//   duration?: string;
-//   onClickStartDuration?: (campfireId: string) => void;
-//   // campfireId?: string;
-//   durationStartDate?: Date | undefined;
-//   // isCreator?: boolean;
-//   onClickMic?: () => void;
-// };
 
 const { useBreakpoint } = Grid;
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const ActiveTemplate = () => {
-  const [isDrawerVisible, setDrawerVisible] = useState<boolean>(false);
+  const [isRaising, setHandRaised] = useState(false);
+  const [selectedId, setSelectedId] = useState<string>('');
+  const [peers, setPeers] = useState<any>(undefined);
+  const [isMediaSupported, setIsMediaSupported] = useState<boolean>(true);
   const [avatarSize, setAvatarSize] = useState<number>();
   const [breakPoint, setBreakPoint] = useState<string>('');
   const [isInvalidDecryptedValue, setInvalidDecryptedValue] = useState<boolean>(
@@ -102,49 +66,763 @@ const ActiveTemplate = () => {
     | { campfireId: string; name: string; profileUrl: string; uid: string }
     | undefined
   >(undefined);
+  const [errorMsg, setErrorMsg] = useState<string>('');
 
   const screens = useBreakpoint();
-
-  const { fetchCampfire } = useCampfireAction();
+  const { fetchCampfire, fetchCampfireMembers } = useCampfireAction();
+  const { fetchMember, updateMemberStatus, deleteMember } = useMemberAction();
+  const { activeCampfire, setActiveCampfire } = useUserState();
   const { data } = useQueryData();
   const navigate = useNavigate();
+  const userVideo = useRef<any>();
+  const peersRef = useRef<any>([]);
 
-  const links = [
-    {
-      label: 'HOME',
-      onClick: () => {},
-      link: '',
-      active: false,
-    },
-    {
-      label: 'WATCH',
-      onClick: () => {},
-      link: '',
-      active: false,
-    },
-    {
-      label: 'CAMPFIRES',
-      onClick: () => {},
-      link: '',
-      active: true,
-    },
-    {
-      label: 'GROUPS',
-      onClick: () => {},
-      link: '',
-      active: false,
-    },
-    {
-      label: 'DISCUSSION',
-      onClick: () => {},
-      link: '',
-      active: false,
-    },
-  ];
+  const socket = io('https://staging-campfire-api.azurewebsites.net', {
+    // TODO: Need more research for the proper socket options
+    // transports: ['websocket'],
+  });
 
-  const members = [...DUMMY_MEMBERS].splice(0, 2);
-  const speakers = [...DUMMY_MEMBERS].splice(0, 2);
-  const id = '';
+  const peerValues = [...Object.values(peers || {})] as {
+    userId: string;
+    socketId: string;
+  }[];
+  const filteredPeers = peerValues.filter(
+    (userVal) => userVal.userId !== activeUser?.uid,
+  );
+
+  useEffect(() => {
+    const fooz = Object.entries(screens).filter((screen) => !!screen[1]);
+    try {
+      setBreakPoint(fooz[fooz.length - 1][0]);
+    } catch (err) {
+      console.log(err);
+    }
+  }, [screens]);
+
+  const {
+    refetch: refetchCampfire,
+    data: campfire,
+    isLoading: isFetchingCampfireLoading,
+    error: fetchingCampfireError,
+  } = useQuery(
+    ['campfire', activeCampfireId],
+    () => fetchCampfire(activeCampfireId),
+    {
+      onError: () => {
+        ErrorModal('Oops, something went wrong!', () => {
+          navigate(`/campfires`);
+        });
+      },
+      enabled: false,
+    },
+  );
+
+  const {
+    refetch: refetchCampfireMember,
+    data: campfireMember,
+    isLoading: isFetchingCampfireMemberLoading,
+    error: fetchingCampfirememberError,
+  } = useQuery(
+    ['campfire-member', activeCampfireId, activeUser?.uid],
+    () => fetchMember({ uid: activeUser?.uid || '', id: activeCampfireId }),
+    {
+      onError: () => {
+        ErrorModal('Oops, something went wrong!', () => {
+          navigate(`/campfires`);
+        });
+      },
+      enabled: false,
+    },
+  );
+
+  const {
+    refetch: refetchCampfireMembers,
+    data: campfireMembers,
+    isLoading: isFetchingCampfireMembersLoading,
+  } = useQuery(
+    ['campfire-members', activeCampfireId],
+    () => fetchCampfireMembers(activeCampfireId),
+    // {
+    //   onSuccess: (res) => {
+    //     console.log(res, 'active campfire members');
+    //   },
+    //   onError: (err: any) => {
+    //     console.log(err, 'err fetching campfire member');
+    //   },
+    // },
+  );
+
+  const createPeer = (
+    callerId: string,
+    stream: any,
+    userDetail: any,
+    memberId: string,
+  ) => {
+    const peer = new Peer({
+      initiator: true,
+      trickle: false,
+      streams: [stream],
+    });
+    peer.on('signal', (signal: any) => {
+      socket.emit('send new user joined', {
+        callerId,
+        userDetail,
+        peerSignal: signal,
+        memberId,
+      });
+    });
+    // peer._debug = console.log;
+    return peer;
+  };
+
+  const addPeer = (
+    incomingSignal: any,
+    callerID: string,
+    userId: string,
+    stream: any,
+    memberId: string,
+  ) => {
+    const peer = new Peer({
+      initiator: false,
+      trickle: false,
+      streams: [stream],
+    });
+
+    peer.on('signal', (signal: any) => {
+      socket.emit('returning signal', { signal, userId, callerID, memberId });
+    });
+
+    peer.signal(incomingSignal);
+    // peer._debug = console.log;
+    return peer;
+  };
+
+  useEffect(() => {
+    if (data) {
+      try {
+        const userInfo = decipherText(data);
+        setInvalidDecryptedValue(false);
+        setActiveCampfireId(userInfo.campfireId);
+        setActiveUser(userInfo);
+      } catch (error) {
+        setInvalidDecryptedValue(true);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (activeCampfireId) {
+      refetchCampfire();
+      refetchCampfireMember();
+    }
+  }, [activeCampfireId, refetchCampfire, refetchCampfireMember]);
+
+  useEffect(() => {
+    const onClickEvent = (e: any) => {
+      if (e.target && e.target.id !== '_memberCard') {
+        setSelectedId('');
+      }
+    };
+    if (selectedId) {
+      window.addEventListener('click', onClickEvent);
+    }
+  }, [selectedId]);
+
+  // eslint-disable-next-line consistent-return
+  useEffect(() => {
+    if (
+      activeCampfireId === campfire?._id &&
+      activeCampfire === activeCampfireId
+    ) {
+      let userVideoStream: any;
+      if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+        setIsMediaSupported(false);
+        return;
+      }
+      navigator.mediaDevices
+        .getUserMedia({ video: false, audio: true })
+        .then((stream) => {
+          setErrorMsg('');
+          userVideo.current = {
+            srcObject: stream,
+          };
+
+          userVideoStream = userVideo.current;
+
+          socket.emit('join room', {
+            campfireId: activeCampfireId,
+            userId: activeUser?.uid,
+            userName: activeUser?.name,
+            profileUrl: activeUser?.profileUrl,
+            isAdmin: activeUser?.uid === campfire.creator?.uid,
+            isModerator: activeUser?.uid === campfire.creator?.uid,
+            isSpeaker: activeUser?.uid === campfire.creator?.uid,
+          });
+
+          socket.on('send newUsers', (newUsers) => {
+            const userId = activeUser?.uid || '';
+
+            const { [userId]: val, ...restUsers } = newUsers;
+
+            const allUsers = [...Object.values(newUsers || {})] as {
+              userId: string;
+              socketId: string;
+            }[];
+            const usersList = [...Object.values(restUsers || {})] as {
+              userId: string;
+              socketId: string;
+              emoji: string;
+              emojiId: string;
+              peerObj: { signal: any };
+            }[];
+
+            let newUsersObj = allUsers.reduce((acc: any, curr: any) => {
+              acc[curr.userId] = {
+                ...curr,
+                emoji: '',
+                emojiId: '',
+              };
+              return acc;
+            }, {});
+
+            const filtered = usersList.filter(
+              (userVal) => userVal.userId !== activeUser?.uid,
+            );
+
+            filtered.forEach((filteredItem) => {
+              const userDetail = {
+                campfireId: activeCampfireId,
+                userId: activeUser?.uid || '',
+                socketId: socket.id,
+                isAdmin: activeUser?.uid === campfire.creator?.uid,
+                isModerator: activeUser?.uid === campfire.creator?.uid,
+                isSpeaker: activeUser?.uid === campfire.creator?.uid,
+                userName: activeUser?.name || '',
+                profileUrl: activeUser?.profileUrl,
+              };
+
+              const newPeer = createPeer(
+                filteredItem.socketId,
+                stream,
+                userDetail,
+                filteredItem.userId,
+              );
+
+              if (peersRef.current) {
+                peersRef.current = {
+                  ...peersRef.current,
+                  [filteredItem.userId]: {
+                    peer: newPeer,
+                  },
+                };
+              }
+
+              newUsersObj = {
+                ...newUsersObj,
+                [filteredItem.userId]: {
+                  ...newUsersObj[filteredItem.userId],
+                  peer: newPeer,
+                },
+              };
+            });
+            setPeers((prev: any) => ({
+              ...prev,
+              ...newUsersObj,
+            }));
+          });
+
+          socket.on(
+            'received new user joined',
+            ({ userDetail, peerSignal, memberId }) => {
+              if (peersRef.current) {
+                if (!peersRef.current[userDetail.userId]) {
+                  const peer = addPeer(
+                    peerSignal,
+                    userDetail.socketId,
+                    userDetail.userId,
+                    stream,
+                    memberId,
+                  );
+                  peersRef.current = {
+                    ...peersRef.current,
+                    [userDetail.userId]: {
+                      peer,
+                    },
+                  };
+                  setPeers((users: any) => ({
+                    ...users,
+                    [userDetail.userId]: {
+                      ...userDetail,
+                      peer,
+                    },
+                  }));
+                }
+              }
+            },
+          );
+
+          socket.on('receiving returned signal', (payload) => {
+            if (peersRef.current) {
+              const peerItem = peersRef.current[payload.memberId];
+              if (peerItem) {
+                peerItem.peer.signal(payload.signal);
+              }
+            }
+          });
+
+          socket.on(
+            'receiving setUsers',
+            ({ setValue, selectedUserId, operation }) => {
+              if (operation === 'kick' && selectedUserId === activeUser?.uid) {
+                setActiveCampfire(null);
+                setActiveCampfireId('');
+                setActiveUser(undefined);
+                AntdMessage('info', 'You have been kicked from this campfire');
+              }
+              if (
+                operation === 'addModerator' &&
+                selectedUserId === activeUser?.uid
+              ) {
+                // updateMemberRole('moderator');
+                AntdMessage(
+                  'info',
+                  'You have been added as a moderator on this campfire',
+                );
+              }
+              if (
+                operation === 'addSpeaker' &&
+                selectedUserId === activeUser?.uid
+              ) {
+                // updateMemberRole('speaker');
+                AntdMessage(
+                  'info',
+                  'You have been added as a speaker on this campfire',
+                );
+              }
+              if (
+                operation === 'removeSpeaker' &&
+                selectedUserId === activeUser?.uid
+              ) {
+                // updateMemberRole('audience');
+                AntdMessage('info', 'You have been removed as a speaker');
+              }
+              if (
+                operation === 'removeModerator' &&
+                selectedUserId === activeUser?.uid
+              ) {
+                // updateMemberRole('speaker');
+                AntdMessage('info', 'You have been removed as a moderator');
+              }
+              if (operation === 'mute' && selectedUserId === activeUser?.uid) {
+                // updateMember({ isMuted: true });
+                AntdMessage('info', 'You have been muted.');
+              }
+              if (
+                operation === 'unmute' &&
+                selectedUserId === activeUser?.uid
+              ) {
+                // updateMember({ isMuted: false });
+                AntdMessage('info', 'You are now unmuted.');
+              }
+              setPeers((prev: any) => {
+                if (operation === 'kick') {
+                  if (peersRef.current) {
+                    const userPeer = peersRef.current[selectedUserId];
+                    if (userPeer) {
+                      userPeer.peer.destroy();
+                    }
+
+                    const {
+                      [selectedUserId]: val,
+                      ...restuserPeers
+                    } = peersRef.current;
+                    peersRef.current = restuserPeers;
+                  }
+
+                  const { [selectedUserId]: kickedPeer, ...restPeers } = prev;
+                  return restPeers;
+                }
+                return {
+                  ...prev,
+                  [selectedUserId]: {
+                    ...prev[selectedUserId],
+                    ...setValue,
+                  },
+                };
+              });
+            },
+          );
+
+          socket.on('receiving raised signal', ({ userId, isRaised }) => {
+            setPeers((prev: any) => ({
+              ...prev,
+              [userId]: {
+                ...prev[userId],
+                isRaising: isRaised,
+              },
+            }));
+          });
+
+          socket.on(
+            'received setEmoji signal',
+            ({ setEmojiUserId, emojiDetails }) => {
+              setPeers((prev: any) => ({
+                ...prev,
+                [setEmojiUserId]: {
+                  ...prev[setEmojiUserId],
+                  ...emojiDetails,
+                },
+              }));
+            },
+          );
+
+          socket.on('user leave', (leaveData: any) => {
+            if (
+              leaveData.userId &&
+              leaveData.campfireId &&
+              leaveData.campfireId === activeCampfireId
+            ) {
+              if (peersRef.current) {
+                const userPeer = peersRef.current[leaveData.userId];
+                if (userPeer) {
+                  userPeer.peer.destroy();
+                }
+
+                const {
+                  [leaveData.userId]: val,
+                  ...restuserPeers
+                } = peersRef.current;
+                peersRef.current = restuserPeers;
+              }
+
+              setPeers((prev: any) => {
+                const {
+                  [leaveData.userId]: disconnectedUser,
+                  ...otherUsers
+                } = prev;
+                return otherUsers;
+              });
+            }
+          });
+
+          socket.on('connect_error', () => {
+            console.log('error socket');
+          });
+        })
+        .catch((err: any) => {
+          /* handle the error */
+          if (err.message === 'Permission denied') {
+            setErrorMsg(
+              'Campfire requires access to your microphone so others on the call can hear you.',
+            );
+          } else {
+            setErrorMsg(err.message);
+          }
+        });
+      // eslint-disable-next-line consistent-return
+      return () => {
+        if (userVideoStream && userVideoStream.srcObject) {
+          userVideoStream.srcObject
+            .getTracks()
+            .forEach((track: any) => track.stop());
+        }
+        socket.disconnect();
+      };
+    }
+  }, [activeCampfireId, campfire, activeCampfire]);
+
+  useEffect(() => {
+    // eslint-disable-next-line no-unused-expressions
+    errorMsg && ToastMessage('error', 'Error', errorMsg, 10);
+  }, [errorMsg]);
+
+  const clearActiveCampfire = (e: any) => {
+    e.preventDefault();
+    setActiveCampfire(null);
+    setActiveCampfireId('');
+    setActiveUser(undefined);
+  };
+
+  useEffect(() => {
+    window.onbeforeunload = clearActiveCampfire;
+
+    return () => {
+      window.onbeforeunload = null;
+    };
+  }, []);
+
+  const mainLoader = {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    zIndex: 1000,
+    backgroundColor: '#000000d1',
+  };
+
+  const handleRejoin = () => {
+    setActiveCampfire(activeCampfireId);
+  };
+
+  const {
+    mutate: acceptPendingMember,
+    isLoading: isAcceptMemberLoading,
+    isSuccess: isAcceptMemberSuccess,
+  } = useMutation(
+    (params: { uid: string; id: string; status: string }) =>
+      updateMemberStatus(params),
+    {
+      onSuccess: () => {
+        refetchCampfireMembers();
+      },
+    },
+  );
+
+  const {
+    mutate: declinePendingMember,
+    isLoading: isDeclineMemberLoading,
+    isSuccess: isDeclineMemberSuccess,
+  } = useMutation(
+    (params: { uid: string; id: string }) => deleteMember(params),
+    {
+      onSuccess: () => {
+        refetchCampfireMembers();
+      },
+    },
+  );
+
+  const handleOnClickPendingMenu = (key: 'accept' | 'decline') => {
+    const pendingMember = campfireMembers?.filter(
+      (val) => val.uid === selectedId,
+    );
+    if (key === 'accept') {
+      acceptPendingMember({
+        uid: pendingMember?.[0].uid || '',
+        id: activeCampfireId,
+        status: 'invited',
+      });
+    } else {
+      declinePendingMember({
+        uid: pendingMember?.[0].uid || '',
+        id: activeCampfireId,
+      });
+    }
+  };
+
+  const newPeerData = (isModerator: boolean, isSpeaker: boolean) => {
+    const newDataPeer = {
+      isModerator,
+      isSpeaker,
+      emoji: '',
+      emojiId: '',
+    };
+    setTimeout(() => {
+      setPeers((prev: any) => ({
+        ...prev,
+        [selectedId]: {
+          ...peers[selectedId],
+          ...newDataPeer,
+        },
+      }));
+    }, 100);
+    return newDataPeer;
+  };
+
+  const handleOnClickMenu = (key: string, value: Partial<MemberParams>) => {
+    let newPeerVal = {};
+    setSelectedId('');
+    if (key === 'addModerator') {
+      newPeerVal = newPeerData(true, true);
+    }
+    if (key === 'removeModerator' || key === 'addSpeaker') {
+      newPeerVal = newPeerData(false, true);
+    }
+    if (key === 'removeSpeaker') {
+      newPeerVal = newPeerData(false, false);
+    }
+    if (key === 'kick') {
+      setTimeout(() => {
+        if (peersRef.current) {
+          const userPeer = peersRef.current[selectedId];
+          if (userPeer) {
+            userPeer.peer.destroy();
+          }
+
+          const { [selectedId]: val, ...restuserPeers } = peersRef.current;
+          peersRef.current = restuserPeers;
+        }
+
+        setPeers((prev: any) => {
+          const { [selectedId]: kickedPeer, ...restPeers } = prev;
+          return restPeers;
+        });
+      }, 100);
+    }
+    if (key === 'mute') {
+      setTimeout(() => {
+        setPeers((prev: any) => ({
+          ...prev,
+          [selectedId]: {
+            ...peers[selectedId],
+            isMuted: true,
+          },
+        }));
+      }, 100);
+      newPeerVal = { isMuted: true };
+    }
+    if (key === 'unmute') {
+      setTimeout(() => {
+        setPeers((prev: any) => ({
+          ...prev,
+          [selectedId]: {
+            ...peers[selectedId],
+            isMuted: false,
+          },
+        }));
+      }, 100);
+      newPeerVal = { isMuted: false };
+    }
+
+    filteredPeers.forEach((val) => {
+      socket.emit('setUsers', {
+        campfireId: activeCampfireId,
+        setValue: newPeerVal,
+        userSocketId: val.socketId,
+        selectedUserId: selectedId,
+        operation: key,
+      });
+    });
+  };
+
+  const filterInvites =
+    activeUser?.uid === campfire?.creator?.uid &&
+    campfireMembers &&
+    campfireMembers.length > 0
+      ? (campfireMembers
+          ?.filter((val) => val.status === 'pending')
+          .map((value) => ({
+            onClickMenu: handleOnClickPendingMenu,
+            speaker: value.name,
+            onClick: () => ({}),
+            uid: value.uid,
+            profileUrl: value.profileUrl,
+            isActive: false,
+            isSpeaker: false,
+          })) as MemberItemParams[])
+      : [];
+
+  const peersItem = [...Object.values(peers || {})] as {
+    isAdmin: boolean;
+    isModerator: boolean;
+    isSpeaker: boolean;
+    profileUrl: string;
+    userName: string;
+    userId: string;
+    isRaising: boolean;
+    emoji: string;
+    emojiId: string;
+    peer?: any;
+    isMuted?: boolean;
+    peerObj: any;
+  }[];
+
+  const speakers = peersItem
+    .filter((peer) => peer.isAdmin || peer.isSpeaker)
+    .map((value) => ({
+      profileUrl: value.profileUrl,
+      onClickMenu: (key: any) => handleOnClickMenu(key, value),
+      speaker: value.userName,
+      onClick: () => ({}),
+      isSpeaker: value.isModerator || value.isSpeaker,
+      isModerator: value.isModerator,
+      isActive: true,
+      uid: value.userId,
+      isRaising: value.isRaising,
+      emoji: value.emoji,
+      emojiId: value.emojiId,
+      peer: value.userId === activeUser?.uid ? userVideo : value?.peer,
+      isLoggedIn: value.userId === activeUser?.uid,
+      isMuted: value.isMuted,
+    }));
+
+  const members = peersItem
+    .filter((peer) => !peer.isAdmin && !peer.isSpeaker)
+    .map((value) => ({
+      profileUrl: value.profileUrl,
+      onClickMenu: (key: string) => handleOnClickMenu(key, value),
+      speaker: value.userName,
+      onClick: () => ({}),
+      isSpeaker: false,
+      isActive: false,
+      uid: value.userId,
+      isRaising: value.isRaising,
+      emoji: value.emoji,
+      emojiId: value.emojiId,
+      peer: value.userId === activeUser?.uid ? userVideo : value?.peer,
+      isLoggedIn: value.userId === activeUser?.uid,
+      isMuted: value.isMuted,
+    }));
+
+  const handleOnClickEmoji = (
+    selectedUserId: string,
+    type: 'wink' | 'smile' | 'sweat' | 'cool',
+  ) => {
+    const emojiDetails = {
+      emoji: type,
+      emojiId: selectedUserId + Math.random().toString(36).substring(2),
+    };
+    setPeers((prev: any) => ({
+      ...prev,
+      [selectedUserId]: {
+        ...prev[selectedUserId],
+        ...emojiDetails,
+      },
+    }));
+
+    filteredPeers.forEach((val) => {
+      socket.emit('send setEmoji', {
+        campfireId: activeCampfireId,
+        selectedId: selectedUserId,
+        emojiDetails,
+        userSocketId: val.socketId,
+      });
+    });
+  };
+
+  const handleClickRaiseHand = (userId: string) => {
+    setHandRaised((value) => {
+      setPeers((prev: any) => ({
+        ...prev,
+        [userId]: {
+          ...prev[userId],
+          isRaising: !value,
+        },
+      }));
+      filteredPeers.forEach((val) => {
+        socket.emit('send raise signal', {
+          campfireId: activeCampfireId,
+          userId,
+          isRaising: !value,
+          userSocketId: val.socketId,
+        });
+      });
+      return !value;
+    });
+  };
+
+  const handleClickMember = (id: string) => {
+    if (
+      (activeUser?.uid === campfire?.creator?.uid &&
+        id !== campfire?.creator?.uid) ||
+      (campfireMember &&
+        campfireMember.role === 'moderator' &&
+        id !== campfire?.creator?.uid &&
+        id !== campfireMember?.uid)
+    ) {
+      setSelectedId(id);
+    }
+  };
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
@@ -173,7 +851,6 @@ const ActiveTemplate = () => {
         }
         break;
       case 'md':
-        console.log('MD!!');
         if (size <= 1) {
           setAvatarSize(screenWidth * 0.4);
         } else if (size <= 2) {
@@ -190,7 +867,6 @@ const ActiveTemplate = () => {
         }
         break;
       case 'sm':
-        console.log('AYALASM?');
         if (size <= 1) {
           setAvatarSize(250);
         } else if (size <= 2) {
@@ -204,176 +880,117 @@ const ActiveTemplate = () => {
         }
         break;
       case 'xs':
-        console.log('XS usa ta dol');
         if (size === 1) {
-          console.log('1', size);
           setAvatarSize(200);
         } else if (size <= 2) {
-          console.log('2', size);
           setAvatarSize(150);
         } else if (size <= 3) {
-          console.log('3', size);
           setAvatarSize(120);
         } else if (size >= 4) {
-          console.log('4', size);
           setAvatarSize(110);
         }
         break;
       default:
         setAvatarSize(110);
-        console.log('5');
     }
   }, [speakers, members.length, speakers.length, breakPoint]);
 
-  useEffect(() => {
-    const fooz = Object.entries(screens).filter((screen) => !!screen[1]);
-    try {
-      setBreakPoint(fooz[fooz.length - 1][0]);
-    } catch (err) {
-      console.log(err);
-    }
-  }, [screens]);
+  if (isInvalidDecryptedValue) {
+    return (
+      <>
+        <Loader />
+        <Modal
+          title="Error"
+          visible
+          closable={false}
+          footer={[
+            <Button key="back" danger onClick={() => navigate(`/campfires`)}>
+              Go Back
+            </Button>,
+          ]}>
+          <b>Malformed data. Please provide a valid data value.</b>
+        </Modal>
+      </>
+    );
+  }
 
-  const handleOnClickEmoji = (
-    selectedUserId: string,
-    type: 'wink' | 'smile' | 'sweat' | 'cool',
-  ) => console.log(selectedUserId, type);
-
-  const handleOnClickBurgerMenu = () => {
-    setDrawerVisible(!isDrawerVisible);
-  };
-
-  const linkStyle = {
-    marginBottom: 10,
-  };
-
-  const {
-    refetch: refetchCampfire,
-    data: campfire,
-    isLoading: isFetchingCampfireLoading,
-  } = useQuery(
-    ['campfire', activeCampfireId],
-    () => fetchCampfire(activeCampfireId),
-    {
-      onSuccess: (res) => {
-        console.log(res, 'active campfire');
-      },
-      onError: () => {
-        ErrorModal('Oops, something went wrong!', () => {
-          navigate(`/campfires`);
-        });
-      },
-      enabled: false,
-    },
-  );
-
-  useEffect(() => {
-    if (data) {
-      try {
-        const userInfo = decipherText(data);
-        setInvalidDecryptedValue(false);
-        setActiveCampfireId(userInfo.campfireId);
-        setActiveUser(userInfo);
-      } catch (error) {
-        setInvalidDecryptedValue(true);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    if (activeCampfireId) {
-      refetchCampfire();
-    }
-  }, [activeCampfireId, refetchCampfire]);
-
-  const mainLoader = {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    zIndex: 1000,
-    backgroundColor: '#000000d1',
-  };
-
-  return isInvalidDecryptedValue ? (
-    <>
-      <Loader />
-      <Modal
-        title="Error"
-        visible
-        closable={false}
-        footer={[
-          <Button key="back" danger onClick={() => navigate(`/campfires`)}>
-            Go Back
-          </Button>,
-        ]}>
-        <b>Malformed data. Please provide a valid data value.</b>
-      </Modal>
-    </>
-  ) : (
-    <Layout>
-      <TitleContent
-        title={campfire?.topic || ''}
-        description={campfire?.description || ''}
-        onActive
-        onClickStartDuration={() => console.log('campfireId')}
-        campfireId={activeCampfireId || ''}
-        scheduleToStart={campfire?.scheduleToStart}
-      />
-      <ActiveSpeakersWrapper>
-        <SpeakersArea
-          // data={speakers || []}
-          data={[]}
-          onClick={() => console.log(id)}
-          selectedId=""
-          invites={[]}
-          size={avatarSize}
+  if (!isMediaSupported) {
+    return (
+      <NotSupportedContainer>
+        <Result
+          status="warning"
+          title="Oops. It seems this browser does not support the media API yet. Try using one of this browsers: Chrome, Edge, Firefox, Opera or Safari."
+          extra={
+            <Button
+              type="primary"
+              key="console"
+              onClick={() => navigate('/campfires')}>
+              Back to Home
+            </Button>
+          }
         />
-      </ActiveSpeakersWrapper>
-      <AudienceWrapper>
-        <MembersList
-          onClick={() => console.log(id)}
-          selectedId=""
-          // data={members}
-          data={[]}
-          size={avatarSize}
-        />
-      </AudienceWrapper>
-      <CampfireFooter
-        id={activeUser?.uid || ''}
-        profileUrl={activeUser?.profileUrl || ''}
-        isMuted={false}
-        isRaising={false}
-        isSpeaker={false}
-        isTalking={false}
-        onClickRaiseHand={() => console.log(id)}
-        onClickMuteMe={() => console.log(id, false)}
-        onClickEmoji={handleOnClickEmoji}
-        onClickMic={() => console.log('mic pressed!')}
+      </NotSupportedContainer>
+    );
+  }
+
+  if (!activeCampfire) {
+    return (
+      <ActiveResult
+        onClickHome={() => navigate('/campfires')}
+        onClickRejoin={handleRejoin}
+        data={campfire}
+        error={fetchingCampfireError}
       />
-      <Drawer
-        placement="right"
-        closable={false}
-        onClose={handleOnClickBurgerMenu}
-        visible={isDrawerVisible}>
-        <LinkWrapper>
-          {links.map((item) => (
-            <StyledLink
-              label={item.label}
-              onClick={item.onClick}
-              to={item.link}
-              active={item.active}
-              style={linkStyle}
-            />
-          ))}
-        </LinkWrapper>
-        <Divider />
-      </Drawer>
-      {/* <RoomControls /> */}
-      {isFetchingCampfireLoading && <Loader style={mainLoader} />}
-    </Layout>
-  );
+    );
+  }
+
+  if (activeCampfire === activeCampfireId) {
+    return isFetchingCampfireLoading ? (
+      <Loader style={mainLoader} />
+    ) : (
+      <Layout>
+        <TitleContent
+          title={campfire?.topic || ''}
+          description={campfire?.description || ''}
+          onActive
+          onClickStartDuration={() => {}}
+          campfireId={activeCampfireId || ''}
+          scheduleToStart={campfire?.scheduleToStart}
+        />
+        <ActiveSpeakersWrapper>
+          <SpeakersArea
+            data={speakers}
+            onClick={handleClickMember}
+            selectedId={selectedId}
+            invites={filterInvites}
+            size={avatarSize}
+          />
+        </ActiveSpeakersWrapper>
+        <AudienceWrapper>
+          <MembersList
+            onClick={handleClickMember}
+            selectedId={selectedId}
+            data={members}
+            size={avatarSize}
+          />
+        </AudienceWrapper>
+        <CampfireFooter
+          id={activeUser?.uid || ''}
+          profileUrl={activeUser?.profileUrl || ''}
+          isMuted={false}
+          isRaising={isRaising}
+          isSpeaker={false}
+          isTalking={false}
+          onClickRaiseHand={handleClickRaiseHand}
+          onClickMuteMe={() => {}}
+          onClickEmoji={handleOnClickEmoji}
+          onClickMic={() => {}}
+        />
+      </Layout>
+    );
+  }
+
+  return <></>;
 };
 
 export default ActiveTemplate;

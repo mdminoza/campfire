@@ -4,6 +4,7 @@ import {
   CampfireParams,
   Campfire,
 } from '../../../common/domain/entities/campfire';
+import { MemberParams } from '../../../common/domain/entities/member';
 
 export type CampfireHooks = {
   useCampfireAction(): {
@@ -18,6 +19,7 @@ export type CampfireHooks = {
       type: 'public' | 'private' | 'owned',
     ) => Promise<[] | undefined>;
     fetchCampfire: (id: string) => Promise<Campfire | undefined>;
+    fetchCampfireMembers: (id: string) => Promise<MemberParams[] | undefined>;
   };
 };
 

@@ -129,7 +129,7 @@ const MainTemplate = (): React.ReactElement => {
     searchCampfires,
   } = useCampfireAction();
   const { addMember } = useMemberAction();
-  const { currentUser, isLoading } = useUserState();
+  const { currentUser, isLoading, setActiveCampfire } = useUserState();
 
   const {
     refetch: refetchOwnedCampfires,
@@ -250,7 +250,7 @@ const MainTemplate = (): React.ReactElement => {
             profileUrl: currentUser?.profileUrl,
             campfireId: data?.campfire,
           };
-
+          setActiveCampfire(data?.campfire || null);
           navigate(
             `/campfires/active/${data?.campfire}?data=${cipherText(
               userDetail,
@@ -316,6 +316,7 @@ const MainTemplate = (): React.ReactElement => {
         type === 'public' && status === 'uninvited' ? 'invited' : 'pending';
 
       if (isOwned || status === 'invited') {
+        setActiveCampfire(campfireId);
         navigate(
           `/campfires/active/${campfireId}?data=${cipherText(userDetail)}`,
         );
@@ -373,8 +374,6 @@ const MainTemplate = (): React.ReactElement => {
 
   const handleSearchValue = (val: any) => {
     setSearchValue(val);
-    // searchVal(val);
-    console.log(val);
   };
 
   const onTabChange = (key: string) => {
@@ -773,6 +772,10 @@ const MainTemplate = (): React.ReactElement => {
     zIndex: 1000,
     backgroundColor: '#000000a6',
   };
+
+  useEffect(() => {
+    setActiveCampfire(null);
+  }, []);
 
   return (
     <StyledLayout campfiretoggled={isToggled}>

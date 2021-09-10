@@ -143,6 +143,21 @@ export const useCampfireAction: CampfireHooks['useCampfireAction'] = () => {
     }
   }, []);
 
+  const fetchCampfireMembers = useCallback(async (id: string) => {
+    try {
+      if (id) {
+        const res = await axios.get(`${urls.campfire.main}${id}/member`);
+        if (res && res?.status === 200) {
+          return res.data;
+        }
+        return null;
+      }
+      return null;
+    } catch (e: any) {
+      throw new Error(e);
+    }
+  }, []);
+
   return {
     fetchCampfires,
     fetchOwnedCampfires,
@@ -151,5 +166,6 @@ export const useCampfireAction: CampfireHooks['useCampfireAction'] = () => {
     addCampfire,
     searchCampfires,
     fetchCampfire,
+    fetchCampfireMembers,
   };
 };

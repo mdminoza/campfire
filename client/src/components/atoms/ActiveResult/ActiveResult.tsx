@@ -29,7 +29,7 @@ const ActiveResult = ({
   let isStarted = false;
 
   if (data && data.scheduleToStart) {
-    isStarted = currentDate > data?.scheduleToStart;
+    isStarted = currentDate > new Date(data.scheduleToStart);
   }
   const renderButton = () => {
     if (error) {

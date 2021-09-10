@@ -8,6 +8,19 @@ export type MemberHooks = {
       member: MemberParams;
       id: string;
     }) => Promise<MemberParams | undefined>;
+    fetchMember: (params: {
+      uid: string;
+      id: string;
+    }) => Promise<MemberParams | undefined>;
+    updateMemberStatus: (params: {
+      uid: string;
+      id: string;
+      status: string;
+    }) => Promise<Object | undefined>;
+    deleteMember: (params: {
+      uid: string;
+      id: string;
+    }) => Promise<Object | undefined>;
   };
 };
 

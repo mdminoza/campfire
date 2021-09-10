@@ -26,5 +26,8 @@ export default {
   member: {
     add: 'member/push',
     get: 'member/get',
+    delete: 'member/pull',
+    setStatus: 'member/set/status',
+    setRole: 'member/set/role',
   },
 };

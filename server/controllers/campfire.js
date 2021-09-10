@@ -181,10 +181,10 @@ export const fetchCampfireMembers = async (req, res, next) => {
                     $gte: new Date(new Date().setDate(new Date().getDate()-1))
                 },
             },
-            { members: 1 }
+            { '_id': 0, members: 1 }
         );
         if (campfire === null) throw new Error('Campfire does not exist!');
-        res.status(200).json(campfire);
+        res.status(200).json(campfire.members);
     } catch (error) {
         next(error);
     }
