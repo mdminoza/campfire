@@ -34,7 +34,6 @@ export const fetchPublicCampfires = async (req, res, next) => {
                 },
                 ...filterTopic,
             },
-            { members: 0 },
         );
         res.status(200).json(campfires);
     } catch (error) {
@@ -57,7 +56,6 @@ export const fetchPrivateCampfires = async (req, res, next) => {
                 },
                 ...filterTopic,
             },
-            { members: 0 },
         );
         res.status(200).json(campfires);
     } catch (error) {
@@ -79,7 +77,6 @@ export const fetchOwnCampfires = async (req, res, next) => {
                 },
                 ...filterTopic,
             },
-            { members: 0 },
         );
         res.status(200).json(campfires);
     } catch (error) {

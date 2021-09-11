@@ -50,6 +50,7 @@ type Props = {
   isLoading?: boolean;
   onClick: (isOwned?: boolean) => void;
   status?: 'pending' | 'invited' | 'uninvited' | '';
+  totalMembers?: number;
 };
 
 const TopicCard = ({
@@ -63,6 +64,7 @@ const TopicCard = ({
   isLoading = false,
   onClick,
   status = '',
+  totalMembers = 0,
 }: Props): React.ReactElement => {
   const TopicDate = getDayAndTime(date);
 
@@ -89,8 +91,8 @@ const TopicCard = ({
         {/* <BtnTitle>NOW | INVITE REQUESTED</BtnTitle> */}
         <BtnTitle>WAITING FOR APPROVAL</BtnTitle>
       </Button>
-    ) : !isStarted && status === 'pending' ? (
-      <Button onClick={() => {}} style={btnStylePreRegistered}>
+    ) : !isStarted && (status === 'pending' || status === 'invited') ? (
+      <Button onClick={() => {}} disabled style={btnStylePreRegistered}>
         <IconWrapper>
           {/* TODO: New Pre - RegisterFlow */}
           {/* {isFeatured && <Audio fill={'#ffffff'} />}
@@ -99,7 +101,7 @@ const TopicCard = ({
         </IconWrapper>
       </Button>
     ) : (
-      <Button onClick={() => {}} style={btnStyleImInterested}>
+      <Button onClick={onClick} style={btnStyleImInterested}>
         <IconWrapper>
           {/* {isFeatured && <Audio fill={'#ffffff'} />}
           {isFeatured && <Spacer />} */}
@@ -116,12 +118,16 @@ const TopicCard = ({
           // <TopicCardAvatars avatarMembers={members} />
           <AvatarContainer>
             <Avatar src={profileURL} size={70} />
-            <IconWrapper>
-              <TextWrapper>
-                <MembersCountText>+ {members.length}</MembersCountText>
-                <MembersCountSubText>others</MembersCountSubText>
-              </TextWrapper>
-            </IconWrapper>
+            {totalMembers > 0 && (
+              <IconWrapper>
+                <TextWrapper>
+                  <MembersCountText>+ {totalMembers}</MembersCountText>
+                  <MembersCountSubText>
+                    {totalMembers > 1 ? 'others' : 'other'}
+                  </MembersCountSubText>
+                </TextWrapper>
+              </IconWrapper>
+            )}
           </AvatarContainer>
         ) : (
           <Avatar src={profileURL} size={70} />
@@ -157,6 +163,8 @@ const TopicCard = ({
               <BtnTitle>JOIN NOW</BtnTitle>
             </IconWrapper>
           </Button>
+        ) : isOwned && !isStarted ? (
+          <></>
         ) : (
           renderButton()
         )}

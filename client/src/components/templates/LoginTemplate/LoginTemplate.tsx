@@ -107,7 +107,6 @@ const LoginTemplate = (): React.ReactElement => {
         initialValues={{ username: '', password: '' }}
         validationSchema={LoginSchema}
         onSubmit={(values) => {
-          console.log('onSumbit: ', values);
           refetchLoginUser({
             username: values.username,
             password: values.password,

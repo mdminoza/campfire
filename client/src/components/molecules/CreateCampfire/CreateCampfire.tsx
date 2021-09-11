@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
 import { Row, Col, Grid } from 'antd';
@@ -43,7 +44,7 @@ import { Avatar } from '../../atoms/Avatar';
 
 type Props = {
   // profile: React.ReactElement;
-  // profileUrl?: string;
+  profileUrl?: string;
   checked?: boolean;
   toggled?: boolean;
   isInviteTagOpen?: boolean;
@@ -65,8 +66,7 @@ type Props = {
 const { useBreakpoint } = Grid;
 
 const CreateCampfire = ({
-  // profile,
-  // profileUrl = '',
+  profileUrl = 'https://i.picsum.photos/id/1/200/300.jpg?hmac=jH5bDkLr6Tgy3oAg5khKCHeunZMHq0ehBZr6vGifPLY',
   checked = false,
   toggled = false,
   isLoading = false,
@@ -192,9 +192,9 @@ const CreateCampfire = ({
 
   function Profile() {
     if (breakPoint.length < 2) {
-      return <Avatar size={38} />;
+      return <Avatar size={38} src={profileUrl} />;
     }
-    return <Avatar />;
+    return <Avatar src={profileUrl} />;
   }
 
   useEffect(() => {
@@ -212,6 +212,15 @@ const CreateCampfire = ({
       console.log(err);
     }
   }, [screens]);
+
+  useEffect(() => {
+    if (!toggled) {
+      setScheduleText('IMMEDIATELY');
+      setRadioVal('Everyone');
+      setHour('01');
+      setMinutes('00');
+    }
+  }, [toggled]);
 
   const loaderStyle = {
     fontSize: 32,
@@ -302,6 +311,7 @@ const CreateCampfire = ({
               <DateTimePicker
                 setSchedule={handleSchedulePicker}
                 breakpoints={breakPoint}
+                toggle={toggled}
               />
             </SchedulePickerWrapper>
           </StyledCol>
@@ -344,7 +354,10 @@ const CreateCampfire = ({
               ref={durationWrapperRef}
               className="DurationPickerWrapper"
               toggled={showDurationPicker}>
-              <TimeDurationPicker setDuration={handleSetDuration} />
+              <TimeDurationPicker
+                toggle={toggled}
+                setDuration={handleSetDuration}
+              />
             </DurationTimePickerWrapper>
           </StyledCol>
         </StyledRow>

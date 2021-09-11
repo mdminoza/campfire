@@ -21,11 +21,13 @@ type Props = {
   // onSelect: () => void;
   setSchedule: (params: ScheduleTypes, isImmediately: boolean) => void;
   breakpoints: unknown[];
+  toggle?: boolean;
 };
 
 const DateTimePicker = ({
   setSchedule,
   breakpoints,
+  toggle = false,
 }: Props): React.ReactElement => {
   const [month, setMonth] = useState(1);
   const [noOfDays, setNoOfDays] = useState([1]);
@@ -73,7 +75,6 @@ const DateTimePicker = ({
   };
 
   const handleSchedule = () => {
-    console.log('set Schedule', month, day, time); // for testing purposes only
     setSchedule({ month, day, time }, isImmediate);
   };
 
@@ -91,6 +92,12 @@ const DateTimePicker = ({
       ))}
     </OptionWrapper>
   );
+
+  useEffect(() => {
+    if (!toggle) {
+      handleImmidiately();
+    }
+  }, [toggle]);
 
   return (
     <Container isSmallScreen={breakpoints?.length < 2}>

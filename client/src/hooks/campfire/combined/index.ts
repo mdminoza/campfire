@@ -25,7 +25,20 @@ export const useCampfireAction: CampfireHooks['useCampfireAction'] = () => {
     try {
       const res = await axios.get(`${urls.campfire.owned}?cid=${cid}`);
       if (res && res?.status === 200) {
-        return res.data;
+        const result = res.data.map((value: Campfire) => {
+          let totalMembers = 0;
+          if (value.members && value.members?.length > 0) {
+            totalMembers =
+              value.members?.filter((val: any) => val.status !== 'pending')
+                .length || 0;
+          }
+
+          return {
+            ...value,
+            totalMembers,
+          };
+        });
+        return result;
       }
       return [];
     } catch (e: any) {
@@ -44,9 +57,17 @@ export const useCampfireAction: CampfireHooks['useCampfireAction'] = () => {
               // eslint-disable-next-line no-underscore-dangle
               id: value._id,
             });
+            let totalMembers = 0;
+            if (value.members && value.members?.length > 0) {
+              totalMembers =
+                value.members?.filter((val: any) => val.status !== 'pending')
+                  .length || 0;
+            }
+
             return {
               ...value,
               status: member.data.status || 'uninvited',
+              totalMembers,
             };
           }),
         );
@@ -69,9 +90,16 @@ export const useCampfireAction: CampfireHooks['useCampfireAction'] = () => {
               // eslint-disable-next-line no-underscore-dangle
               id: value._id,
             });
+            let totalMembers = 0;
+            if (value.members && value.members?.length > 0) {
+              totalMembers =
+                value.members?.filter((val: any) => val.status !== 'pending')
+                  .length || 0;
+            }
             return {
               ...value,
               status: member.data.status || undefined,
+              totalMembers,
             };
           }),
         );
@@ -115,9 +143,18 @@ export const useCampfireAction: CampfireHooks['useCampfireAction'] = () => {
                 // eslint-disable-next-line no-underscore-dangle
                 id: value._id,
               });
+
+              let totalMembers = 0;
+              if (value.members && value.members?.length > 0) {
+                totalMembers =
+                  value.members?.filter((val: any) => val.status !== 'pending')
+                    .length || 0;
+              }
+
               return {
                 ...value,
                 status: member.data.status || 'uninvited',
+                totalMembers,
               };
             }),
           );

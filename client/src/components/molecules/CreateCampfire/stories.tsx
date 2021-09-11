@@ -19,7 +19,6 @@ storiesOf('molecule/CreateCampire', module).add('default', () => {
       descriptionValue={description}
       onPress={toggleCampfire}
       onPressSubmit={toggleCampfire}
-      // profile={<Avatar />}
       onChangeCheckbox={handleOnChangeCheckbox}
       checked={checked}
       toggled={campfireToggled}
