@@ -36,8 +36,8 @@ const ActiveSpeakersWrapper = styled.div`
 
 const AudienceWrapper = styled.div`
   margin: 0 40px 150px;
-  @media (min-width: 500px) {
-    margin: 0 10px 100px;
+  @media (max-width: 500px) {
+    margin: 0 0 100px;
   }
 `;
 
@@ -835,11 +835,11 @@ const ActiveTemplate = () => {
       case 'xl':
       case 'lg':
         if (size <= 1) {
-          setAvatarSize(screenWidth * 0.4);
-        } else if (size <= 2) {
           setAvatarSize(screenWidth * 0.35);
-        } else if (size <= 3) {
+        } else if (size <= 2) {
           setAvatarSize(screenWidth * 0.3);
+        } else if (size <= 3) {
+          setAvatarSize(screenWidth * 0.2);
         } else if (size >= 4 && size <= 8) {
           setAvatarSize(screenWidth * 0.2);
         } else if (size >= 9 && size <= 12) {
@@ -851,12 +851,11 @@ const ActiveTemplate = () => {
         }
         break;
       case 'md':
-        if (size <= 1) {
-          setAvatarSize(screenWidth * 0.4);
-        } else if (size <= 2) {
-          setAvatarSize(screenWidth * 0.35);
-        } else if (size <= 3) {
+        if (size === 1) {
+          setAvatarSize(screenWidth * 0.25);
+        } else if (size === 2) {
           setAvatarSize(screenWidth * 0.2);
+        } else if (size === 3) {
           setAvatarSize(200);
         } else if (size >= 4 && size <= 8) {
           setAvatarSize(150);
@@ -867,11 +866,11 @@ const ActiveTemplate = () => {
         }
         break;
       case 'sm':
-        if (size <= 1) {
+        if (size === 1) {
           setAvatarSize(250);
-        } else if (size <= 2) {
+        } else if (size === 2) {
           setAvatarSize(200);
-        } else if (size <= 3) {
+        } else if (size === 3) {
           setAvatarSize(150);
         } else if (size >= 4 && size <= 8) {
           setAvatarSize(120);

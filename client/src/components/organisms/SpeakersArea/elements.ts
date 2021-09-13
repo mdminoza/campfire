@@ -21,6 +21,9 @@ export const StyledCard = styled.div`
   padding-bottom: 24px;
   margin: 0 40px 0;
   border-bottom: 1px ${theme.colors.mainBlack} solid;
+  @media (max-width: 500px) {
+    margin: 0;
+  }
 `;
 
 export const TitleWrapper = styled.div`
@@ -70,6 +73,9 @@ export const SubWrapper = styled.div`
   background: ${theme.colors.gray.dark};
   padding: 24px 0;
   margin: 0 40px 0;
+  @media (max-width: 500px) {
+    margin: 0;
+  }
 `;
 
 // export const Wrapper = styled.div`
