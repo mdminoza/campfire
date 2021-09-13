@@ -133,7 +133,7 @@ const MainTemplate = (): React.ReactElement => {
 
   const {
     refetch: refetchOwnedCampfires,
-    isLoading: isOwnedCampfiresLoading,
+    isFetching: isOwnedCampfiresLoading,
   } = useQuery('campfires', () => fetchOwnedCampfires(currentUser?.id || ''), {
     onSuccess: (res) => {
       if (res && res.length > 0) {
@@ -146,24 +146,26 @@ const MainTemplate = (): React.ReactElement => {
 
   const {
     refetch: refetchPublicCampfires,
-    isLoading: isPublicCampfiresLoading,
+    isFetching: isPublicCampfiresLoading,
   } = useQuery(
     `public-campfires`,
     () => fetchPublicCampfires(currentUser?.id || ''),
     {
       onSuccess: (res) => {
+        console.log();
         if (res && res.length > 0) {
           const filtered = arrayToObject(res);
           setPublicCampfires(filtered as { [_id: string]: Campfire });
         }
       },
       enabled: false,
+      refetchOnMount: 'always',
     },
   );
 
   const {
     refetch: refetchSearchPublicCampfires,
-    isLoading: isSearchPublicCampfiresLoading,
+    isFetching: isSearchPublicCampfiresLoading,
   } = useQuery(
     'search-public-campfires',
     () => searchCampfires(currentUser?.id || '', searchValue, 'public'),
@@ -180,7 +182,7 @@ const MainTemplate = (): React.ReactElement => {
 
   const {
     refetch: refetchSearchPrivateCamfires,
-    isLoading: isSearchPrivateCampfiresLoading,
+    isFetching: isSearchPrivateCampfiresLoading,
   } = useQuery(
     'search-private-campfires',
     () => searchCampfires(currentUser?.id || '', searchValue, 'private'),
@@ -197,7 +199,7 @@ const MainTemplate = (): React.ReactElement => {
 
   const {
     refetch: refetchSearchOwnedCampfires,
-    isLoading: isSearchOwnedCampfiresLoading,
+    isFetching: isSearchOwnedCampfiresLoading,
   } = useQuery(
     'search-owned-campfires',
     () => searchCampfires(currentUser?.id || '', searchValue, 'owned'),
@@ -214,7 +216,7 @@ const MainTemplate = (): React.ReactElement => {
 
   const {
     refetch: refetchPrivateCampfires,
-    isLoading: isPrivateCampfiresLoading,
+    isFetching: isPrivateCampfiresLoading,
   } = useQuery(
     'private-campfires',
     () => fetchPrivateCampfires(currentUser?.id || ''),

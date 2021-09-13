@@ -592,7 +592,9 @@ const ActiveTemplate = () => {
     },
   );
 
-  const handleOnClickPendingMenu = (key: 'accept' | 'decline') => {
+  const handleOnClickPendingMenu = (
+    key: 'accept' | 'acceptAll' | 'decline' | 'declineAll',
+  ) => {
     const pendingMember = campfireMembers?.filter(
       (val) => val.uid === selectedId,
     );
@@ -602,11 +604,18 @@ const ActiveTemplate = () => {
         id: activeCampfireId,
         status: 'invited',
       });
-    } else {
+    }
+    if (key === 'acceptAll') {
+      console.log('acceptAll');
+    }
+    if (key === 'decline') {
       declinePendingMember({
         uid: pendingMember?.[0].uid || '',
         id: activeCampfireId,
       });
+    }
+    if (key === 'declineAll') {
+      console.log('acceptAll');
     }
   };
 

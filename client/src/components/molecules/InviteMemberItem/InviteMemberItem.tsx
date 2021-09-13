@@ -83,8 +83,15 @@ const InviteMemberItem = ({
       <Menu.Item className="adminMenuList" key="accept">
         ACCEPT
       </Menu.Item>
+      <Menu.Item className="adminMenuList" key="acceptAll">
+        ACCEPT ALL
+      </Menu.Item>
+      <Menu.Divider />
       <Menu.Item className="adminMenuList" key="decline">
         DECLINE
+      </Menu.Item>
+      <Menu.Item className="adminMenuList" key="declineAll">
+        DECLINE ALL
       </Menu.Item>
     </StyledMenu>
   );

@@ -220,18 +220,34 @@ const MemberItem = ({
         ADMIN MENU
       </Menu.Item>
       {isMuted ? (
-        <Menu.Item className="adminMenuList" key="unmute">
-          <MuteLabel>
-            <UnLabel>UN</UnLabel>MUTE
-          </MuteLabel>
-        </Menu.Item>
+        <>
+          <Menu.Item className="adminMenuList" key="unmute">
+            <MuteLabel>
+              <UnLabel>UN</UnLabel>MUTE
+            </MuteLabel>
+          </Menu.Item>
+          <Menu.Item className="adminMenuList" key="unmuteAll">
+            <MuteLabel>
+              <UnLabel>UN</UnLabel>MUTE ALL
+            </MuteLabel>
+          </Menu.Item>
+        </>
       ) : (
-        <Menu.Item className="adminMenuList" key="mute">
-          MUTE
-        </Menu.Item>
+        <>
+          <Menu.Item className="adminMenuList" key="mute">
+            MUTE
+          </Menu.Item>
+          <Menu.Item className="adminMenuList" key="muteAll">
+            MUTE ALL
+          </Menu.Item>
+        </>
       )}
+      <Menu.Divider />
       <Menu.Item className="adminMenuList" key="kick">
         KICK
+      </Menu.Item>
+      <Menu.Item className="adminMenuList" key="kickAll">
+        KICK ALL
       </Menu.Item>
       <Menu.Divider />
       {isSpeaker && !isModerator && (
@@ -264,6 +280,10 @@ const MemberItem = ({
           </Menu.Item>
         </>
       )}
+      <Menu.Divider />
+      <Menu.Item className="adminMenuList" key="kick">
+        Close campfire
+      </Menu.Item>
     </StyledMenu>
   );
 
