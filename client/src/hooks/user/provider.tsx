@@ -8,6 +8,7 @@ const UserProvider = (props: any): React.ReactElement => {
   const [isLoading, setIsLoading] = useState(false);
   const [auth, setAuth] = useState(undefined);
   const [token, setToken] = useState(undefined);
+  const [activeCampfire, setActiveCampfire] = useState(null);
 
   const useUserState = {
     currentUser,
@@ -18,6 +19,8 @@ const UserProvider = (props: any): React.ReactElement => {
     setToken,
     auth,
     setAuth,
+    activeCampfire,
+    setActiveCampfire,
   };
 
   const combinedValues = {

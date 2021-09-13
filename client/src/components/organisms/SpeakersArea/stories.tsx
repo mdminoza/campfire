@@ -14,7 +14,7 @@ export const DUMMY_SPEAKERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: true,
     isActive: true,
-    id: 'AIttWfaBOjW4DAVcmgn',
+    uid: 'AIttWfaBOjW4DAVcmgn',
   },
   {
     profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
@@ -23,7 +23,7 @@ export const DUMMY_SPEAKERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: true,
     isActive: true,
-    id: 'cNNYthSXi0H9',
+    uid: 'cNNYthSXi0H9',
   },
   {
     profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
@@ -32,7 +32,7 @@ export const DUMMY_SPEAKERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: true,
     isActive: true,
-    id: 'kQ65AUbj1KtBDQG3V',
+    uid: 'kQ65AUbj1KtBDQG3V',
   },
   {
     profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
@@ -41,7 +41,7 @@ export const DUMMY_SPEAKERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: true,
     isActive: true,
-    id: '1GvP8P0W',
+    uid: '1GvP8P0W',
   },
   {
     profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
@@ -50,7 +50,7 @@ export const DUMMY_SPEAKERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: true,
     isActive: true,
-    id: 'v8Dqlr',
+    uid: 'v8Dqlr',
   },
   {
     profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
@@ -59,7 +59,7 @@ export const DUMMY_SPEAKERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: true,
     isActive: true,
-    id: '9MP6ORJwY29s',
+    uid: '9MP6ORJwY29s',
   },
 ];
 

@@ -21,7 +21,7 @@ const Component = () => {
 
   const data: MemberItemParams[] = [
     {
-      id: 'A4rbx0yLmly',
+      uid: 'A4rbx0yLmly',
       profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
       onClickMenu: handleClick,
       speaker: 'Bill Wallace',
@@ -30,7 +30,7 @@ const Component = () => {
       isActive: true,
     },
     {
-      id: 'oEuVw51sSfDqWRFh',
+      uid: 'oEuVw51sSfDqWRFh',
       profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
       onClickMenu: handleClick,
       speaker: 'Bill Wallace',

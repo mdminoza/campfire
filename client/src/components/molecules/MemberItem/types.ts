@@ -1,5 +1,5 @@
 export interface MemberItemParams {
-  id: string;
+  uid: string;
   isActive: boolean;
   isSpeaker: boolean;
   isModerator?: boolean;

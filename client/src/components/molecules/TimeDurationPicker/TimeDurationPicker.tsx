@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // import React from 'react';
 import {
   Container,
@@ -14,9 +14,13 @@ import { hours, minutes } from '../../../utils/helpers/constants';
 
 type Props = {
   setDuration: (hour: string, min: string) => void;
+  toggle?: boolean;
 };
 
-const TimeDurationPicker = ({ setDuration }: Props): React.ReactElement => {
+const TimeDurationPicker = ({
+  setDuration,
+  toggle = false,
+}: Props): React.ReactElement => {
   const [hour, setHour] = useState('01');
   const [minute, setMinute] = useState('00');
 
@@ -51,6 +55,13 @@ const TimeDurationPicker = ({ setDuration }: Props): React.ReactElement => {
       ))}
     </TimeContainer>
   );
+
+  useEffect(() => {
+    if (!toggle) {
+      setHour('01');
+      setMinute('00');
+    }
+  }, [toggle]);
 
   return (
     <Container>

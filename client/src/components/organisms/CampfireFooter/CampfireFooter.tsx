@@ -279,7 +279,7 @@ const CampfireFooter = ({
             </EmojiButtonWrapper>
           </EmojiWrapper>
         )}
-        <OptionContainer>
+        {/* <OptionContainer>
           <Divider />
           <IconLogo onClick={() => {}}>
             <AudioMeter level={60} />
@@ -288,7 +288,7 @@ const CampfireFooter = ({
             {onMute ? <MicOff /> : <Mic />}
           </IconLogo>
           <Divider />
-          <IconLogo onClick={() => {} /* history.go(0) */}>
+          <IconLogo onClick={() => {}}>
             <Refresh />
           </IconLogo>
           <LinkWrapper to="">
@@ -301,7 +301,7 @@ const CampfireFooter = ({
             <Settings />
             {openSettings && <RoomControls onClick={handleOnClickSettings} />}
           </IconLogo>
-        </OptionContainer>
+        </OptionContainer> */}
       </StyledRow>
     </StyledFooter>
   );

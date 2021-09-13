@@ -16,6 +16,8 @@ export type CampfireParams = {
     profileUrl: string;
     name: string;
   };
+  totalMembers?: number;
+  members?: Object[];
 };
 
 export type Campfire = CampfireParams & BaseModel;

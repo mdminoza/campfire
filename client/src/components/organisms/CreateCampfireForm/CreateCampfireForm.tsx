@@ -7,6 +7,8 @@ import { CreateCampfire } from '../../molecules/CreateCampfire';
 import { CampfireParams } from '../../../../common/domain/entities/campfire';
 import { CreateCampfireSchema } from './validation';
 
+import { useUserState } from '../../../hooks/user';
+
 type Props = {
   onSubmit: (values: CampfireParams) => void;
   onPress: () => void;
@@ -15,7 +17,6 @@ type Props = {
   isInviteTagOpen?: boolean;
   toggle: boolean;
   isLoading?: boolean;
-  didSucceed?: boolean;
 };
 
 const CreateCampfireForm = ({
@@ -26,16 +27,16 @@ const CreateCampfireForm = ({
   isInviteTagOpen = false,
   toggle,
   isLoading = false,
-  didSucceed = false,
 }: Props): React.ReactElement => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const formRef = useRef<any>(null);
+  const { currentUser } = useUserState();
 
   useEffect(() => {
-    if (formRef && didSucceed) {
+    if (formRef && toggle === false) {
       formRef?.current?.resetForm();
     }
-  }, [formRef, didSucceed]);
+  }, [formRef, toggle]);
 
   return (
     <Formik
@@ -92,6 +93,7 @@ const CreateCampfireForm = ({
           }}
           onClickShowInvites={onClickShowInvites}
           isInviteTagOpen={isInviteTagOpen}
+          profileUrl={currentUser?.profileUrl}
         />
       )}
     </Formik>

@@ -15,7 +15,7 @@ export const DUMMY_MEMBERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: true,
     isActive: false,
-    id: 'AIttWfaBOjW4DAVcmgn',
+    uid: 'AIttWfaBOjW4DAVcmgn',
   },
   {
     profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
@@ -24,7 +24,7 @@ export const DUMMY_MEMBERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: false,
     isActive: false,
-    id: 'cNNYthSXi0H9',
+    uid: 'cNNYthSXi0H9',
   },
   {
     profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
@@ -33,7 +33,7 @@ export const DUMMY_MEMBERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: false,
     isActive: false,
-    id: 'kQ65AUbj1KtBDQG3V',
+    uid: 'kQ65AUbj1KtBDQG3V',
   },
   {
     profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
@@ -42,7 +42,7 @@ export const DUMMY_MEMBERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: false,
     isActive: false,
-    id: '1GvP8P0W',
+    uid: '1GvP8P0W',
   },
   {
     profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
@@ -51,7 +51,7 @@ export const DUMMY_MEMBERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: false,
     isActive: false,
-    id: 'v8Dqlr',
+    uid: 'v8Dqlr',
   },
   {
     profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
@@ -60,7 +60,7 @@ export const DUMMY_MEMBERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: false,
     isActive: false,
-    id: '9MP6ORJwY29s',
+    uid: '9MP6ORJwY29s',
   },
   {
     profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
@@ -69,7 +69,7 @@ export const DUMMY_MEMBERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: false,
     isActive: false,
-    id: 'LiJoPatTjxnBfUzvLE',
+    uid: 'LiJoPatTjxnBfUzvLE',
   },
   {
     profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
@@ -78,7 +78,7 @@ export const DUMMY_MEMBERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: false,
     isActive: false,
-    id: 'sODDvBF',
+    uid: 'sODDvBF',
   },
   {
     profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
@@ -87,7 +87,7 @@ export const DUMMY_MEMBERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: false,
     isActive: false,
-    id: 'jtpvRsNjoqdPm',
+    uid: 'jtpvRsNjoqdPm',
   },
   {
     profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
@@ -96,7 +96,7 @@ export const DUMMY_MEMBERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: false,
     isActive: false,
-    id: 'jaT2yCX7N5s8Z',
+    uid: 'jaT2yCX7N5s8Z',
   },
   {
     profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
@@ -105,7 +105,7 @@ export const DUMMY_MEMBERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: false,
     isActive: false,
-    id: 'OzjtYIVROrK8',
+    uid: 'OzjtYIVROrK8',
   },
 
   {
@@ -115,7 +115,7 @@ export const DUMMY_MEMBERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: true,
     isActive: false,
-    id: 'AIttWfaBOjW4DAVcmg123n',
+    uid: 'AIttWfaBOjW4DAVcmg123n',
   },
   {
     profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
@@ -124,7 +124,7 @@ export const DUMMY_MEMBERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: false,
     isActive: false,
-    id: 'cNNYthSX12ad3i0H9',
+    uid: 'cNNYthSX12ad3i0H9',
   },
   {
     profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
@@ -133,7 +133,7 @@ export const DUMMY_MEMBERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: false,
     isActive: false,
-    id: 'kQ65AUbj1Kt234BDQG3V',
+    uid: 'kQ65AUbj1Kt234BDQG3V',
   },
   {
     profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
@@ -142,7 +142,7 @@ export const DUMMY_MEMBERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: false,
     isActive: false,
-    id: '1GvP8avxcvP0W',
+    uid: '1GvP8avxcvP0W',
   },
   {
     profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
@@ -151,7 +151,7 @@ export const DUMMY_MEMBERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: false,
     isActive: false,
-    id: 'v8Dqlaxvdfr',
+    uid: 'v8Dqlaxvdfr',
   },
   {
     profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
@@ -160,7 +160,7 @@ export const DUMMY_MEMBERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: false,
     isActive: false,
-    id: '9MP6ORJwegbsdwY29s',
+    uid: '9MP6ORJwegbsdwY29s',
   },
   {
     profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
@@ -169,7 +169,7 @@ export const DUMMY_MEMBERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: false,
     isActive: false,
-    id: 'LiJoPatTjxsdfhnBfUzvLE',
+    uid: 'LiJoPatTjxsdfhnBfUzvLE',
   },
   {
     profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
@@ -178,7 +178,7 @@ export const DUMMY_MEMBERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: false,
     isActive: false,
-    id: 'sODDv234grfdvBF',
+    uid: 'sODDv234grfdvBF',
   },
   {
     profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
@@ -187,7 +187,7 @@ export const DUMMY_MEMBERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: false,
     isActive: false,
-    id: 'jtpvRsNjosdfvqdPm',
+    uid: 'jtpvRsNjosdfvqdPm',
   },
   {
     profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
@@ -196,7 +196,7 @@ export const DUMMY_MEMBERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: false,
     isActive: false,
-    id: 'jaT2yCXdsfvdr7N5s8Z',
+    uid: 'jaT2yCXdsfvdr7N5s8Z',
   },
   {
     profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
@@ -205,7 +205,7 @@ export const DUMMY_MEMBERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: false,
     isActive: false,
-    id: 'OzjtYIVsdfgs4ROrK8',
+    uid: 'OzjtYIVsdfgs4ROrK8',
   },
   {
     profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
@@ -214,7 +214,7 @@ export const DUMMY_MEMBERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: false,
     isActive: false,
-    id: 'jtpvRsNjosdfvqdPm',
+    uid: 'jtpvRsNjosdfvqdPm',
   },
   {
     profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
@@ -223,7 +223,7 @@ export const DUMMY_MEMBERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: false,
     isActive: false,
-    id: 'jaT2yCXdsfvdr7N5s8Z',
+    uid: 'jaT2yCXdsfvdr7N5s8Z',
   },
   {
     profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
@@ -232,7 +232,7 @@ export const DUMMY_MEMBERS: Array<MemberItemParams> = [
     onClick: () => {},
     isSpeaker: false,
     isActive: false,
-    id: 'OzjtYIVsdfgasdf1s4ROrK8',
+    uid: 'OzjtYIVsdfgasdf1s4ROrK8',
   },
 ];
 

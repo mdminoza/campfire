@@ -53,7 +53,7 @@ const SearchIconWrapper = styled.div`
 `;
 
 const TabContentWrapper = styled(Row)`
-  padding: 0 2px;
+  padding: 0 2px 64px;
 `;
 
 const CardWrapper = styled(Row)`
@@ -129,7 +129,7 @@ const MainTemplate = (): React.ReactElement => {
     searchCampfires,
   } = useCampfireAction();
   const { addMember } = useMemberAction();
-  const { currentUser, isLoading } = useUserState();
+  const { currentUser, isLoading, setActiveCampfire } = useUserState();
 
   const {
     refetch: refetchOwnedCampfires,
@@ -239,32 +239,16 @@ const MainTemplate = (): React.ReactElement => {
     mutate: addMemberMutation,
     isLoading: isAddingMember,
     isSuccess: isMemberAdded,
-  } = useMutation(
-    (values: { member: MemberParams; id: string }) => addMember(values),
-    {
-      onSuccess: (data) => {
-        if (activeTab === 'publicCampfire') {
-          const userDetail = {
-            name: currentUser?.name,
-            uid: currentUser?.id,
-            profileUrl: currentUser?.profileUrl,
-          };
+  } = useMutation((values: { member: MemberParams; id: string }) =>
+    addMember(values),
+  );
 
-          navigate(`/active/${data?.campfire}?data=${cipherText(userDetail)}`);
-        }
-        if (activeTab === 'privateCampfire') {
-          if (data?.campfire) {
-            setPrivateCampfires({
-              ...privateCampfires,
-              [data.campfire]: {
-                ...privateCampfires?.[data.campfire],
-                status: data?.status,
-              },
-            });
-          }
-        }
-      },
-    },
+  const {
+    mutate: addMemberUpcomingMutation,
+    isLoading: isAddingMemberUpcoming,
+    isSuccess: isMemberUpcomingAdded,
+  } = useMutation((values: { member: MemberParams; id: string }) =>
+    addMember(values),
   );
 
   const handleToggle = useCallback(() => setCampfireToggled(!isToggled), [
@@ -293,26 +277,110 @@ const MainTemplate = (): React.ReactElement => {
     [ownedCampfires],
   );
 
+  const handleAddMemberMutation = useCallback(
+    (values: { member: MemberParams; id: string }) => {
+      addMemberMutation(values, {
+        onSuccess: (data) => {
+          if (activeTab === 'publicCampfire') {
+            const userDetail = {
+              name: currentUser?.name,
+              uid: currentUser?.id,
+              profileUrl: currentUser?.profileUrl,
+              campfireId: data?.campfire,
+            };
+            setActiveCampfire(data?.campfire || null);
+            navigate(
+              `/campfires/active/${data?.campfire}?data=${cipherText(
+                userDetail,
+              )}`,
+            );
+          }
+          if (activeTab === 'privateCampfire') {
+            if (data?.campfire) {
+              setPrivateCampfires({
+                ...privateCampfires,
+                [data.campfire]: {
+                  ...privateCampfires?.[data.campfire],
+                  status: data?.status,
+                },
+              });
+            }
+          }
+        },
+      });
+    },
+    [activeTab, privateCampfires, publicCampfires, currentUser],
+  );
+
+  const handleAddMemberUpcomingMutation = useCallback(
+    (values: { member: MemberParams; id: string }) => {
+      addMemberUpcomingMutation(values, {
+        onSuccess: (data) => {
+          if (activeTab === 'publicCampfire') {
+            if (data?.campfire) {
+              setPublicCampfires({
+                ...publicCampfires,
+                [data.campfire]: {
+                  ...publicCampfires?.[data.campfire],
+                  status: data?.status,
+                },
+              });
+            }
+          }
+          if (activeTab === 'privateCampfire') {
+            if (data?.campfire) {
+              setPrivateCampfires({
+                ...privateCampfires,
+                [data.campfire]: {
+                  ...privateCampfires?.[data.campfire],
+                  status: data?.status,
+                },
+              });
+            }
+          }
+        },
+      });
+    },
+    [activeTab, privateCampfires, publicCampfires, currentUser],
+  );
+
   const handleOnClick = useCallback(
     (
       campfireId: string,
       status: string,
       type: 'public' | 'private' | 'owned',
       isOwned?: boolean,
+      isUpcomingCampfire?: boolean,
     ) => {
       const userDetail = {
         name: currentUser?.name,
         uid: currentUser?.id,
         profileUrl: currentUser?.profileUrl,
+        campfireId,
       };
 
       const memberStatus =
         type === 'public' && status === 'uninvited' ? 'invited' : 'pending';
-
-      if (isOwned || status === 'invited') {
-        navigate(`/active/${campfireId}?data=${cipherText(userDetail)}`);
+      if (!isUpcomingCampfire) {
+        if (isOwned || status === 'invited') {
+          setActiveCampfire(campfireId);
+          navigate(
+            `/campfires/active/${campfireId}?data=${cipherText(userDetail)}`,
+          );
+        } else {
+          handleAddMemberMutation({
+            member: {
+              profileUrl: currentUser?.profileUrl || '',
+              name: currentUser?.name || '',
+              uid: currentUser?.id || '',
+              campfire: campfireId,
+              status: memberStatus,
+            },
+            id: campfireId,
+          });
+        }
       } else {
-        addMemberMutation({
+        handleAddMemberUpcomingMutation({
           member: {
             profileUrl: currentUser?.profileUrl || '',
             name: currentUser?.name || '',
@@ -324,7 +392,7 @@ const MainTemplate = (): React.ReactElement => {
         });
       }
     },
-    [publicCampfires, currentUser],
+    [publicCampfires, currentUser, privateCampfires],
   );
 
   const handleSubmit = (values: any) => {
@@ -365,8 +433,6 @@ const MainTemplate = (): React.ReactElement => {
 
   const handleSearchValue = (val: any) => {
     setSearchValue(val);
-    // searchVal(val);
-    console.log(val);
   };
 
   const onTabChange = (key: string) => {
@@ -375,7 +441,7 @@ const MainTemplate = (): React.ReactElement => {
 
   const handleClick = (e: any) => {
     if (!CreateCampfireRef?.current?.contains(e.target)) {
-      if (!showInvites) {
+      if (!showInvites && !isAddingCampfire) {
         setCampfireToggled(false);
       }
     }
@@ -485,7 +551,7 @@ const MainTemplate = (): React.ReactElement => {
           fillEmptySpacing1.push(
             <Col xs={24} sm={12} md={8} lg={6} style={colSpacingStyle}>
               <TopicCard
-                profileURL="https://dummyimage.com/200x200/000/fff"
+                profileURL={startedCampfires[i].creator?.profileUrl || ''}
                 title={startedCampfires[i].topic}
                 desc={startedCampfires[i].description}
                 date={startedCampfires[i].scheduleToStart}
@@ -510,7 +576,7 @@ const MainTemplate = (): React.ReactElement => {
           fillEmptySpacing2.push(
             <Col xs={24} sm={12} md={8} lg={6} style={colSpacingStyle}>
               <TopicCard
-                profileURL="https://dummyimage.com/200x200/000/fff"
+                profileURL={startedCampfires[i].creator?.profileUrl || ''}
                 title={startedCampfires[i].topic}
                 desc={startedCampfires[i].description}
                 date={startedCampfires[i].scheduleToStart}
@@ -569,7 +635,8 @@ const MainTemplate = (): React.ReactElement => {
         ? startedCampfires.map((campfire) => (
             <Col xs={24} sm={12} md={8} lg={6}>
               <TopicCard
-                profileURL="https://dummyimage.com/200x200/000/fff"
+                profileURL={campfire.creator?.profileUrl || ''}
+                totalMembers={campfire.totalMembers}
                 title={campfire.topic}
                 desc={campfire.description}
                 date={campfire.scheduleToStart}
@@ -596,7 +663,8 @@ const MainTemplate = (): React.ReactElement => {
         ? upcomingCampfires.map((campfire) => (
             <Col xs={24} sm={12} md={8} lg={6}>
               <TopicCard
-                profileURL="https://dummyimage.com/200x200/000/fff"
+                profileURL={campfire.creator?.profileUrl || ''}
+                totalMembers={campfire.totalMembers}
                 title={campfire.topic}
                 desc={campfire.description}
                 date={campfire.scheduleToStart}
@@ -610,6 +678,7 @@ const MainTemplate = (): React.ReactElement => {
                     campfire.status || '',
                     type,
                     isOwned,
+                    true,
                   )
                 }
                 isOwned={isOwnedCampfire}
@@ -766,6 +835,10 @@ const MainTemplate = (): React.ReactElement => {
     backgroundColor: '#000000a6',
   };
 
+  useEffect(() => {
+    setActiveCampfire(null);
+  }, []);
+
   return (
     <StyledLayout campfiretoggled={isToggled}>
       {isLoading && !!currentUser?.id ? (
@@ -785,7 +858,6 @@ const MainTemplate = (): React.ReactElement => {
                   onClickShowInvites={setShowInvites}
                   isInviteTagOpen={showInvites}
                   isLoading={isAddingCampfire}
-                  didSucceed={isCampfireAdded}
                   // fetchUserList={fetchUserList}
                 />
               </CreateCampFireWrapper>
@@ -796,7 +868,9 @@ const MainTemplate = (): React.ReactElement => {
           </TabWrapper>
         </>
       )}
-      {isAddingMember && <Loader style={mainLoader} />}
+      {(isAddingMember || isAddingMemberUpcoming) && (
+        <Loader style={mainLoader} />
+      )}
     </StyledLayout>
   );
 };
