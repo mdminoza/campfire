@@ -993,6 +993,7 @@ const ActiveTemplate = () => {
           onClickMuteMe={() => {}}
           onClickEmoji={handleOnClickEmoji}
           onClickMic={() => {}}
+          isAdmin={activeUser?.uid === campfire?.creator?.uid}
         />
       </Layout>
     );

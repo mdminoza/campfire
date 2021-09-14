@@ -3,12 +3,14 @@ import styled from 'styled-components';
 import { Button, Result } from 'antd';
 
 import { Campfire } from '../../../../common/domain/entities/campfire';
+import { theme } from '../../../constants';
 
 const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
+  background-color: ${theme.colors.mainWhite};
 `;
 
 type Props = {

@@ -1,23 +1,25 @@
 /* eslint-disable no-nested-ternary */
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import { Layout, Row, Col } from 'antd';
-import { Link } from 'react-router-dom';
+import { Layout, Row, Col, Dropdown, Menu } from 'antd';
+// import { Link } from 'react-router-dom';
 import { Button } from '../../atoms/Button';
 import { Avatar } from '../../atoms/Avatar';
-import { AudioMeter } from '../../atoms/AudioMeter';
-import { RoomControls } from '../../atoms/RoomControls';
+// import { AudioMeter } from '../../atoms/AudioMeter';
+// import { RoomControls } from '../../atoms/RoomControls';
 import {
   EmojiCool,
   EmojiSmiley,
   EmojiSweat,
   EmojiWink,
   RaiseHand,
-  Close,
-  Refresh,
-  Mic,
-  MicOff,
-  Settings,
+  MuteMic,
+  UnmuteMic,
+  // Close,
+  // Refresh,
+  // Mic,
+  // MicOff,
+  // Settings,
 } from '../../atoms/Icons';
 import { theme } from '../../../constants';
 
@@ -43,18 +45,18 @@ const StyledRow = styled(Row)`
 //   border-radius: 15px;
 // `;
 
-const Divider = styled.div`
-  width: 1px;
-  height: 40px;
-  background: black;
-`;
+// const Divider = styled.div`
+//   width: 1px;
+//   height: 40px;
+//   background: black;
+// `;
 
 const OptionContainer = styled.div`
   display: flex;
   align-items: center;
 `;
 
-const LinkWrapper = styled(Link)``;
+// const LinkWrapper = styled(Link)``;
 
 const IconLogo = styled.div`
   height: 50px;
@@ -100,10 +102,10 @@ const RaiseHandLabel = styled.span`
 `;
 
 const AvatarWrapper = styled.div`
-  background-color: red;
   .styledAvatar {
     display: inline-block;
   }
+  cursor: pointer;
 `;
 
 const RaiseHandWrapper = styled.div`
@@ -144,6 +146,32 @@ const MuteMeLabel = styled.span`
   color: ${theme.colors.mainWhite};
 `;
 
+const StyledMenu = styled(Menu)`
+  border: 2px solid #000000;
+  .adminMenu {
+    font-family: ${theme.fonts.fontFamily};
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.02em;
+
+    color: ${theme.colors.mainBlack};
+  }
+
+  .adminMenuList {
+    font-family: ${theme.fonts.fontFamily};
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.02em;
+    color: ${theme.colors.gray.gray989};
+  }
+`;
+
+const HiddenDropDownContainer = styled.div``;
+
 type Props = {
   id: string;
   profileUrl: string;
@@ -158,7 +186,21 @@ type Props = {
     emojiType: 'wink' | 'smile' | 'sweat' | 'cool',
   ) => void;
   onClickMic?: () => void;
+  isAdmin?: boolean;
 };
+
+const HiddenContainer = styled.div`
+  width: 59px;
+  height: 59px;
+  position: absolute;
+  top: 0;
+`;
+
+const MuteLabel = styled.span``;
+
+const UnLabel = styled.b`
+  color: ${theme.colors.mainBlack};
+`;
 
 const CampfireFooter = ({
   id,
@@ -171,9 +213,11 @@ const CampfireFooter = ({
   onClickMuteMe = () => {},
   onClickEmoji = () => {},
   onClickMic = () => {},
+  isAdmin = false,
 }: Props): React.ReactElement => {
-  const [onMute, setOnMute] = useState(true);
-  const [openSettings, setOpenSettings] = useState(false);
+  const [onMute, setOnMute] = useState(false);
+  const [onMenuProfile, setMenuProfile] = useState(false);
+  // const [openSettings, setOpenSettings] = useState(false);
   // const history = useHistory();
   // const navigate = useNavigate();
   const width =
@@ -208,26 +252,111 @@ const CampfireFooter = ({
 
   const emojiCoolStyle = { marginBottom: 1.6 };
 
+  const overlayStyle = {
+    // paddingTop: 45,
+  };
+
+  const adminMenu = (
+    <StyledMenu
+      onClick={(menuItem: any) => {
+        console.log(menuItem.key.toString(), 'menuItem');
+      }}>
+      <Menu.Item className="adminMenu" disabled key="1">
+        ADMIN MENU
+      </Menu.Item>
+      <Menu.Divider />
+      <Menu.Item className="adminMenuList" key="muteAll">
+        MUTE ALL
+      </Menu.Item>
+      <Menu.Item className="adminMenuList" key="unmuteAll">
+        <MuteLabel>
+          <UnLabel>UN</UnLabel>MUTE ALL
+        </MuteLabel>
+      </Menu.Item>
+      <Menu.Item className="adminMenuList" key="kickAll">
+        KICK ALL
+      </Menu.Item>
+      <Menu.Divider />
+      <Menu.Item className="adminMenuList" key="leaveCampfire">
+        LEAVE CAMPFIRE
+      </Menu.Item>
+      <Menu.Item className="adminMenuList" key="closeCampfire">
+        CLOSE CAMPFIRE
+      </Menu.Item>
+    </StyledMenu>
+  );
+
+  const menu = (
+    <StyledMenu
+      onClick={(menuItem: any) => {
+        console.log(menuItem.key.toString(), 'menuItem');
+      }}>
+      <Menu.Item className="adminMenu" disabled key="1">
+        MENU
+      </Menu.Item>
+      <Menu.Divider />
+      <Menu.Item className="adminMenuList" key="leaveCampfire">
+        LEAVE CAMPFIRE
+      </Menu.Item>
+    </StyledMenu>
+  );
+
   const handleOnClickMic = () => {
     setOnMute(!onMute);
     onClickMic();
   };
 
-  const handleOnClickSettings = () => {
-    setOpenSettings(!openSettings);
+  // const handleOnClickSettings = () => {
+  //   setOpenSettings(!openSettings);
+  // };
+
+  const handleOnClickProfile = () => {
+    setMenuProfile(!onMenuProfile);
   };
+
+  useEffect(() => {
+    const onClickEvent = (e: any) => {
+      if (e.target && e.target.id !== '_profileMenu') {
+        setMenuProfile(false);
+      }
+    };
+    if (onMenuProfile) {
+      window.addEventListener('click', onClickEvent);
+    }
+  }, [onMenuProfile]);
+
+  const handleNavigation = useCallback(() => {
+    setMenuProfile(false);
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleNavigation);
+
+    return () => {
+      window.removeEventListener('scroll', handleNavigation);
+    };
+  }, [handleNavigation]);
 
   return (
     <StyledFooter>
       <StyledRow>
-        <Col flex="59px">
+        <Col onClick={handleOnClickProfile} flex="59px">
           <AvatarWrapper>
+            <Dropdown
+              placement="topCenter"
+              overlayClassName="adminMenuDropdown"
+              overlay={isAdmin ? adminMenu : menu}
+              overlayStyle={overlayStyle}
+              visible={onMenuProfile}>
+              <HiddenDropDownContainer />
+            </Dropdown>
             <Avatar size={59} src={profileUrl} alt="Campfire" />
             {!isSpeaker && isRaising && (
               <RaiseHandWrapper>
                 <RaiseHand width={28} height={40} />
               </RaiseHandWrapper>
             )}
+            <HiddenContainer id="_profileMenu" />
           </AvatarWrapper>
         </Col>
         <Col flex="auto">
@@ -279,8 +408,15 @@ const CampfireFooter = ({
             </EmojiButtonWrapper>
           </EmojiWrapper>
         )}
-        {/* <OptionContainer>
-          <Divider />
+        <OptionContainer>
+          <IconLogo onClick={handleOnClickMic}>
+            {onMute ? (
+              <MuteMic width={42} height={42} />
+            ) : (
+              <UnmuteMic width={42} height={42} />
+            )}
+          </IconLogo>
+          {/* <Divider />
           <IconLogo onClick={() => {}}>
             <AudioMeter level={60} />
           </IconLogo>
@@ -300,8 +436,8 @@ const CampfireFooter = ({
           <IconLogo onClick={handleOnClickSettings}>
             <Settings />
             {openSettings && <RoomControls onClick={handleOnClickSettings} />}
-          </IconLogo>
-        </OptionContainer> */}
+          </IconLogo> */}
+        </OptionContainer>
       </StyledRow>
     </StyledFooter>
   );

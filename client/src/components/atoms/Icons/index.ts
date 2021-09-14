@@ -19,6 +19,8 @@ import KeyboardVoice from './KeyboardVoice';
 import Asterisks from './Asterisks';
 import BlackCrown from './BlackCrown';
 import Settings from './Settings';
+import MuteMic from './MuteMic';
+import UnmuteMic from './UnmuteMic';
 
 export {
   AppLogo,
@@ -42,4 +44,6 @@ export {
   Asterisks,
   BlackCrown,
   Settings,
+  MuteMic,
+  UnmuteMic,
 };
