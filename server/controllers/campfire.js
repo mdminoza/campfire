@@ -28,6 +28,7 @@ export const fetchPublicCampfires = async (req, res, next) => {
             {
                 'creator.uid': { $ne: cid },
                 openTo: 'Everyone',
+                hidden: false,
                 createdAt: { 
                     $lt: new Date(), 
                     $gte: new Date(new Date().setDate(new Date().getDate()-1)),
@@ -50,6 +51,7 @@ export const fetchPrivateCampfires = async (req, res, next) => {
             {
                 'creator.uid': { $ne: cid },
                 openTo: 'Invite Only',
+                hidden: false,
                 createdAt: { 
                     $lt: new Date(), 
                     $gte: new Date(new Date().setDate(new Date().getDate()-1)),
