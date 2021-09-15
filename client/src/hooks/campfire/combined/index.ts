@@ -195,6 +195,18 @@ export const useCampfireAction: CampfireHooks['useCampfireAction'] = () => {
     }
   }, []);
 
+  const deleteCampfire = useCallback(async (id: string) => {
+    try {
+      const res = await axios.delete(`${urls.campfire.main}${id}`);
+      if (res && res?.status === 200) {
+        return res.data;
+      }
+      return null;
+    } catch (e: any) {
+      throw new Error(e);
+    }
+  }, []);
+
   return {
     fetchCampfires,
     fetchOwnedCampfires,
@@ -204,5 +216,6 @@ export const useCampfireAction: CampfireHooks['useCampfireAction'] = () => {
     searchCampfires,
     fetchCampfire,
     fetchCampfireMembers,
+    deleteCampfire,
   };
 };

@@ -12,7 +12,7 @@ export const cipherText = (value: any): string =>
 export const decipherText = (encryptedText: string): any => {
   try {
     const bytes = crypto.AES.decrypt(
-      encryptedText,
+      decodeURIComponent(encryptedText),
       process.env.REACT_APP_PASSPHRASE || '',
     );
     const decryptedData = JSON.parse(bytes.toString(crypto.enc.Utf8));

@@ -9,7 +9,7 @@ import { useQuery, useMutation } from 'react-query';
 
 import { theme } from '../../../constants';
 import { arrayToObject } from '../../../utils/helpers/common';
-import { cipherText } from '../../../utils/helpers/crypto';
+import { cipherText, decipherText } from '../../../utils/helpers/crypto';
 import { TextInput } from '../../atoms/TextInput';
 import { Search } from '../../atoms/Icons';
 import { Loader } from '../../atoms/Loader';
@@ -285,10 +285,13 @@ const MainTemplate = (): React.ReactElement => {
         onSuccess: (data) => {
           if (activeTab === 'publicCampfire') {
             const userDetail = {
-              name: currentUser?.name,
-              uid: currentUser?.id,
-              profileUrl: currentUser?.profileUrl,
-              campfireId: data?.campfire,
+              token: localStorage.getItem('access-token'),
+              data: {
+                name: currentUser?.name,
+                uid: currentUser?.id,
+                profileUrl: currentUser?.profileUrl,
+                campfireId: data?.campfire,
+              },
             };
             setActiveCampfire(data?.campfire || null);
             navigate(
@@ -355,10 +358,13 @@ const MainTemplate = (): React.ReactElement => {
       isUpcomingCampfire?: boolean,
     ) => {
       const userDetail = {
-        name: currentUser?.name,
-        uid: currentUser?.id,
-        profileUrl: currentUser?.profileUrl,
-        campfireId,
+        token: localStorage.getItem('access-token'),
+        data: {
+          name: currentUser?.name,
+          uid: currentUser?.id,
+          profileUrl: currentUser?.profileUrl,
+          campfireId,
+        },
       };
 
       const memberStatus =

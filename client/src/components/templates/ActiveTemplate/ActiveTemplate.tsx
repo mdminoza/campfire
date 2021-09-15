@@ -2,9 +2,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Layout, Grid, Modal, Button, Result } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, usePrompt } from 'react-router-dom';
 import styled from 'styled-components';
 import { useQuery, useMutation } from 'react-query';
 import io from 'socket.io-client';
@@ -67,9 +67,16 @@ const ActiveTemplate = () => {
     | undefined
   >(undefined);
   const [errorMsg, setErrorMsg] = useState<string>('');
+  const [isEndCampfireModal, setEndCampfireModal] = useState(false);
+  const [isPrompt, setPrompt] = useState(false);
+  const [isEndedCampfire, setEndedCampfire] = useState(false);
 
   const screens = useBreakpoint();
-  const { fetchCampfire, fetchCampfireMembers } = useCampfireAction();
+  const {
+    fetchCampfire,
+    fetchCampfireMembers,
+    deleteCampfire,
+  } = useCampfireAction();
   const { fetchMember, updateMemberStatus, deleteMember } = useMemberAction();
   const { activeCampfire, setActiveCampfire } = useUserState();
   const { data } = useQueryData();
@@ -77,6 +84,8 @@ const ActiveTemplate = () => {
   const userVideo = useRef<any>();
   const peersRef = useRef<any>([]);
 
+  // https://staging-campfire-api.azurewebsites.net
+  // http://localhost:5000
   const socket = io('https://staging-campfire-api.azurewebsites.net', {
     // TODO: Need more research for the proper socket options
     // transports: ['websocket'],
@@ -200,10 +209,11 @@ const ActiveTemplate = () => {
   useEffect(() => {
     if (data) {
       try {
-        const userInfo = decipherText(data);
+        const decryptedData = decipherText(data);
         setInvalidDecryptedValue(false);
-        setActiveCampfireId(userInfo.campfireId);
-        setActiveUser(userInfo);
+        setActiveCampfireId(decryptedData.data.campfireId);
+        setActiveUser(decryptedData.data);
+        setPrompt(true);
       } catch (error) {
         setInvalidDecryptedValue(true);
       }
@@ -505,6 +515,15 @@ const ActiveTemplate = () => {
             }
           });
 
+          socket.on('received end campfire', () => {
+            AntdMessage('info', 'Campfire is ended by admin.');
+            setPrompt(false);
+            setActiveCampfire(null);
+            setActiveCampfireId('');
+            setActiveUser(undefined);
+            setEndedCampfire(true);
+          });
+
           socket.on('connect_error', () => {
             console.log('error socket');
           });
@@ -590,6 +609,32 @@ const ActiveTemplate = () => {
         refetchCampfireMembers();
       },
     },
+  );
+
+  const {
+    mutate: endCampfireMutation,
+    isLoading: endCampfireLoading,
+    isSuccess: endCampfireSuccess,
+  } = useMutation((id: string) => deleteCampfire(id));
+
+  const handleEndCampfire = useCallback(
+    (id: string) => {
+      endCampfireMutation(id, {
+        onSuccess: () => {
+          filteredPeers.forEach((val) => {
+            socket.emit('end campfire', {
+              userSocketId: val.socketId,
+              campfireId: activeCampfireId,
+            });
+          });
+          navigate('/campfires');
+        },
+        onError: () => {
+          setPrompt(true);
+        },
+      });
+    },
+    [activeCampfireId, filteredPeers, socket],
   );
 
   const handleOnClickPendingMenu = (
@@ -903,6 +948,36 @@ const ActiveTemplate = () => {
     }
   }, [speakers, members.length, speakers.length, breakPoint]);
 
+  const handleOnClickProfileMenu = (key: string) => {
+    if (key === 'leaveCampfire') {
+      navigate('/campfires');
+    }
+    if (key === 'endCampfire') {
+      setEndCampfireModal(true);
+    }
+  };
+
+  usePrompt('Are you sure you want to leave his campfire?', isPrompt);
+
+  if (isEndedCampfire && !activeCampfire) {
+    return (
+      <NotSupportedContainer>
+        <Result
+          status="warning"
+          title="Campfire is ended."
+          extra={
+            <Button
+              type="primary"
+              key="console"
+              onClick={() => navigate('/campfires')}>
+              Back to Home
+            </Button>
+          }
+        />
+      </NotSupportedContainer>
+    );
+  }
+
   if (isInvalidDecryptedValue) {
     return (
       <>
@@ -953,7 +1028,7 @@ const ActiveTemplate = () => {
   }
 
   if (activeCampfire === activeCampfireId) {
-    return isFetchingCampfireLoading ? (
+    return isFetchingCampfireLoading || endCampfireLoading ? (
       <Loader style={mainLoader} />
     ) : (
       <Layout>
@@ -994,7 +1069,24 @@ const ActiveTemplate = () => {
           onClickEmoji={handleOnClickEmoji}
           onClickMic={() => {}}
           isAdmin={activeUser?.uid === campfire?.creator?.uid}
+          onClickProfileMenu={handleOnClickProfileMenu}
         />
+        <Modal
+          visible={isEndCampfireModal}
+          closable={false}
+          footer={[
+            <Button onClick={() => setEndCampfireModal(false)}>Cancel</Button>,
+            <Button
+              danger
+              onClick={() => {
+                setPrompt(false);
+                handleEndCampfire(activeCampfireId);
+              }}>
+              End Campfire
+            </Button>,
+          ]}>
+          <b>Are you sure you want to end this campfire?</b>
+        </Modal>
       </Layout>
     );
   }

@@ -20,6 +20,7 @@ export type CampfireHooks = {
     ) => Promise<[] | undefined>;
     fetchCampfire: (id: string) => Promise<Campfire | undefined>;
     fetchCampfireMembers: (id: string) => Promise<MemberParams[] | undefined>;
+    deleteCampfire: (id: string) => Promise<{} | undefined>;
   };
 };
 

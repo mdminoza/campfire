@@ -187,6 +187,7 @@ type Props = {
   ) => void;
   onClickMic?: () => void;
   isAdmin?: boolean;
+  onClickProfileMenu?: (key: string) => void;
 };
 
 const HiddenContainer = styled.div`
@@ -214,6 +215,7 @@ const CampfireFooter = ({
   onClickEmoji = () => {},
   onClickMic = () => {},
   isAdmin = false,
+  onClickProfileMenu = () => {},
 }: Props): React.ReactElement => {
   const [onMute, setOnMute] = useState(false);
   const [onMenuProfile, setMenuProfile] = useState(false);
@@ -258,9 +260,7 @@ const CampfireFooter = ({
 
   const adminMenu = (
     <StyledMenu
-      onClick={(menuItem: any) => {
-        console.log(menuItem.key.toString(), 'menuItem');
-      }}>
+      onClick={(menuItem: any) => onClickProfileMenu(menuItem.key.toString())}>
       <Menu.Item className="adminMenu" disabled key="1">
         ADMIN MENU
       </Menu.Item>
@@ -280,17 +280,15 @@ const CampfireFooter = ({
       <Menu.Item className="adminMenuList" key="leaveCampfire">
         LEAVE CAMPFIRE
       </Menu.Item>
-      <Menu.Item className="adminMenuList" key="closeCampfire">
-        CLOSE CAMPFIRE
+      <Menu.Item className="adminMenuList" key="endCampfire">
+        END CAMPFIRE
       </Menu.Item>
     </StyledMenu>
   );
 
   const menu = (
     <StyledMenu
-      onClick={(menuItem: any) => {
-        console.log(menuItem.key.toString(), 'menuItem');
-      }}>
+      onClick={(menuItem: any) => onClickProfileMenu(menuItem.key.toString())}>
       <Menu.Item className="adminMenu" disabled key="1">
         MENU
       </Menu.Item>
