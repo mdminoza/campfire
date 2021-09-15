@@ -140,6 +140,11 @@ const socketInit = (server) => {
             },
         );
 
+        socket.on('end campfire', ({ userSocketId, campfireId }) => {
+            users[campfireId] = {};
+            io.to(userSocketId).emit('received end campfire');
+        });
+
         socket.on('disconnect', (reason) => {
             const campfireId = socketToRoom[socket.id];
             let room = users[campfireId];
