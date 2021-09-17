@@ -19,6 +19,7 @@ import { TitleContent } from '../../molecules/TitleContent';
 import { MemberItemParams } from '../../molecules/MemberItem/types';
 import { SpeakersArea } from '../../organisms/SpeakersArea';
 import { CampfireFooter } from '../../organisms/CampfireFooter';
+import { CampfireFooter1 } from '../../organisms/CampfireFooter1';
 import { MembersList } from '../../organisms/MembersList';
 
 import { useQueryData } from '../../../hooks/common';
@@ -102,7 +103,9 @@ const ActiveTemplate = () => {
   useEffect(() => {
     const fooz = Object.entries(screens).filter((screen) => !!screen[1]);
     try {
-      setBreakPoint(fooz[fooz.length - 1][0]);
+      if (fooz && fooz.length > 0) {
+        setBreakPoint(fooz[fooz.length - 1][0]);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -522,6 +525,7 @@ const ActiveTemplate = () => {
             setActiveCampfireId('');
             setActiveUser(undefined);
             setEndedCampfire(true);
+            setPeers(undefined);
           });
 
           socket.on('connect_error', () => {
@@ -1057,7 +1061,7 @@ const ActiveTemplate = () => {
             size={avatarSize}
           />
         </AudienceWrapper>
-        <CampfireFooter
+        <CampfireFooter1
           id={activeUser?.uid || ''}
           profileUrl={activeUser?.profileUrl || ''}
           isMuted={false}

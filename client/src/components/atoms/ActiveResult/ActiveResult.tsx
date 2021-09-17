@@ -69,7 +69,7 @@ const ActiveResult = ({
         title="Oopss!"
         subTitle={
           error
-            ? error?.message || 'Sorry, something went wrong.'
+            ? 'Sorry, campfire is not available at the moment or does not exist.'
             : isStartedMsg
         }
         extra={renderButton()}

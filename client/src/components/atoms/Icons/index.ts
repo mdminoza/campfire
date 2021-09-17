@@ -21,6 +21,8 @@ import BlackCrown from './BlackCrown';
 import Settings from './Settings';
 import MuteMic from './MuteMic';
 import UnmuteMic from './UnmuteMic';
+import Mic1 from './Mic1';
+import Dots from './Dots';
 
 export {
   AppLogo,
@@ -46,4 +48,6 @@ export {
   Settings,
   MuteMic,
   UnmuteMic,
+  Mic1,
+  Dots,
 };

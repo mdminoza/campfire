@@ -18,6 +18,10 @@ export const StyledButton: React.FunctionComponent<ButtonProps> = styled(
   outline: none;
   cursor: pointer;
   border: 0;
+  &:focus {
+    outline: none;
+    box-shadow: none;
+  }
 `;
 
 // Create Campfire Style Button
