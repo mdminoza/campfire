@@ -653,29 +653,36 @@ const ActiveTemplate = () => {
         console.log(res, 'res');
         setKickAllModal(false);
         AntdMessage('info', 'Succesfully kicked all audience.');
-        // TODO: Kick all
-        // setTimeout(() => {
-        //   if (peersRef.current) {
 
-        //     res?.uids.forEach((val) => {
-        //       const userPeer = peersRef.current[val];
-        //       if (userPeer) {
-        //         userPeer.peer.destroy();
-        //       }
-        //     });
+        setTimeout(() => {
+          if (peersRef.current) {
+            res?.uids.forEach((val: string) => {
+              const userPeer = peersRef.current[val];
+              if (userPeer) {
+                userPeer.peer.destroy();
+              }
+              delete peersRef.current[val];
+            });
+          }
 
-        //     // eslint-disable-next-line @typescript-eslint/no-use-before-define
-        //     // members.filter(x => !arr2.includes(x))
+          setPeers((prev: any) => {
+            const { ...newData } = prev;
+            res?.uids.forEach((val: string) => {
+              delete newData[val];
+            });
+            return newData;
+          });
+        }, 100);
 
-        //     const { [selectedId]: val, ...restuserPeers } = peersRef.current;
-        //     peersRef.current = restuserPeers;
-        //   }
-
-        //   setPeers((prev: any) => {
-        //     const { [selectedId]: kickedPeer, ...restPeers } = prev;
-        //     return restPeers;
-        //   });
-        // }, 100);
+        filteredPeers.forEach((val) => {
+          socket.emit('setUsers', {
+            campfireId: activeCampfireId,
+            setValue: {},
+            userSocketId: val.socketId,
+            selectedUserId: res?.uids,
+            operation: 'kickAll',
+          });
+        });
       },
     },
   );
