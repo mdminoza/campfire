@@ -63,9 +63,9 @@ export const addUsers = async (req, res, next) => {
 
 export const encryptUser = async (req, res, next) => {
     try {
-        const { token, data } = req.body;
-        if (!token || !data.campfireId || !data.name || !data.profileUrl || !data.uid) throw new Error('Some fields are missing!'); 
-        const cipheredVal = cipherText({ token, data });
+        const { campfireId, name, profileUrl, uid } = req.body;
+        if (!campfireId || !name || !profileUrl || !uid) throw new Error('Some fields are missing!'); 
+        const cipheredVal = cipherText({ campfireId, name, profileUrl, uid});
         res.status(200).json({ data: cipheredVal });
     } catch (error) {
         next(error);
