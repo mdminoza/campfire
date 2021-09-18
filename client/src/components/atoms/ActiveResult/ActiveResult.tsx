@@ -43,10 +43,10 @@ const ActiveResult = ({
     }
     if (isStarted) {
       return [
-        <Button type="primary" onClick={onClickHome}>
+        <Button key="home" type="primary" onClick={onClickHome}>
           Back to Home
         </Button>,
-        <Button type="primary" onClick={onClickRejoin}>
+        <Button key="rejoin" type="primary" onClick={onClickRejoin}>
           Rejoin
         </Button>,
       ];

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
 import { Row, Col, Grid } from 'antd';
@@ -296,7 +296,7 @@ const CreateCampfire = ({
         </StyledRow>
         <StyledDivider />
         <StyledRow gutter={[32, 0]}>
-          <StyledCol span={12} right>
+          <StyledCol span={12} right="true">
             <StyledText>Scheduled To Start:</StyledText>
           </StyledCol>
           <StyledCol span={12}>
@@ -317,7 +317,7 @@ const CreateCampfire = ({
           </StyledCol>
         </StyledRow>
         <StyledRow gutter={[32, 0]}>
-          <StyledCol span={12} right>
+          <StyledCol span={12} right="true">
             <StyledText>Open To:</StyledText>
           </StyledCol>
           <StyledCol span={12}>
@@ -340,7 +340,7 @@ const CreateCampfire = ({
           </StyledCol>
         </StyledRow>
         <StyledRow gutter={[32, 0]}>
-          <StyledCol span={12} right>
+          <StyledCol span={12} right="true">
             <StyledText>Duration:</StyledText>
           </StyledCol>
           <StyledCol span={12}>

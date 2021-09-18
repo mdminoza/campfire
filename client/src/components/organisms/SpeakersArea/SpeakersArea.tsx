@@ -99,7 +99,7 @@ const SpeakersArea = ({
         {data && data.length > 0 ? (
           <Row gutter={[20, 16]} justify="center">
             {data.map((value) => (
-              <Col>
+              <Col key={value.uid}>
                 <AnimatedEmoji
                   emoji={value.emoji || ''}
                   emojiId={value.emojiId || ''}
@@ -142,7 +142,7 @@ const SpeakersArea = ({
         <SpeakersWrapper>
           <Row gutter={[16, 16]} justify="center">
             {invites.map((value) => (
-              <Col>
+              <Col key={value.uid}>
                 <InviteMemberItem
                   name={value.speaker}
                   selectedId={selectedId}

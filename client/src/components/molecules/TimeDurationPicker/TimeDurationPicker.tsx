@@ -39,7 +39,7 @@ const TimeDurationPicker = ({
   const RenderHour = () => (
     <TimeContainer>
       {hours.map((val) => (
-        <TextWrapper onClick={() => handleSetHour(val)}>
+        <TextWrapper key={val} onClick={() => handleSetHour(val)}>
           <TextStyle isSelected={val === hour}>{val}</TextStyle>
         </TextWrapper>
       ))}
@@ -48,8 +48,9 @@ const TimeDurationPicker = ({
 
   const RenderMinutes = () => (
     <TimeContainer>
-      {minutes.map((val) => (
-        <TextWrapper onClick={() => handleSetMinutes(val)}>
+      {minutes.map((val, index) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <TextWrapper key={index} onClick={() => handleSetMinutes(val)}>
           <TextStyle isSelected={val === minute}>{val}</TextStyle>
         </TextWrapper>
       ))}

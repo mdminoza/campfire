@@ -21,6 +21,10 @@ export type MemberHooks = {
       uid: string;
       id: string;
     }) => Promise<Object | undefined>;
+    deleteMembers: (params: {
+      uids: String[];
+      id: string;
+    }) => Promise<Object | undefined>;
   };
 };
 

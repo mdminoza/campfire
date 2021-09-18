@@ -14,7 +14,12 @@ type Props = {
   size?: number;
 };
 
-const MembersList = ({ data, selectedId, onClick, size }: Props) => (
+const MembersList = ({
+  data,
+  selectedId,
+  onClick,
+  size,
+}: Props): React.ReactElement => (
   <Container>
     <Row gutter={[24, 32]} justify="center">
       {data && data.length > 0 ? (

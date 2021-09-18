@@ -121,25 +121,25 @@ const Overlay = styled.div`
   }
 `;
 
-const EditWrapper = styled.div`
-  width: 100%;
-  z-index: 1;
-  position: absolute;
-  bottom: 72px;
-`;
+// const EditWrapper = styled.div`
+//   width: 100%;
+//   z-index: 1;
+//   position: absolute;
+//   bottom: 72px;
+// `;
 
-const EditButton = styled.div`
-  float: right;
-  margin-right: 40px;
-  width: 130px;
-  border: 1px solid ${theme.colors.mainWhite};
-  font-family: ${theme.fonts.fontFamily};
-  font-style: normal;
-  font-size: 14px;
-  color: ${theme.colors.mainWhite};
-  text-align: center;
-  z-index: 1;
-`;
+// const EditButton = styled.div`
+//   float: right;
+//   margin-right: 40px;
+//   width: 130px;
+//   border: 1px solid ${theme.colors.mainWhite};
+//   font-family: ${theme.fonts.fontFamily};
+//   font-style: normal;
+//   font-size: 14px;
+//   color: ${theme.colors.mainWhite};
+//   text-align: center;
+//   z-index: 1;
+// `;
 
 // const DurationWrapper = styled.div`
 //   z-index: 1;

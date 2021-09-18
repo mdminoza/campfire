@@ -31,7 +31,7 @@ export const TitleWrapper = styled.div`
   width: 100%;
 `;
 
-export const Title = styled.text`
+export const Title = styled.span`
   font-family: ${theme.fonts.fontFamily};
   font-weight: 300;
   font-size: 1.5rem;
@@ -90,7 +90,7 @@ export const Wrapper = styled.div`
   background: ${theme.colors.gray.light};
 `;
 
-export const SubTitle = styled.text`
+export const SubTitle = styled.span`
   font-family: ${theme.fonts.fontFamily};
   font-weight: 700;
   font-size: 1.2rem;

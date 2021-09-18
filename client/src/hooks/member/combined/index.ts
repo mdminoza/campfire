@@ -67,10 +67,26 @@ export const useMemberAction: MemberHooks['useMemberAction'] = () => {
     [],
   );
 
+  const deleteMembers = useCallback(
+    async (params: { uids: String[]; id: string }) => {
+      try {
+        const res = await axios.patch(`${urls.member.deleteMany}`, params);
+        if (res && res?.status === 200) {
+          return res.data;
+        }
+        return null;
+      } catch (e: any) {
+        throw new Error(e);
+      }
+    },
+    [],
+  );
+
   return {
     addMember,
     fetchMember,
     updateMemberStatus,
     deleteMember,
+    deleteMembers,
   };
 };

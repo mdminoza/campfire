@@ -19,8 +19,8 @@ export const StyledRow = styled(Row)<{ height?: number }>`
 
 export const StyledCol = styled(Col)`
   flex: 1;
-  text-align: ${(props: { right?: boolean }): string =>
-    props.right ? 'right' : 'left'};
+  text-align: ${(props: { right?: string }): string =>
+    props.right === 'true' ? 'right' : 'left'};
 `;
 
 export const Spacer = styled.div`
@@ -33,14 +33,14 @@ export const TextInputWrapper = styled.div`
   height: '45px';
 `;
 
-export const InfoTitle = styled.text`
+export const InfoTitle = styled.span`
   font-family: ${theme.fonts.fontBoldFamily}
   font-size: 12px;
   font-weight: 700;
   color: ${theme.colors.mainWhite};
 `;
 
-export const InfoSubtitle = styled.text`
+export const InfoSubtitle = styled.span`
   font-family: ${theme.fonts.fontFamily};
   font-size: 0.8rem;
   font-weight: 100;
@@ -48,7 +48,7 @@ export const InfoSubtitle = styled.text`
   color: ${theme.colors.mainWhite};
 `;
 
-export const Title = styled.text`
+export const Title = styled.span`
   font-family: ${theme.fonts.fontFamily};
   font-size: 2.5rem;
   line-height: 2.5rem;
@@ -56,7 +56,7 @@ export const Title = styled.text`
   color: ${theme.colors.mainWhite};
 `;
 
-export const SubTitle = styled.text`
+export const SubTitle = styled.span`
   font-family: ${theme.fonts.fontFamily};
   font-size: 1.5rem;
   font-weight: 100;
@@ -76,7 +76,7 @@ export const StyledDivider = styled(Divider)`
   border-color: ${theme.colors.mainWhite};
 `;
 
-export const StyledText = styled.text`
+export const StyledText = styled.span`
   font-family: ${theme.fonts.fontFamily};
   font-size: 1.2rem;
   font-weight: 600;
