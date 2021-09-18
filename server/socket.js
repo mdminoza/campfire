@@ -89,6 +89,10 @@ const socketInit = (server) => {
                 if (operation === 'kick') {
                     const { [selectedUserId]: kickedUsers, ...rest } = users[campfireId];
                     users[campfireId] = rest;
+                } else if (operation === 'kickAll') {
+                    selectedUserId.forEach((val) => {
+                        delete users[campfireId][val];
+                    });
                 } else {
                     users[campfireId] = {
                         ...users[campfireId],
