@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import React, { useEffect } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 import ErrorBoundary from '../../components/HOCs/ErrorBoundary';
@@ -10,6 +10,7 @@ import { ActivePage } from '../../components/pages/ActivePage';
 import { LoginPage } from '../../components/pages/LoginPage';
 
 import { useUserState, useUserAction } from '../../hooks/user';
+import { UserInterface } from '../../hooks/user/combined/types';
 
 const ProtectedRoutes = () => (
   <Routes>
@@ -32,8 +33,10 @@ const Navigator = () => {
     setIsLoading,
     token: stateToken,
     setToken,
+    allUsers,
+    setAllUsers,
   } = useUserState();
-  const { fetchCurrentUser } = useUserAction();
+  const { fetchCurrentUser, fetchAllUsers } = useUserAction();
 
   // TODO: use this to manually logout for testing purposes
   // localStorage.removeItem('access-token');
@@ -82,9 +85,25 @@ const Navigator = () => {
     },
   );
 
+  const handleAllUsers = (arr: UserInterface[] | undefined) => {
+    console.log('handleAll Users; ', arr, allUsers);
+    setAllUsers(arr || []);
+    console.log('allUsers: ', allUsers);
+  };
+
+  const { mutate: getAllUsers } = useMutation(() => fetchAllUsers(), {
+    onSuccess: (res) => {
+      handleAllUsers(res);
+    },
+    onError: (error) => {
+      console.log('getALl Error: ', error);
+    },
+  });
+
   useEffect(() => {
     if (token) {
       refetchCurrentUser();
+      getAllUsers();
     } else {
       setCurrentUser(undefined);
     }

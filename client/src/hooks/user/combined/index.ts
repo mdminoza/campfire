@@ -4,6 +4,7 @@ import axiosInstance from '../../../config/axios';
 import { UserHooks } from '../index';
 // import axios from '../../../config/axios';
 import urls from '../../../constants/urls';
+import { UserInterface } from './types';
 // import { TodoParams } from '../../../../common/domain/entities/todo';
 
 export const useUserAction: UserHooks['useUserAction'] = () => {
@@ -40,9 +41,38 @@ export const useUserAction: UserHooks['useUserAction'] = () => {
     }
   }, []);
 
+  const fetchAllUsers = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('access-token');
+      // eslint-disable-next-line prefer-const
+      let users: string | any[] | PromiseLike<any[]> = [];
+      let page = 1;
+      while (true) {
+        const userUrl = `${urls.web.dev}users?page=${page}&per_page=10&order=asc&orderby=id&keyword=gmail`;
+        // eslint-disable-next-line no-await-in-loop
+        const res = await axios.get(userUrl, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        // eslint-disable-next-line no-extra-boolean-cast
+        if (res.data.data.length > 0) {
+          users = [...users, ...res.data.data];
+          console.log('RESPONSE: ', res.data.data, users);
+          page += 1;
+        } else {
+          console.log('break: ', users);
+          break;
+        }
+      }
+      return users as UserInterface[];
+    } catch (e: any) {
+      throw new Error(e);
+    }
+  }, []);
+
   return {
     loginUser,
     fetchCurrentUser,
     fetchRandomTestUser,
+    fetchAllUsers,
   };
 };

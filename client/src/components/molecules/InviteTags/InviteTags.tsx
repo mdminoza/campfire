@@ -5,6 +5,7 @@ import 'antd/dist/antd.css';
 import debounce from 'lodash/debounce';
 import { Container, SelectStyle, SelectionWrapper, BtnStyle } from './elements';
 import { Button } from '../../atoms/Button';
+import { useUserState } from '../../../hooks/user';
 
 type Props = {
   setInvite: (selected: Object[], type: string) => void;
@@ -50,6 +51,37 @@ function DebounceSelect({ debounceTimeout = 800, ...props }) {
       options={options}
       onDropdownVisibleChange={onDropdownVisibleChange}
     />
+  );
+}
+
+const handleChange = (value: any) => {
+  console.log('handleChange: ', value);
+};
+
+function RenderOptions({ ...props }) {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const { allUsers } = useUserState();
+  const { Option } = Select;
+  const users = Array<any>();
+  for (let i = 0; i < allUsers.length; i++) {
+    users.push(
+      <Option
+        key={allUsers[i].username}
+        // eslint-disable-next-line react/no-children-prop
+        children={allUsers[i].username}
+        value={allUsers[i].username}
+      />,
+    );
+  }
+  console.log('RenderOptions: ', allUsers);
+  return (
+    <Select
+      mode="multiple"
+      {...props}
+      placeholder="Please select"
+      onChange={handleChange}>
+      {users}
+    </Select>
   );
 }
 
@@ -100,17 +132,18 @@ const InviteTags = ({
           <Radio value="Invite Only">INVITE ONLY</Radio>
         </Radio.Group>
         {radioVal === 'Invite Only' && (
-          <DebounceSelect
-            mode="multiple"
-            value={value}
-            placeholder="Select users"
-            fetchoptions={fetchUserLists}
-            onChange={(newValue: any) => {
-              setValue(newValue);
-            }}
-            style={SelectStyle}
-            onDropdownVisibleChange={onDropdownVisibleChange}
-          />
+          <RenderOptions style={SelectStyle} />
+          // <DebounceSelect
+          //   mode="multiple"
+          //   value={value}
+          //   placeholder="Select users"
+          //   fetchoptions={fetchUserLists}
+          //   onChange={(newValue: any) => {
+          //     setValue(newValue);
+          //   }}
+          //   style={SelectStyle}
+          //   onDropdownVisibleChange={onDropdownVisibleChange}
+          // />
         )}
       </SelectionWrapper>
       <Button onClick={handleOnClick} style={BtnStyle}>
