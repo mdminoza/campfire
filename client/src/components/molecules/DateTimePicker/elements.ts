@@ -60,7 +60,7 @@ export const TextWrapper = styled.div`
   property: inherit;
 `;
 
-export const TextStyle = styled.text`
+export const TextStyle = styled.span`
   color: ${(props: { isSelected?: boolean }): string =>
     props?.isSelected ? theme.colors.red.light : theme.colors.gray.gray989};
   font-weight: ${(props: { isSelected?: boolean }): string =>
@@ -79,7 +79,7 @@ export const TextStyle = styled.text`
   }
 `;
 
-export const TextStyle2 = styled.text`
+export const TextStyle2 = styled.span`
   font-family: ${theme.fonts.fontFamily};
   color: ${(props: { isSelected?: boolean }): string =>
     props?.isSelected ? theme.colors.red.light : theme.colors.mainBlack};

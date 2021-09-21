@@ -81,7 +81,10 @@ const DateTimePicker = ({
   const RenderTime = () => (
     <OptionWrapper>
       {times.map((val, index) => (
-        <TimeWrapper onClick={() => handleSetTime(index)}>
+        <TimeWrapper
+          // eslint-disable-next-line react/no-array-index-key
+          key={index}
+          onClick={() => handleSetTime(index)}>
           <TextStyle isSelected={timeIndex === index && !isImmediate}>
             {val}
           </TextStyle>
@@ -107,7 +110,8 @@ const DateTimePicker = ({
             <TextStyle2 isSelected={isImmediate}>IMMEDIATELY</TextStyle2>
           </TextWrapper> */}
           {months.map((name, index) => (
-            <TextWrapper onClick={() => handleSetMonth(index)}>
+            // eslint-disable-next-line react/no-array-index-key
+            <TextWrapper key={index} onClick={() => handleSetMonth(index)}>
               {index === 0 ? (
                 <TextStyle2 isSelected={isImmediate}>IMMEDIATELY</TextStyle2>
               ) : (
@@ -121,7 +125,7 @@ const DateTimePicker = ({
         <OptionWrapper>
           {noOfDays &&
             noOfDays.map((num) => (
-              <TextWrapper onClick={() => handleSetDay(num)}>
+              <TextWrapper key={num} onClick={() => handleSetDay(num)}>
                 <TextStyle isSelected={day === num && !isImmediate}>
                   {num}
                 </TextStyle>

@@ -8,7 +8,6 @@ import { Avatar } from '../../atoms/Avatar';
 import { Button } from '../../atoms/Button';
 // import { Audio } from '../../atoms/Icons';
 // import { TopicCardAvatars } from '../../molecules/TopicCardAvatars';
-import { members } from '../../molecules/TopicCardAvatars/stories'; // temporary items
 
 import {
   StyledCard,
@@ -111,7 +110,7 @@ const TopicCard = ({
     );
 
   return (
-    <StyledCard isFeatured={isFeatured}>
+    <StyledCard isfeatured={isFeatured ? 'true' : 'false'}>
       <Column>
         {isFeatured ? (
           // TODO: use of temporary variable and should be replaced soon

@@ -8,7 +8,7 @@ export const StyledRow = styled(Row)`
 
 export const StyledCol = styled(Col)``;
 
-export const StyledText = styled.text<{ heading?: boolean }>`
+export const StyledText = styled.span<{ heading?: boolean }>`
   font-family: ${theme.fonts.fontFamily};
   font-weight: 700;
   font-size: ${(props): string => (props.heading ? '13' : '10')}px;

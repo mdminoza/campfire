@@ -36,7 +36,7 @@ const TitleContainer = styled.div`
   align-items: center;
 `;
 
-const InputTitle = styled.text`
+const InputTitle = styled.span`
   color: ${theme.colors.mainWhite};
   font-weight: 700;
 `;
@@ -99,6 +99,7 @@ const LoginTemplate = (): React.ReactElement => {
     if (token) {
       navigate('/campfires');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   return (

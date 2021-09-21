@@ -9,7 +9,7 @@ import { useQuery, useMutation } from 'react-query';
 
 import { theme } from '../../../constants';
 import { arrayToObject } from '../../../utils/helpers/common';
-import { cipherText, decipherText } from '../../../utils/helpers/crypto';
+import { cipherText } from '../../../utils/helpers/crypto';
 import { TextInput } from '../../atoms/TextInput';
 import { Search } from '../../atoms/Icons';
 import { Loader } from '../../atoms/Loader';
@@ -81,11 +81,12 @@ const Wrapper = styled.div`
   width: 100%;
 `;
 
-const StyledLayout = styled(Layout)<{ campfiretoggled?: boolean }>`
+const StyledLayout = styled(Layout)<{ campfiretoggled?: string }>`
   .campfiretabs: {
-    z-index: ${(props) => (props.campfiretoggled ? '-1' : 'auto')};
+    z-index: ${(props) => (props.campfiretoggled === 'true' ? '-1' : 'auto')};
   }
-  background: ${(props) => (props.campfiretoggled ? 'rgb(0 0 0 / 45%)' : '')};
+  background: ${(props) =>
+    props.campfiretoggled === 'true' ? 'rgb(0 0 0 / 45%)' : ''};
   z-index: 9;
   position: inherit;
 `;
@@ -234,13 +235,13 @@ const MainTemplate = (): React.ReactElement => {
   const {
     mutate: addCampfireMutation,
     isLoading: isAddingCampfire,
-    isSuccess: isCampfireAdded,
+    // isSuccess: isCampfireAdded,
   } = useMutation((values: CampfireParams) => addCampfire(values));
 
   const {
     mutate: addMemberMutation,
     isLoading: isAddingMember,
-    isSuccess: isMemberAdded,
+    // isSuccess: isMemberAdded,
   } = useMutation((values: { member: MemberParams; id: string }) =>
     addMember(values),
   );
@@ -248,7 +249,7 @@ const MainTemplate = (): React.ReactElement => {
   const {
     mutate: addMemberUpcomingMutation,
     isLoading: isAddingMemberUpcoming,
-    isSuccess: isMemberUpcomingAdded,
+    // isSuccess: isMemberUpcomingAdded,
   } = useMutation((values: { member: MemberParams; id: string }) =>
     addMember(values),
   );
@@ -284,21 +285,8 @@ const MainTemplate = (): React.ReactElement => {
       addMemberMutation(values, {
         onSuccess: (data) => {
           if (activeTab === 'publicCampfire') {
-            const userDetail = {
-              token: localStorage.getItem('access-token'),
-              data: {
-                name: currentUser?.name,
-                uid: currentUser?.id,
-                profileUrl: currentUser?.profileUrl,
-                campfireId: data?.campfire,
-              },
-            };
             setActiveCampfire(data?.campfire || null);
-            navigate(
-              `/campfires/active/${data?.campfire}?data=${cipherText(
-                userDetail,
-              )}`,
-            );
+            navigate(`/campfires/active/${data?.campfire}`);
           }
           if (activeTab === 'privateCampfire') {
             if (data?.campfire) {
@@ -357,24 +345,12 @@ const MainTemplate = (): React.ReactElement => {
       isOwned?: boolean,
       isUpcomingCampfire?: boolean,
     ) => {
-      const userDetail = {
-        token: localStorage.getItem('access-token'),
-        data: {
-          name: currentUser?.name,
-          uid: currentUser?.id,
-          profileUrl: currentUser?.profileUrl,
-          campfireId,
-        },
-      };
-
       const memberStatus =
         type === 'public' && status === 'uninvited' ? 'invited' : 'pending';
       if (!isUpcomingCampfire) {
         if (isOwned || status === 'invited') {
           setActiveCampfire(campfireId);
-          navigate(
-            `/campfires/active/${campfireId}?data=${cipherText(userDetail)}`,
-          );
+          navigate(`/campfires/active/${campfireId}`);
         } else {
           handleAddMemberMutation({
             member: {
@@ -641,7 +617,7 @@ const MainTemplate = (): React.ReactElement => {
     const featureCampfires =
       startedCampfires.length > 0
         ? startedCampfires.map((campfire) => (
-            <Col xs={24} sm={12} md={8} lg={6}>
+            <Col key={campfire._id} xs={24} sm={12} md={8} lg={6}>
               <TopicCard
                 profileURL={campfire.creator?.profileUrl || ''}
                 totalMembers={campfire.totalMembers}
@@ -669,7 +645,7 @@ const MainTemplate = (): React.ReactElement => {
     const upcomingCampfiresCol =
       upcomingCampfires.length > 0
         ? upcomingCampfires.map((campfire) => (
-            <Col xs={24} sm={12} md={8} lg={6}>
+            <Col key={campfire._id} xs={24} sm={12} md={8} lg={6}>
               <TopicCard
                 profileURL={campfire.creator?.profileUrl || ''}
                 totalMembers={campfire.totalMembers}
@@ -848,7 +824,7 @@ const MainTemplate = (): React.ReactElement => {
   }, []);
 
   return (
-    <StyledLayout campfiretoggled={isToggled}>
+    <StyledLayout campfiretoggled={isToggled ? 'true' : 'false'}>
       {isLoading && !!currentUser?.id ? (
         <Loader />
       ) : (

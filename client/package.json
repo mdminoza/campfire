@@ -42,10 +42,10 @@
     "yup": "^0.32.9"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
+    "eject": "react-app-rewired eject",
     "eslint:check": "eslint \"./src/**/*.{jsx,js,json,md,ts,tsx}\"",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "pre-commit-bck": "npm run prettier:fix && npm run eslint:check && npm test && npm run e2e",
@@ -101,6 +101,7 @@
     "@types/lodash": "^4.14.172",
     "@typescript-eslint/eslint-plugin": "^4.29.1",
     "@typescript-eslint/parser": "^4.29.1",
+    "customize-cra": "^1.0.0",
     "eslint": "^7.32.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^8.3.0",
@@ -112,6 +113,7 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "husky": "^7.0.1",
     "lint-staged": "^11.1.2",
-    "prettier-eslint-cli": "^5.0.1"
+    "prettier-eslint-cli": "^5.0.1",
+    "react-app-rewired": "^2.1.8"
   }
 }

@@ -4,7 +4,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Layout, Grid, Modal, Button, Result } from 'antd';
-import { useNavigate, usePrompt } from 'react-router-dom';
+import { LoadingOutlined } from '@ant-design/icons';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useQuery, useMutation } from 'react-query';
 import io from 'socket.io-client';
@@ -18,15 +19,12 @@ import { Loader } from '../../atoms/Loader';
 import { TitleContent } from '../../molecules/TitleContent';
 import { MemberItemParams } from '../../molecules/MemberItem/types';
 import { SpeakersArea } from '../../organisms/SpeakersArea';
-import { CampfireFooter } from '../../organisms/CampfireFooter';
 import { CampfireFooter1 } from '../../organisms/CampfireFooter1';
 import { MembersList } from '../../organisms/MembersList';
 
-import { useQueryData } from '../../../hooks/common';
 import { useCampfireAction } from '../../../hooks/campfire';
 import { useMemberAction } from '../../../hooks/member';
 import { useUserState } from '../../../hooks/user';
-import { decipherText } from '../../../utils/helpers/crypto';
 
 import { MemberParams } from '../../../../common/domain/entities/member';
 
@@ -62,14 +60,12 @@ const ActiveTemplate = () => {
   const [isInvalidDecryptedValue, setInvalidDecryptedValue] = useState<boolean>(
     false,
   );
-  const [activeCampfireId, setActiveCampfireId] = useState<string>('');
   const [activeUser, setActiveUser] = useState<
-    | { campfireId: string; name: string; profileUrl: string; uid: string }
-    | undefined
+    { name: string; profileUrl: string; uid: string } | undefined
   >(undefined);
   const [errorMsg, setErrorMsg] = useState<string>('');
   const [isEndCampfireModal, setEndCampfireModal] = useState(false);
-  const [isPrompt, setPrompt] = useState(false);
+  const [isKickAllModal, setKickAllModal] = useState(false);
   const [isEndedCampfire, setEndedCampfire] = useState(false);
 
   const screens = useBreakpoint();
@@ -78,15 +74,24 @@ const ActiveTemplate = () => {
     fetchCampfireMembers,
     deleteCampfire,
   } = useCampfireAction();
-  const { fetchMember, updateMemberStatus, deleteMember } = useMemberAction();
-  const { activeCampfire, setActiveCampfire } = useUserState();
-  const { data } = useQueryData();
+  const {
+    fetchMember,
+    updateMemberStatus,
+    deleteMember,
+    deleteMembers,
+  } = useMemberAction();
+  const {
+    activeCampfire,
+    setActiveCampfire,
+    currentUser,
+    isLoading: isLoadingCurrentUser,
+  } = useUserState();
   const navigate = useNavigate();
+  const { id: campfireIdParam } = useParams();
   const userVideo = useRef<any>();
   const peersRef = useRef<any>([]);
 
-  // https://staging-campfire-api.azurewebsites.net
-  // http://localhost:5000
+  // const socket = io('http://localhost:5000', {
   const socket = io('https://staging-campfire-api.azurewebsites.net', {
     // TODO: Need more research for the proper socket options
     // transports: ['websocket'],
@@ -114,16 +119,19 @@ const ActiveTemplate = () => {
   const {
     refetch: refetchCampfire,
     data: campfire,
-    isLoading: isFetchingCampfireLoading,
+    isFetching: isFetchingCampfireLoading,
     error: fetchingCampfireError,
   } = useQuery(
-    ['campfire', activeCampfireId],
-    () => fetchCampfire(activeCampfireId),
+    ['campfire', campfireIdParam],
+    () => fetchCampfire(campfireIdParam),
     {
       onError: () => {
-        ErrorModal('Oops, something went wrong!', () => {
-          navigate(`/campfires`);
-        });
+        ErrorModal(
+          'Sorry, campfire is not available at the moment or does not exist.',
+          () => {
+            navigate(`/campfires`);
+          },
+        );
       },
       enabled: false,
     },
@@ -133,15 +141,22 @@ const ActiveTemplate = () => {
     refetch: refetchCampfireMember,
     data: campfireMember,
     isLoading: isFetchingCampfireMemberLoading,
-    error: fetchingCampfirememberError,
+    error: fetchingCampfireMemberError,
   } = useQuery(
-    ['campfire-member', activeCampfireId, activeUser?.uid],
-    () => fetchMember({ uid: activeUser?.uid || '', id: activeCampfireId }),
+    ['campfire-member', campfireIdParam, activeUser?.uid],
+    () => fetchMember({ uid: activeUser?.uid || '', id: campfireIdParam }),
     {
+      // onSuccess: (res) => {
+
+      //   console.log(res, 'refetch member');
+      // },
       onError: () => {
-        ErrorModal('Oops, something went wrong!', () => {
-          navigate(`/campfires`);
-        });
+        ErrorModal(
+          'Sorry, campfire is not available at the moment or does not exist.',
+          () => {
+            navigate(`/campfires`);
+          },
+        );
       },
       enabled: false,
     },
@@ -152,8 +167,8 @@ const ActiveTemplate = () => {
     data: campfireMembers,
     isLoading: isFetchingCampfireMembersLoading,
   } = useQuery(
-    ['campfire-members', activeCampfireId],
-    () => fetchCampfireMembers(activeCampfireId),
+    ['campfire-members', campfireIdParam],
+    () => fetchCampfireMembers(campfireIdParam),
     // {
     //   onSuccess: (res) => {
     //     console.log(res, 'active campfire members');
@@ -210,25 +225,40 @@ const ActiveTemplate = () => {
   };
 
   useEffect(() => {
-    if (data) {
-      try {
-        const decryptedData = decipherText(data);
-        setInvalidDecryptedValue(false);
-        setActiveCampfireId(decryptedData.data.campfireId);
-        setActiveUser(decryptedData.data);
-        setPrompt(true);
-      } catch (error) {
-        setInvalidDecryptedValue(true);
-      }
+    if (currentUser) {
+      const userData = {
+        name: currentUser.name,
+        profileUrl: currentUser.profileUrl,
+        uid: currentUser.id,
+      };
+      // const decryptedData = decipherText(data);
+      // setInvalidDecryptedValue(false);
+      // setActiveCampfireId(campfireIdParam);
+      setActiveUser(userData);
+      // ampfireId: string; name: string; profileUrl: string; uid: string
+      // try {
+      //   const decryptedData = decipherText(data);
+      //   setInvalidDecryptedValue(false);
+      //   setActiveCampfireId(decryptedData.campfireId);
+      //   setActiveUser(decryptedData);
+      //   ampfireId: string; name: string; profileUrl: string; uid: string
+      // } catch (error) {
+      //   setInvalidDecryptedValue(true);
+      // }
     }
-  }, []);
+  }, [currentUser]);
 
   useEffect(() => {
-    if (activeCampfireId) {
-      refetchCampfire();
+    if (campfireIdParam && activeUser) {
       refetchCampfireMember();
     }
-  }, [activeCampfireId, refetchCampfire, refetchCampfireMember]);
+  }, [activeUser, campfireIdParam, refetchCampfireMember]);
+
+  useEffect(() => {
+    if (campfireIdParam && campfireMember !== null) {
+      refetchCampfire();
+    }
+  }, [campfireIdParam, refetchCampfire, campfireMember]);
 
   useEffect(() => {
     const onClickEvent = (e: any) => {
@@ -239,13 +269,20 @@ const ActiveTemplate = () => {
     if (selectedId) {
       window.addEventListener('click', onClickEvent);
     }
+    return () => {
+      window.removeEventListener('click', onClickEvent);
+    };
   }, [selectedId]);
 
   // eslint-disable-next-line consistent-return
   useEffect(() => {
     if (
-      activeCampfireId === campfire?._id &&
-      activeCampfire === activeCampfireId
+      campfireIdParam === campfire?._id &&
+      activeCampfire === campfireIdParam &&
+      activeUser &&
+      campfireMember &&
+      !fetchingCampfireError &&
+      !fetchingCampfireMemberError
     ) {
       let userVideoStream: any;
       if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
@@ -263,7 +300,7 @@ const ActiveTemplate = () => {
           userVideoStream = userVideo.current;
 
           socket.emit('join room', {
-            campfireId: activeCampfireId,
+            campfireId: campfireIdParam,
             userId: activeUser?.uid,
             userName: activeUser?.name,
             profileUrl: activeUser?.profileUrl,
@@ -304,7 +341,7 @@ const ActiveTemplate = () => {
 
             filtered.forEach((filteredItem) => {
               const userDetail = {
-                campfireId: activeCampfireId,
+                campfireId: campfireIdParam,
                 userId: activeUser?.uid || '',
                 socketId: socket.id,
                 isAdmin: activeUser?.uid === campfire.creator?.uid,
@@ -388,7 +425,11 @@ const ActiveTemplate = () => {
             ({ setValue, selectedUserId, operation }) => {
               if (operation === 'kick' && selectedUserId === activeUser?.uid) {
                 setActiveCampfire(null);
-                setActiveCampfireId('');
+                setActiveUser(undefined);
+                AntdMessage('info', 'You have been kicked from this campfire');
+              }
+              if (operation === 'kickAll') {
+                setActiveCampfire(null);
                 setActiveUser(undefined);
                 AntdMessage('info', 'You have been kicked from this campfire');
               }
@@ -493,7 +534,7 @@ const ActiveTemplate = () => {
             if (
               leaveData.userId &&
               leaveData.campfireId &&
-              leaveData.campfireId === activeCampfireId
+              leaveData.campfireId === campfireIdParam
             ) {
               if (peersRef.current) {
                 const userPeer = peersRef.current[leaveData.userId];
@@ -520,9 +561,7 @@ const ActiveTemplate = () => {
 
           socket.on('received end campfire', () => {
             AntdMessage('info', 'Campfire is ended by admin.');
-            setPrompt(false);
             setActiveCampfire(null);
-            setActiveCampfireId('');
             setActiveUser(undefined);
             setEndedCampfire(true);
             setPeers(undefined);
@@ -552,27 +591,20 @@ const ActiveTemplate = () => {
         socket.disconnect();
       };
     }
-  }, [activeCampfireId, campfire, activeCampfire]);
+  }, [
+    campfireIdParam,
+    campfire,
+    activeCampfire,
+    fetchingCampfireError,
+    fetchingCampfireMemberError,
+    activeUser,
+    campfireMember,
+  ]);
 
   useEffect(() => {
     // eslint-disable-next-line no-unused-expressions
     errorMsg && ToastMessage('error', 'Error', errorMsg, 10);
   }, [errorMsg]);
-
-  const clearActiveCampfire = (e: any) => {
-    e.preventDefault();
-    setActiveCampfire(null);
-    setActiveCampfireId('');
-    setActiveUser(undefined);
-  };
-
-  useEffect(() => {
-    window.onbeforeunload = clearActiveCampfire;
-
-    return () => {
-      window.onbeforeunload = null;
-    };
-  }, []);
 
   const mainLoader = {
     position: 'fixed',
@@ -585,7 +617,7 @@ const ActiveTemplate = () => {
   };
 
   const handleRejoin = () => {
-    setActiveCampfire(activeCampfireId);
+    setActiveCampfire(campfireIdParam);
   };
 
   const {
@@ -616,6 +648,75 @@ const ActiveTemplate = () => {
   );
 
   const {
+    mutate: kickMemberMutation,
+    isLoading: kickMemberLoading,
+    isSuccess: kickMemberSuccess,
+  } = useMutation((params: { uid: string; id: string }) =>
+    deleteMember(params),
+  );
+
+  const {
+    mutate: kickAllMembersMutation,
+    isLoading: kickAllMembersLoading,
+    isSuccess: kickAllMembersSuccess,
+  } = useMutation(
+    (params: { uids: String[]; id: string }) => deleteMembers(params),
+    {
+      onSuccess: (res: any) => {
+        setKickAllModal(false);
+        AntdMessage('info', 'Succesfully kicked all audience.');
+
+        setTimeout(() => {
+          if (peersRef.current) {
+            res?.uids.forEach((val: string) => {
+              const userPeer = peersRef.current[val];
+              if (userPeer) {
+                userPeer.peer.destroy();
+              }
+              delete peersRef.current[val];
+            });
+          }
+
+          setPeers((prev: any) => {
+            const { ...newData } = prev;
+            res?.uids.forEach((val: string) => {
+              delete newData[val];
+            });
+            return newData;
+          });
+        }, 100);
+
+        filteredPeers.forEach((val) => {
+          socket.emit('setUsers', {
+            campfireId: campfireIdParam,
+            setValue: {},
+            userSocketId: val.socketId,
+            selectedUserId: res?.uids,
+            operation: 'kickAll',
+          });
+        });
+      },
+    },
+  );
+
+  // const handleKickMembersCampfire = useCallback(
+  //   (params: { id: string }) => {
+  //     kickAllMembersMutation(params, {
+  //       onSuccess: () => {
+  //         filteredPeers.forEach((val) => {
+  //           socket.emit('end campfire', {
+  //             userSocketId: val.socketId,
+  //             campfireId: activeCampfireId,
+  //           });
+  //         });
+  //         navigate('/campfires');
+  //       },
+  //     });
+  //   },
+  //   [activeCampfireId, filteredPeers, socket],
+  // );
+
+  const {
     mutate: endCampfireMutation,
     isLoading: endCampfireLoading,
     isSuccess: endCampfireSuccess,
@@ -628,17 +729,14 @@ const ActiveTemplate = () => {
           filteredPeers.forEach((val) => {
             socket.emit('end campfire', {
               userSocketId: val.socketId,
-              campfireId: activeCampfireId,
+              campfireId: campfireIdParam,
             });
           });
           navigate('/campfires');
         },
-        onError: () => {
-          setPrompt(true);
-        },
       });
     },
-    [activeCampfireId, filteredPeers, socket],
+    [campfireIdParam, filteredPeers, socket],
   );
 
   const handleOnClickPendingMenu = (
@@ -650,7 +748,7 @@ const ActiveTemplate = () => {
     if (key === 'accept') {
       acceptPendingMember({
         uid: pendingMember?.[0].uid || '',
-        id: activeCampfireId,
+        id: campfireIdParam,
         status: 'invited',
       });
     }
@@ -660,7 +758,7 @@ const ActiveTemplate = () => {
     if (key === 'decline') {
       declinePendingMember({
         uid: pendingMember?.[0].uid || '',
-        id: activeCampfireId,
+        id: campfireIdParam,
       });
     }
     if (key === 'declineAll') {
@@ -700,6 +798,10 @@ const ActiveTemplate = () => {
       newPeerVal = newPeerData(false, false);
     }
     if (key === 'kick') {
+      kickMemberMutation({
+        uid: selectedId,
+        id: campfireIdParam,
+      });
       setTimeout(() => {
         if (peersRef.current) {
           const userPeer = peersRef.current[selectedId];
@@ -744,7 +846,7 @@ const ActiveTemplate = () => {
 
     filteredPeers.forEach((val) => {
       socket.emit('setUsers', {
-        campfireId: activeCampfireId,
+        campfireId: campfireIdParam,
         setValue: newPeerVal,
         userSocketId: val.socketId,
         selectedUserId: selectedId,
@@ -822,6 +924,10 @@ const ActiveTemplate = () => {
       isMuted: value.isMuted,
     }));
 
+  const memberIds = peersItem
+    .filter((peer) => !peer.isAdmin && !peer.isSpeaker)
+    .map((value) => value.userId);
+
   const handleOnClickEmoji = (
     selectedUserId: string,
     type: 'wink' | 'smile' | 'sweat' | 'cool',
@@ -840,7 +946,7 @@ const ActiveTemplate = () => {
 
     filteredPeers.forEach((val) => {
       socket.emit('send setEmoji', {
-        campfireId: activeCampfireId,
+        campfireId: campfireIdParam,
         selectedId: selectedUserId,
         emojiDetails,
         userSocketId: val.socketId,
@@ -859,7 +965,7 @@ const ActiveTemplate = () => {
       }));
       filteredPeers.forEach((val) => {
         socket.emit('send raise signal', {
-          campfireId: activeCampfireId,
+          campfireId: campfireIdParam,
           userId,
           isRaising: !value,
           userSocketId: val.socketId,
@@ -959,9 +1065,18 @@ const ActiveTemplate = () => {
     if (key === 'endCampfire') {
       setEndCampfireModal(true);
     }
+    if (key === 'kickAll') {
+      setKickAllModal(true);
+    }
+    console.log(key, 'key');
   };
 
-  usePrompt('Are you sure you want to leave his campfire?', isPrompt);
+  const loaderStyle = {
+    fontSize: 16,
+    color: '#424242',
+    marginLeft: 32,
+    marginRight: 20,
+  };
 
   if (isEndedCampfire && !activeCampfire) {
     return (
@@ -1020,28 +1135,45 @@ const ActiveTemplate = () => {
     );
   }
 
-  if (!activeCampfire) {
+  if (
+    (!activeCampfire ||
+      fetchingCampfireError ||
+      fetchingCampfireMemberError ||
+      !campfireMember) &&
+    !isFetchingCampfireLoading &&
+    !isFetchingCampfireMemberLoading &&
+    !isLoadingCurrentUser
+  ) {
     return (
       <ActiveResult
         onClickHome={() => navigate('/campfires')}
         onClickRejoin={handleRejoin}
-        data={campfire}
+        data={!campfireMember ? undefined : campfire}
         error={fetchingCampfireError}
       />
     );
   }
 
-  if (activeCampfire === activeCampfireId) {
-    return isFetchingCampfireLoading || endCampfireLoading ? (
-      <Loader style={mainLoader} />
-    ) : (
+  if (
+    activeCampfire === campfireIdParam &&
+    (isFetchingCampfireLoading ||
+      endCampfireLoading ||
+      isFetchingCampfireMemberLoading ||
+      isFetchingCampfireMembersLoading ||
+      isLoadingCurrentUser)
+  ) {
+    return <Loader style={mainLoader} />;
+  }
+
+  if (activeCampfire === campfireIdParam && campfireMember) {
+    return (
       <Layout>
         <TitleContent
           title={campfire?.topic || ''}
           description={campfire?.description || ''}
           onActive
           onClickStartDuration={() => {}}
-          campfireId={activeCampfireId || ''}
+          campfireId={campfireIdParam || ''}
           scheduleToStart={campfire?.scheduleToStart}
         />
         <ActiveSpeakersWrapper>
@@ -1064,12 +1196,12 @@ const ActiveTemplate = () => {
         <CampfireFooter1
           id={activeUser?.uid || ''}
           profileUrl={activeUser?.profileUrl || ''}
-          isMuted={false}
+          // isMuted={false}
           isRaising={isRaising}
           isSpeaker={false}
-          isTalking={false}
+          // isTalking={false}
           onClickRaiseHand={handleClickRaiseHand}
-          onClickMuteMe={() => {}}
+          // onClickMuteMe={() => {}}
           onClickEmoji={handleOnClickEmoji}
           onClickMic={() => {}}
           isAdmin={activeUser?.uid === campfire?.creator?.uid}
@@ -1083,19 +1215,40 @@ const ActiveTemplate = () => {
             <Button
               danger
               onClick={() => {
-                setPrompt(false);
-                handleEndCampfire(activeCampfireId);
+                handleEndCampfire(campfireIdParam);
               }}>
               End Campfire
             </Button>,
           ]}>
           <b>Are you sure you want to end this campfire?</b>
         </Modal>
+        <Modal
+          visible={isKickAllModal}
+          closable={false}
+          footer={[
+            <Button onClick={() => setKickAllModal(false)}>Cancel</Button>,
+            kickAllMembersLoading ? (
+              <LoadingOutlined style={loaderStyle} />
+            ) : (
+              <Button
+                type="primary"
+                onClick={() => {
+                  kickAllMembersMutation({
+                    uids: memberIds,
+                    id: campfireIdParam,
+                  });
+                }}>
+                Kick All
+              </Button>
+            ),
+          ]}>
+          <b>Are you sure you want to kick all audience for this campfire?</b>
+        </Modal>
       </Layout>
     );
   }
 
-  return <></>;
+  return <Loader style={mainLoader} />;
 };
 
 export default ActiveTemplate;

@@ -31,7 +31,7 @@ export const TimeWrapper = styled.div`
   width: 100%;
 `;
 
-export const TextStyle = styled.text`
+export const TextStyle = styled.span`
   color: ${(props: { isSelected?: boolean }): string =>
     props?.isSelected ? theme.colors.red.light : theme.colors.gray.gray989};
   font-weight: ${(props: { isSelected?: boolean }): string =>

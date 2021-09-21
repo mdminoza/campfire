@@ -22,8 +22,8 @@ export const StyledCard = styled(Card)`
   flex-direction: column;
   border: 0;
   border-radius: 0;
-  padding-top: ${(props: { isFeatured?: boolean }): string =>
-    props.isFeatured ? '24px' : '27px'};
+  padding-top: ${(props: { isfeatured?: string }): string =>
+    props.isfeatured === 'true' ? '24px' : '27px'};
   height: auto;
   min-width: 223px;
   .ant-card-body {
@@ -55,7 +55,7 @@ export const CardInfoWrapper = styled.div`
   padding-right: 17px;
 `;
 
-export const CardTitle = styled.text`
+export const CardTitle = styled.span`
   font-family: ${theme.fonts.fontFamily};
   font-weight: 700;
   font-size: 1.2rem;
@@ -66,7 +66,7 @@ export const CardTitle = styled.text`
   text-overflow: clip;
 `;
 
-export const DescDate = styled.text`
+export const DescDate = styled.span`
   font-family: ${theme.fonts.fontFamily};
   font-weight: 100;
   font-size: 0.7rem;
@@ -89,7 +89,7 @@ export const CardDesc = styled.p`
   overflow: hidden;
 `;
 
-export const BtnTitle = styled.text`
+export const BtnTitle = styled.span`
   font-family: ${theme.fonts.fontFamily};
   font-weight: 600;
   font-size: 0.8rem;
@@ -188,7 +188,7 @@ export const MembersCountSubText = styled.div`
   text-align: center;
 `;
 
-export const DurationTitle = styled.text`
+export const DurationTitle = styled.span`
   font-family: ${theme.fonts.fontFamily};
   font-weight: 100;
   font-size: 0.7rem;

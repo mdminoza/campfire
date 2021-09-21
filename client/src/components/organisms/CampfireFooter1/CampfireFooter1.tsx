@@ -188,10 +188,10 @@ type Props = {
   profileUrl: string;
   isSpeaker?: boolean;
   isRaising?: boolean;
-  isTalking?: boolean;
-  isMuted?: boolean;
+  // isTalking?: boolean;
+  // isMuted?: boolean;
   onClickRaiseHand: (id: string, isRaising: boolean) => void;
-  onClickMuteMe?: (id: string, isMuted: boolean) => void;
+  // onClickMuteMe?: (id: string, isMuted: boolean) => void;
   onClickEmoji?: (
     id: string,
     emojiType: 'wink' | 'smile' | 'sweat' | 'cool',
@@ -206,10 +206,7 @@ const CampfireFooter1 = ({
   profileUrl,
   isSpeaker = false,
   isRaising = false,
-  isTalking = false,
-  isMuted = false,
   onClickRaiseHand,
-  onClickMuteMe = () => {},
   onClickEmoji = () => {},
   onClickMic = () => {},
   isAdmin = false,
@@ -221,15 +218,17 @@ const CampfireFooter1 = ({
   // const [openSettings, setOpenSettings] = useState(false);
   // const history = useHistory();
   // const navigate = useNavigate();
-  const width =
-    isRaising && !isSpeaker
-      ? { textAlign: 'end', paddingRight: 24 }
-      : { width: 45 };
 
   const raiseHandBtnStyle = {
     backgroundColor: theme.colors.gray.gray29,
     padding: 0,
-    ...width,
+    width: 45,
+  };
+
+  const raisedHandBtnStyle = {
+    backgroundColor: theme.colors.gray.gray29,
+    textAlign: 'end',
+    paddingRight: 24,
   };
 
   const emojiWinkStyle = { marginTop: 10 };
@@ -362,7 +361,9 @@ const CampfireFooter1 = ({
         </MicWrapper>
         <Col flex="auto">
           <Button
-            style={raiseHandBtnStyle}
+            style={
+              isRaising && !isSpeaker ? raisedHandBtnStyle : raiseHandBtnStyle
+            }
             onClick={() => onClickRaiseHand(id, isRaising)}>
             {!isSpeaker && isRaising ? (
               <RaiseHandLabel>MY HAND IS RAISED</RaiseHandLabel>

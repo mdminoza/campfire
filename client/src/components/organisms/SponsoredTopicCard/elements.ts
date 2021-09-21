@@ -48,7 +48,7 @@ export const AvatarWrapper = styled.div`
   width: fit-content;
 `;
 
-export const Title = styled.text`
+export const Title = styled.span`
   font-family: ${theme.fonts.fontFamily};
   color: ${theme.colors.mainWhite};
   font-weight: 700;
@@ -83,7 +83,7 @@ export const MembersCountSubText = styled.div`
   text-align: center;
 `;
 
-export const Subtitle = styled.text`
+export const Subtitle = styled.span`
   font-family: ${theme.fonts.fontFamily};
   color: ${theme.colors.mainWhite};
   font-weight: 100;
@@ -91,7 +91,7 @@ export const Subtitle = styled.text`
   text-align: center;
 `;
 
-export const BtnTitle = styled.text`
+export const BtnTitle = styled.span`
   font-family: ${theme.fonts.fontFamily};
   font-weight: 600;
   font-size: 0.8rem;

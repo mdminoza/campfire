@@ -43,7 +43,6 @@ storiesOf('organism/CampfireFooter1', module)
         id="nD01aeTmtBdNxnDdDO4"
         profileUrl="https://dummyimage.com/155x155/000/fff"
         isSpeaker
-        isTalking
         onClickRaiseHand={(id, isRaising) => console.log(id, isRaising)}
       />
     </Layout>
@@ -66,7 +65,6 @@ storiesOf('organism/CampfireFooter1', module)
         id="nD01aeTmtBdNxnDdDO4"
         profileUrl="https://dummyimage.com/155x155/000/fff"
         isSpeaker
-        isMuted
         onClickRaiseHand={(id, isRaising) => console.log(id, isRaising)}
       />
     </Layout>

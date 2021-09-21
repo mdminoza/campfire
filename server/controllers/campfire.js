@@ -218,6 +218,13 @@ export const fetchCampfireMember = async (req, res, next) => {
     try {
         const { id, uid } = req.body
         if (!uid || !id) throw new Error('[uid, id] fields are required!');
+        const isAdmin = await Campfire.findOne(
+            {
+                '_id': id,
+                'creator.uid': uid,
+            },
+            { '_id': 0, members: 0 },
+        );
         const data = await Campfire.findOne(
             {
                 '_id': id,
@@ -225,7 +232,9 @@ export const fetchCampfireMember = async (req, res, next) => {
             },
             { '_id': 0, 'members': { '$elemMatch': { uid } } },
         );
-        if (data === null) return res.status(200).json({ message: 'Campfire or user id does not exist.' });
+
+        if (isAdmin !== null && data === null) return res.status(200).json({ isAdmin: true });
+        if (isAdmin === null && data === null) return res.status(200).json({ message: 'Campfire or user id does not exist.' });
         const filter = data.members[0];
         return res.status(200).json(filter);
     } catch (error) {
@@ -300,6 +309,24 @@ export const removeCampfireMember = async (req, res, next) => {
         )
         if (newMember === null) throw new Error('Campfire or user id does not exist.');
         res.status(200).json({ uid, message: 'Member removed successfully!' });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const removeCampfireMembers = async (req, res, next) => {
+    try {
+        const { uids, id } = req.body;
+        if (!uids || !id) throw new Error('[uids, id] fields are required!'); 
+        const result = await Campfire.findByIdAndUpdate(
+            id,
+            {
+                $pull: { members: { uid: { $in: uids } } },
+            },
+            { multi: true },
+        )
+        if (result === null) throw new Error('Unable to remove members.');
+        res.status(200).json({ uids, message: 'Members removed successfully!' });
     } catch (error) {
         next(error);
     }
