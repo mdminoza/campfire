@@ -285,18 +285,8 @@ const MainTemplate = (): React.ReactElement => {
       addMemberMutation(values, {
         onSuccess: (data) => {
           if (activeTab === 'publicCampfire') {
-            const userDetail = {
-              name: currentUser?.name,
-              uid: currentUser?.id,
-              profileUrl: currentUser?.profileUrl,
-              campfireId: data?.campfire,
-            };
             setActiveCampfire(data?.campfire || null);
-            navigate(
-              `/campfires/active/${data?.campfire}?data=${cipherText(
-                userDetail,
-              )}`,
-            );
+            navigate(`/campfires/active/${data?.campfire}`);
           }
           if (activeTab === 'privateCampfire') {
             if (data?.campfire) {
@@ -355,21 +345,12 @@ const MainTemplate = (): React.ReactElement => {
       isOwned?: boolean,
       isUpcomingCampfire?: boolean,
     ) => {
-      const userDetail = {
-        name: currentUser?.name,
-        uid: currentUser?.id,
-        profileUrl: currentUser?.profileUrl,
-        campfireId,
-      };
-
       const memberStatus =
         type === 'public' && status === 'uninvited' ? 'invited' : 'pending';
       if (!isUpcomingCampfire) {
         if (isOwned || status === 'invited') {
           setActiveCampfire(campfireId);
-          navigate(
-            `/campfires/active/${campfireId}?data=${cipherText(userDetail)}`,
-          );
+          navigate(`/campfires/active/${campfireId}`);
         } else {
           handleAddMemberMutation({
             member: {

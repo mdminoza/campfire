@@ -5,7 +5,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Layout, Grid, Modal, Button, Result } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useQuery, useMutation } from 'react-query';
 import io from 'socket.io-client';
@@ -22,11 +22,9 @@ import { SpeakersArea } from '../../organisms/SpeakersArea';
 import { CampfireFooter1 } from '../../organisms/CampfireFooter1';
 import { MembersList } from '../../organisms/MembersList';
 
-import { useQueryData } from '../../../hooks/common';
 import { useCampfireAction } from '../../../hooks/campfire';
 import { useMemberAction } from '../../../hooks/member';
 import { useUserState } from '../../../hooks/user';
-import { decipherText } from '../../../utils/helpers/crypto';
 
 import { MemberParams } from '../../../../common/domain/entities/member';
 
@@ -62,10 +60,8 @@ const ActiveTemplate = () => {
   const [isInvalidDecryptedValue, setInvalidDecryptedValue] = useState<boolean>(
     false,
   );
-  const [activeCampfireId, setActiveCampfireId] = useState<string>('');
   const [activeUser, setActiveUser] = useState<
-    | { campfireId: string; name: string; profileUrl: string; uid: string }
-    | undefined
+    { name: string; profileUrl: string; uid: string } | undefined
   >(undefined);
   const [errorMsg, setErrorMsg] = useState<string>('');
   const [isEndCampfireModal, setEndCampfireModal] = useState(false);
@@ -84,9 +80,14 @@ const ActiveTemplate = () => {
     deleteMember,
     deleteMembers,
   } = useMemberAction();
-  const { activeCampfire, setActiveCampfire } = useUserState();
-  const { data } = useQueryData();
+  const {
+    activeCampfire,
+    setActiveCampfire,
+    currentUser,
+    isLoading: isLoadingCurrentUser,
+  } = useUserState();
   const navigate = useNavigate();
+  const { id: campfireIdParam } = useParams();
   const userVideo = useRef<any>();
   const peersRef = useRef<any>([]);
 
@@ -121,8 +122,8 @@ const ActiveTemplate = () => {
     isFetching: isFetchingCampfireLoading,
     error: fetchingCampfireError,
   } = useQuery(
-    ['campfire', activeCampfireId],
-    () => fetchCampfire(activeCampfireId),
+    ['campfire', campfireIdParam],
+    () => fetchCampfire(campfireIdParam),
     {
       onError: () => {
         ErrorModal(
@@ -142,8 +143,8 @@ const ActiveTemplate = () => {
     isLoading: isFetchingCampfireMemberLoading,
     error: fetchingCampfireMemberError,
   } = useQuery(
-    ['campfire-member', activeCampfireId, activeUser?.uid],
-    () => fetchMember({ uid: activeUser?.uid || '', id: activeCampfireId }),
+    ['campfire-member', campfireIdParam, activeUser?.uid],
+    () => fetchMember({ uid: activeUser?.uid || '', id: campfireIdParam }),
     {
       // onSuccess: (res) => {
 
@@ -166,8 +167,8 @@ const ActiveTemplate = () => {
     data: campfireMembers,
     isLoading: isFetchingCampfireMembersLoading,
   } = useQuery(
-    ['campfire-members', activeCampfireId],
-    () => fetchCampfireMembers(activeCampfireId),
+    ['campfire-members', campfireIdParam],
+    () => fetchCampfireMembers(campfireIdParam),
     // {
     //   onSuccess: (res) => {
     //     console.log(res, 'active campfire members');
@@ -224,29 +225,40 @@ const ActiveTemplate = () => {
   };
 
   useEffect(() => {
-    if (data) {
-      try {
-        const decryptedData = decipherText(data);
-        setInvalidDecryptedValue(false);
-        setActiveCampfireId(decryptedData.campfireId);
-        setActiveUser(decryptedData);
-      } catch (error) {
-        setInvalidDecryptedValue(true);
-      }
+    if (currentUser) {
+      const userData = {
+        name: currentUser.name,
+        profileUrl: currentUser.profileUrl,
+        uid: currentUser.id,
+      };
+      // const decryptedData = decipherText(data);
+      // setInvalidDecryptedValue(false);
+      // setActiveCampfireId(campfireIdParam);
+      setActiveUser(userData);
+      // ampfireId: string; name: string; profileUrl: string; uid: string
+      // try {
+      //   const decryptedData = decipherText(data);
+      //   setInvalidDecryptedValue(false);
+      //   setActiveCampfireId(decryptedData.campfireId);
+      //   setActiveUser(decryptedData);
+      //   ampfireId: string; name: string; profileUrl: string; uid: string
+      // } catch (error) {
+      //   setInvalidDecryptedValue(true);
+      // }
     }
-  }, []);
+  }, [currentUser]);
 
   useEffect(() => {
-    if (activeCampfireId) {
+    if (campfireIdParam && activeUser) {
       refetchCampfireMember();
     }
-  }, [activeCampfireId, refetchCampfireMember]);
+  }, [activeUser, campfireIdParam, refetchCampfireMember]);
 
   useEffect(() => {
-    if (activeCampfireId && campfireMember !== null) {
+    if (campfireIdParam && campfireMember !== null) {
       refetchCampfire();
     }
-  }, [activeCampfireId, refetchCampfire, campfireMember]);
+  }, [campfireIdParam, refetchCampfire, campfireMember]);
 
   useEffect(() => {
     const onClickEvent = (e: any) => {
@@ -265,8 +277,10 @@ const ActiveTemplate = () => {
   // eslint-disable-next-line consistent-return
   useEffect(() => {
     if (
-      activeCampfireId === campfire?._id &&
-      activeCampfire === activeCampfireId &&
+      campfireIdParam === campfire?._id &&
+      activeCampfire === campfireIdParam &&
+      activeUser &&
+      campfireMember &&
       !fetchingCampfireError &&
       !fetchingCampfireMemberError
     ) {
@@ -286,7 +300,7 @@ const ActiveTemplate = () => {
           userVideoStream = userVideo.current;
 
           socket.emit('join room', {
-            campfireId: activeCampfireId,
+            campfireId: campfireIdParam,
             userId: activeUser?.uid,
             userName: activeUser?.name,
             profileUrl: activeUser?.profileUrl,
@@ -327,7 +341,7 @@ const ActiveTemplate = () => {
 
             filtered.forEach((filteredItem) => {
               const userDetail = {
-                campfireId: activeCampfireId,
+                campfireId: campfireIdParam,
                 userId: activeUser?.uid || '',
                 socketId: socket.id,
                 isAdmin: activeUser?.uid === campfire.creator?.uid,
@@ -411,13 +425,11 @@ const ActiveTemplate = () => {
             ({ setValue, selectedUserId, operation }) => {
               if (operation === 'kick' && selectedUserId === activeUser?.uid) {
                 setActiveCampfire(null);
-                setActiveCampfireId('');
                 setActiveUser(undefined);
                 AntdMessage('info', 'You have been kicked from this campfire');
               }
               if (operation === 'kickAll') {
                 setActiveCampfire(null);
-                setActiveCampfireId('');
                 setActiveUser(undefined);
                 AntdMessage('info', 'You have been kicked from this campfire');
               }
@@ -522,7 +534,7 @@ const ActiveTemplate = () => {
             if (
               leaveData.userId &&
               leaveData.campfireId &&
-              leaveData.campfireId === activeCampfireId
+              leaveData.campfireId === campfireIdParam
             ) {
               if (peersRef.current) {
                 const userPeer = peersRef.current[leaveData.userId];
@@ -550,7 +562,6 @@ const ActiveTemplate = () => {
           socket.on('received end campfire', () => {
             AntdMessage('info', 'Campfire is ended by admin.');
             setActiveCampfire(null);
-            setActiveCampfireId('');
             setActiveUser(undefined);
             setEndedCampfire(true);
             setPeers(undefined);
@@ -581,11 +592,13 @@ const ActiveTemplate = () => {
       };
     }
   }, [
-    activeCampfireId,
+    campfireIdParam,
     campfire,
     activeCampfire,
     fetchingCampfireError,
     fetchingCampfireMemberError,
+    activeUser,
+    campfireMember,
   ]);
 
   useEffect(() => {
@@ -604,7 +617,7 @@ const ActiveTemplate = () => {
   };
 
   const handleRejoin = () => {
-    setActiveCampfire(activeCampfireId);
+    setActiveCampfire(campfireIdParam);
   };
 
   const {
@@ -650,7 +663,6 @@ const ActiveTemplate = () => {
     (params: { uids: String[]; id: string }) => deleteMembers(params),
     {
       onSuccess: (res: any) => {
-        console.log(res, 'res');
         setKickAllModal(false);
         AntdMessage('info', 'Succesfully kicked all audience.');
 
@@ -676,7 +688,7 @@ const ActiveTemplate = () => {
 
         filteredPeers.forEach((val) => {
           socket.emit('setUsers', {
-            campfireId: activeCampfireId,
+            campfireId: campfireIdParam,
             setValue: {},
             userSocketId: val.socketId,
             selectedUserId: res?.uids,
@@ -717,14 +729,14 @@ const ActiveTemplate = () => {
           filteredPeers.forEach((val) => {
             socket.emit('end campfire', {
               userSocketId: val.socketId,
-              campfireId: activeCampfireId,
+              campfireId: campfireIdParam,
             });
           });
           navigate('/campfires');
         },
       });
     },
-    [activeCampfireId, filteredPeers, socket],
+    [campfireIdParam, filteredPeers, socket],
   );
 
   const handleOnClickPendingMenu = (
@@ -736,7 +748,7 @@ const ActiveTemplate = () => {
     if (key === 'accept') {
       acceptPendingMember({
         uid: pendingMember?.[0].uid || '',
-        id: activeCampfireId,
+        id: campfireIdParam,
         status: 'invited',
       });
     }
@@ -746,7 +758,7 @@ const ActiveTemplate = () => {
     if (key === 'decline') {
       declinePendingMember({
         uid: pendingMember?.[0].uid || '',
-        id: activeCampfireId,
+        id: campfireIdParam,
       });
     }
     if (key === 'declineAll') {
@@ -788,7 +800,7 @@ const ActiveTemplate = () => {
     if (key === 'kick') {
       kickMemberMutation({
         uid: selectedId,
-        id: activeCampfireId,
+        id: campfireIdParam,
       });
       setTimeout(() => {
         if (peersRef.current) {
@@ -834,7 +846,7 @@ const ActiveTemplate = () => {
 
     filteredPeers.forEach((val) => {
       socket.emit('setUsers', {
-        campfireId: activeCampfireId,
+        campfireId: campfireIdParam,
         setValue: newPeerVal,
         userSocketId: val.socketId,
         selectedUserId: selectedId,
@@ -934,7 +946,7 @@ const ActiveTemplate = () => {
 
     filteredPeers.forEach((val) => {
       socket.emit('send setEmoji', {
-        campfireId: activeCampfireId,
+        campfireId: campfireIdParam,
         selectedId: selectedUserId,
         emojiDetails,
         userSocketId: val.socketId,
@@ -953,7 +965,7 @@ const ActiveTemplate = () => {
       }));
       filteredPeers.forEach((val) => {
         socket.emit('send raise signal', {
-          campfireId: activeCampfireId,
+          campfireId: campfireIdParam,
           userId,
           isRaising: !value,
           userSocketId: val.socketId,
@@ -1124,32 +1136,36 @@ const ActiveTemplate = () => {
   }
 
   if (
-    !activeCampfire ||
-    fetchingCampfireError ||
-    fetchingCampfireMemberError ||
-    campfireMember === null
+    (!activeCampfire ||
+      fetchingCampfireError ||
+      fetchingCampfireMemberError ||
+      !campfireMember) &&
+    !isFetchingCampfireLoading &&
+    !isFetchingCampfireMemberLoading &&
+    !isLoadingCurrentUser
   ) {
     return (
       <ActiveResult
         onClickHome={() => navigate('/campfires')}
         onClickRejoin={handleRejoin}
-        data={campfireMember === null ? undefined : campfire}
+        data={!campfireMember ? undefined : campfire}
         error={fetchingCampfireError}
       />
     );
   }
 
   if (
-    activeCampfire === activeCampfireId &&
+    activeCampfire === campfireIdParam &&
     (isFetchingCampfireLoading ||
       endCampfireLoading ||
       isFetchingCampfireMemberLoading ||
-      isFetchingCampfireMembersLoading)
+      isFetchingCampfireMembersLoading ||
+      isLoadingCurrentUser)
   ) {
     return <Loader style={mainLoader} />;
   }
 
-  if (activeCampfire === activeCampfireId) {
+  if (activeCampfire === campfireIdParam && campfireMember) {
     return (
       <Layout>
         <TitleContent
@@ -1157,7 +1173,7 @@ const ActiveTemplate = () => {
           description={campfire?.description || ''}
           onActive
           onClickStartDuration={() => {}}
-          campfireId={activeCampfireId || ''}
+          campfireId={campfireIdParam || ''}
           scheduleToStart={campfire?.scheduleToStart}
         />
         <ActiveSpeakersWrapper>
@@ -1199,7 +1215,7 @@ const ActiveTemplate = () => {
             <Button
               danger
               onClick={() => {
-                handleEndCampfire(activeCampfireId);
+                handleEndCampfire(campfireIdParam);
               }}>
               End Campfire
             </Button>,
@@ -1219,7 +1235,7 @@ const ActiveTemplate = () => {
                 onClick={() => {
                   kickAllMembersMutation({
                     uids: memberIds,
-                    id: activeCampfireId,
+                    id: campfireIdParam,
                   });
                 }}>
                 Kick All
