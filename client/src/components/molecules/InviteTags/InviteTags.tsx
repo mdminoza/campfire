@@ -36,6 +36,8 @@ function DebounceSelect({ debounceTimeout = 800, ...props }) {
 
         setOptions(newOptions);
         setFetching(false);
+        console.log('newOptions: ', newOptions);
+        console.log('Options: ', options);
       });
     };
 
@@ -59,6 +61,7 @@ const handleChange = (value: any) => {
 };
 
 function RenderOptions({ ...props }) {
+  const { onDropdownVisibleChange } = props;
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const { allUsers } = useUserState();
   const { Option } = Select;
@@ -73,16 +76,33 @@ function RenderOptions({ ...props }) {
       />,
     );
   }
+
+  // for (let i = 0; i < allUsers.length; i++) {
+  //   users.push({
+  //     label: allUsers[i].username,
+  //     value: allUsers[i].id,
+  //   });
+  // }
   console.log('RenderOptions: ', allUsers);
   return (
     <Select
       mode="multiple"
       {...props}
       placeholder="Please select"
-      onChange={handleChange}>
+      onChange={handleChange}
+      onDropdownVisibleChange={onDropdownVisibleChange}>
       {users}
     </Select>
   );
+  // return (
+  //   <Select
+  //     mode="multiple"
+  //     {...props}
+  //     placeholder="Please select"
+  //     onChange={handleChange}
+  //     options={users}
+  //   />
+  // );
 }
 
 async function fetchUserLists(username: any) {

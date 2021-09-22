@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
 import { Row, Col, Grid } from 'antd';
@@ -161,15 +161,22 @@ const CreateCampfire = ({
       setShowPicker(false);
     }
 
-    if (!inviteWrapperRef?.current?.contains(e.target)) {
+    if (
+      !inviteWrapperRef?.current?.contains(e.target) &&
+      e.target.className.substring(0, 10) !== 'ant-select'
+    ) {
+      console.log('got here ! DS');
       if (!dropdownVisible) {
         onClickShowInvites(false);
+        console.log('got here ! dropdownVisible');
       }
     }
 
     if (!durationWrapperRef?.current?.contains(e.target)) {
       setDurationPicker(false);
     }
+
+    console.log('clicked! Classname: ', e.target.className.substring(0, 10));
   };
 
   const handleShowInvites = () => {
