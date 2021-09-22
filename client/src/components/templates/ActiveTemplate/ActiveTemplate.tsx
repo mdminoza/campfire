@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-underscore-dangle */
@@ -67,6 +68,7 @@ const ActiveTemplate = () => {
   const [isEndCampfireModal, setEndCampfireModal] = useState(false);
   const [isKickAllModal, setKickAllModal] = useState(false);
   const [isEndedCampfire, setEndedCampfire] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
 
   const screens = useBreakpoint();
   const {
@@ -570,6 +572,12 @@ const ActiveTemplate = () => {
           socket.on('connect_error', () => {
             console.log('error socket');
           });
+
+          if (isMuted) {
+            stream.getAudioTracks()[0].enabled = false;
+          } else {
+            stream.getAudioTracks()[0].enabled = true;
+          }
         })
         .catch((err: any) => {
           /* handle the error */
@@ -599,6 +607,7 @@ const ActiveTemplate = () => {
     fetchingCampfireMemberError,
     activeUser,
     campfireMember,
+    isMuted,
   ]);
 
   useEffect(() => {
@@ -1071,6 +1080,10 @@ const ActiveTemplate = () => {
     console.log(key, 'key');
   };
 
+  const onClickMic = () => {
+    setIsMuted(!isMuted);
+  };
+
   const loaderStyle = {
     fontSize: 16,
     color: '#424242',
@@ -1203,7 +1216,7 @@ const ActiveTemplate = () => {
           onClickRaiseHand={handleClickRaiseHand}
           // onClickMuteMe={() => {}}
           onClickEmoji={handleOnClickEmoji}
-          onClickMic={() => {}}
+          onClickMic={onClickMic}
           isAdmin={activeUser?.uid === campfire?.creator?.uid}
           onClickProfileMenu={handleOnClickProfileMenu}
         />
