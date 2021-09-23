@@ -98,7 +98,7 @@ const Wrapper = styled.div`
 
 const StyledLayout = styled(Layout)<{ campfiretoggled?: string }>`
   &&& {
-    .campfiretabs: {
+    & .campfiretabs: {
       z-index: ${(props) => (props.campfiretoggled === 'true' ? '-1' : 'auto')};
     }
     background: ${(props) =>
@@ -115,7 +115,7 @@ const LoaderWrapper = styled.div`
     justify-content: center;
     height: 300px;
 
-    .ant-spin-dot-item {
+    & .ant-spin-dot-item {
       background-color: #e75a0b;
     }
   }

@@ -27,8 +27,10 @@ export const StyledCard = styled(Card)`
       props.isfeatured === 'true' ? '24px' : '27px'};
     height: auto;
     min-width: 223px;
-    .ant-card-body {
-      padding: 0;
+    & .ant-card-body {
+      padding-left: 0;
+      padding-right: 0;
+      padding-bottom: 0;
     }
   }
 `;

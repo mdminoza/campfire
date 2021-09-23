@@ -27,12 +27,14 @@ import { theme } from '../../../constants';
 const { Footer } = Layout;
 
 const StyledFooter = styled(Footer)`
-  position: fixed;
-  z-index: 2;
-  width: 100%;
-  bottom: 0;
-  padding: 0;
-  background-color: ${theme.colors.gray.gray29};
+  &&& {
+    position: fixed;
+    z-index: 2;
+    width: 100%;
+    bottom: 0;
+    padding: 0;
+    background-color: ${theme.colors.gray.gray29};
+  }
 `;
 
 const StyledRow = styled(Row)`
@@ -141,7 +143,7 @@ const RaiseHandWrapper = styled.div`
 
 const StyledMenu = styled(Menu)`
   border: 2px solid #000000;
-  .adminMenu {
+  & .adminMenu {
     font-family: ${theme.fonts.fontFamily};
     font-style: normal;
     font-weight: bold;
@@ -152,7 +154,7 @@ const StyledMenu = styled(Menu)`
     color: ${theme.colors.mainBlack};
   }
 
-  .adminMenuList {
+  & .adminMenuList {
     font-family: ${theme.fonts.fontFamily};
     font-style: normal;
     font-weight: normal;
