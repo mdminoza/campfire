@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Select, Spin, Radio } from 'antd';
 import 'antd/dist/antd.css';
 import debounce from 'lodash/debounce';
 import { Container, SelectStyle, SelectionWrapper, BtnStyle } from './elements';
 import { Button } from '../../atoms/Button';
 import { useUserState } from '../../../hooks/user';
+import { UserInterface } from '../../../hooks/user/combined/types';
 
 type Props = {
   setInvite: (selected: Object[], type: string) => void;
@@ -56,55 +57,6 @@ function DebounceSelect({ debounceTimeout = 800, ...props }) {
   );
 }
 
-const handleChange = (value: any) => {
-  console.log('handleChange: ', value);
-};
-
-function RenderOptions({ ...props }) {
-  const { onDropdownVisibleChange } = props;
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { allUsers } = useUserState();
-  const { Option } = Select;
-  const users = Array<any>();
-  for (let i = 0; i < allUsers.length; i++) {
-    users.push(
-      <Option
-        key={allUsers[i].username}
-        // eslint-disable-next-line react/no-children-prop
-        children={allUsers[i].username}
-        value={allUsers[i].username}
-      />,
-    );
-  }
-
-  // for (let i = 0; i < allUsers.length; i++) {
-  //   users.push({
-  //     label: allUsers[i].username,
-  //     value: allUsers[i].id,
-  //   });
-  // }
-  console.log('RenderOptions: ', allUsers);
-  return (
-    <Select
-      mode="multiple"
-      {...props}
-      placeholder="Please select"
-      onChange={handleChange}
-      onDropdownVisibleChange={onDropdownVisibleChange}>
-      {users}
-    </Select>
-  );
-  // return (
-  //   <Select
-  //     mode="multiple"
-  //     {...props}
-  //     placeholder="Please select"
-  //     onChange={handleChange}
-  //     options={users}
-  //   />
-  // );
-}
-
 async function fetchUserLists(username: any) {
   console.log('fetching user', username);
   return fetch('https://randomuser.me/api/?results=5')
@@ -122,6 +74,27 @@ async function fetchUserLists(username: any) {
     );
 }
 
+const Selections = ({ ...props }) => {
+  const { Option } = Select;
+  const users = Array<any>();
+  const { allUsers } = useUserState();
+  for (let i = 0; i < allUsers.length; i++) {
+    users.push(
+      <Option
+        key={allUsers[i].username}
+        // eslint-disable-next-line react/no-children-prop
+        children={allUsers[i].username}
+        value={allUsers[i].id}
+      />,
+    );
+  }
+  return (
+    <Select mode="multiple" placeholder="Select members" {...props}>
+      {users}
+    </Select>
+  );
+};
+
 // const InviteTags = ({ setInvite }: Props) => {
 //   const [value, setValue] = React.useState([]);
 //   const [radioVal, setRadioVal] = React.useState('Everyone');
@@ -132,7 +105,9 @@ const InviteTags = ({
   onDropdownVisibleChange = () => {},
   radioVal = 'Everyone',
 }: Props): React.ReactElement => {
-  const [value, setValue] = React.useState([]);
+  const [value, setValue] = React.useState<any>([]);
+
+  const { allUsers } = useUserState();
 
   const handleOnChangeRadio = (e: any) => {
     setValue([]);
@@ -144,6 +119,18 @@ const InviteTags = ({
     setInvite(value, radioVal);
   };
 
+  const handleChange = (selected: any[]) => {
+    const temp: (UserInterface | undefined)[] = [];
+    selected.forEach((id) => {
+      temp.push(allUsers.find((user) => user.id === id));
+    });
+    setValue(temp);
+  };
+
+  useEffect(() => {
+    console.log('Selected invite value: ', value);
+  }, [value]);
+
   return (
     <Container>
       <SelectionWrapper>
@@ -152,7 +139,7 @@ const InviteTags = ({
           <Radio value="Invite Only">INVITE ONLY</Radio>
         </Radio.Group>
         {radioVal === 'Invite Only' && (
-          <RenderOptions style={SelectStyle} />
+          <Selections onChange={handleChange} />
           // <DebounceSelect
           //   mode="multiple"
           //   value={value}
