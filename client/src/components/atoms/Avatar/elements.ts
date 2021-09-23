@@ -8,9 +8,9 @@ import { theme } from '../../../constants';
 export const StyledAvatar: React.FunctionComponent<AvatarProps> = styled(
   Avatar,
 )`
-  border-radius: 0;
-  background: ${theme.colors.gray.light};
-  display: flex;
+  border-radius: 0 !important;
+  background: ${theme.colors.gray.light} !important;
+  display: flex !important;
   align-items: center;
   justify-content: center;
 `;

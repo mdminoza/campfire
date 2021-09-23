@@ -24,13 +24,11 @@ export const StyledCard = styled(Card)`
     border: 0;
     border-radius: 0;
     padding-top: ${(props: { isfeatured?: string }): string =>
-      props.isfeatured === 'true' ? '24px' : '27px'};
+      props.isfeatured === 'true' ? '24px' : '27px'} !important;
     height: auto;
     min-width: 223px;
     & .ant-card-body {
-      padding-left: 0;
-      padding-right: 0;
-      padding-bottom: 0;
+      padding: 0;
     }
   }
 `;

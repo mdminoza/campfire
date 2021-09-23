@@ -28,23 +28,23 @@ const { Footer } = Layout;
 
 const StyledFooter = styled(Footer)`
   &&& {
-    position: fixed;
+    position: fixed !important;
     z-index: 2;
-    width: 100%;
-    bottom: 0;
-    padding: 0;
-    background-color: ${theme.colors.gray.gray29};
+    width: 100% !important;
+    bottom: 0 !important;
+    padding: 0 !important;
+    background-color: ${theme.colors.gray.gray29} !important;
   }
 `;
 
 const StyledRow = styled(Row)`
-  justify-content: center;
+  justify-content: center !important;
 `;
 
 const OptionContainer = styled.div`
-  display: flex;
-  align-items: center;
-  cursor: pointer;
+  display: flex !important;
+  align-items: center !important;
+  cursor: pointer !important;
 `;
 
 const IconLogo = styled.div`
