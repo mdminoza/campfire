@@ -3,14 +3,16 @@ import { Spin } from 'antd';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background-color: #2c2c2c;
+  &&& {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #2c2c2c;
 
-  .ant-spin-dot-item {
-    background-color: #e75a0b;
+    .ant-spin-dot-item {
+      background-color: #e75a0b;
+    }
   }
 `;
 

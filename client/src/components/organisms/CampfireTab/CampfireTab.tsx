@@ -19,18 +19,22 @@ type Props = {
 };
 
 const StyledTabs = styled(Tabs)`
-  background-color: ${theme.colors.gray.light};
+  &&& {
+    background-color: ${theme.colors.gray.light};
+  }
 `;
 
 const TabWrapper = styled.div`
-  .ant-tabs-ink-bar {
-    height: 1.5px !important;
-    background: ${theme.colors.mainBlack} !important;
-  }
+  &&& {
+    .ant-tabs-ink-bar {
+      height: 1.5px !important;
+      background: ${theme.colors.mainBlack} !important;
+    }
 
-  .ant-tabs-nav {
-    &:before {
-      border-bottom: 1.5px solid ${theme.colors.gray.grayb9};
+    .ant-tabs-nav {
+      &:before {
+        border-bottom: 1.5px solid ${theme.colors.gray.grayb9};
+      }
     }
   }
 `;
@@ -38,25 +42,29 @@ const TabWrapper = styled.div`
 const TabTitleWrapper = styled.div``;
 
 const TabTitleLabel = styled.span`
-  font-family: ${theme.fonts.fontFamily};
-  font-style: normal;
-  font-weight: bold;
-  font-size: 1rem;
-  line-height: 24px;
-  letter-spacing: 0.02em;
-  color: ${theme.colors.mainBlack};
+  &&& {
+    font-family: ${theme.fonts.fontFamily};
+    font-style: normal;
+    font-weight: bold;
+    font-size: 1rem;
+    line-height: 24px;
+    letter-spacing: 0.02em;
+    color: ${theme.colors.mainBlack};
+  }
 `;
 
 const TabBadge = styled.span`
-  font-family: ${theme.fonts.fontFamily};
-  font-style: normal;
-  font-weight: bold;
-  font-size: 0.8rem;
-  line-height: 24px;
-  color: ${theme.colors.mainWhite};
-  background-color: ${theme.colors.red.light};
-  padding: 4px 10px;
-  margin-left: 8px;
+  &&& {
+    font-family: ${theme.fonts.fontFamily};
+    font-style: normal;
+    font-weight: bold;
+    font-size: 0.8rem;
+    line-height: 24px;
+    color: ${theme.colors.mainWhite};
+    background-color: ${theme.colors.red.light};
+    padding: 4px 10px;
+    margin-left: 8px;
+  }
 `;
 
 const TabTitle = ({ title, count }: { title: string; count: number }) => (

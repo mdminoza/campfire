@@ -27,97 +27,109 @@ type Props = {
 };
 
 const Container = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 500px;
-  flex-direction: column;
-  background: url(${campfireBackground});
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  text-align: center;
-  position: relative;
-  @media (max-width: 768px) {
-    height: 400px;
-  }
-  @media (max-width: 576px) {
-    height: 300px;
+  &&& {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 500px;
+    flex-direction: column;
+    background: url(${campfireBackground});
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    text-align: center;
+    position: relative;
+    @media (max-width: 768px) {
+      height: 400px;
+    }
+    @media (max-width: 576px) {
+      height: 300px;
+    }
   }
 `;
 
 export const Title = styled.span`
-  font-family: ${theme.fonts.fontFamily};
-  font-style: normal;
-  font-weight: bold;
-  font-size: ${(props: { fontSize?: string }) => props?.fontSize || '2rem'};
-  letter-spacing: 0.32em;
-  color: ${theme.colors.mainWhite};
-  line-height: ${(props: { fontSize?: string; lineHeight?: string }) =>
-    props?.lineHeight || '45px'};
-  padding: ${(props: {
-    lineHeight?: string;
-    fontSize?: string;
-    padding?: string | number;
-  }) => props?.padding || 0};
-  z-index: 1;
-  text-align: center;
-  @media (max-width: 768px) {
-    font-size: 1.5rem;
-  }
-  @media (max-width: 576px) {
-    font-size: 1.2rem;
+  &&& {
+    font-family: ${theme.fonts.fontFamily};
+    font-style: normal;
+    font-weight: bold;
+    font-size: ${(props: { fontSize?: string }) => props?.fontSize || '2rem'};
+    letter-spacing: 0.32em;
+    color: ${theme.colors.mainWhite};
+    line-height: ${(props: { fontSize?: string; lineHeight?: string }) =>
+      props?.lineHeight || '45px'};
+    padding: ${(props: {
+      lineHeight?: string;
+      fontSize?: string;
+      padding?: string | number;
+    }) => props?.padding || 0};
+    z-index: 1;
+    text-align: center;
+    @media (max-width: 768px) {
+      font-size: 1.5rem;
+    }
+    @media (max-width: 576px) {
+      font-size: 1.2rem;
+    }
   }
 `;
 
 export const Description = styled.p`
-  font-family: ${theme.fonts.fontFamily};
-  font-style: normal;
-  font-size: ${(props: { width?: string; fontSize?: string }) =>
-    props?.fontSize || '1rem'};
-  letter-spacing: 0.32em;
-  color: ${theme.colors.mainWhite};
-  text-align: center;
-  width: ${(props: { width?: string; fontSize?: string }) =>
-    props?.width || '60%'};
-  z-index: 1;
-  padding: ${(props: {
-    width?: string;
-    fontSize?: string;
-    padding?: string | number;
-  }) => props?.padding || 0};
+  &&& {
+    font-family: ${theme.fonts.fontFamily};
+    font-style: normal;
+    font-size: ${(props: { width?: string; fontSize?: string }) =>
+      props?.fontSize || '1rem'};
+    letter-spacing: 0.32em;
+    color: ${theme.colors.mainWhite};
+    text-align: center;
+    width: ${(props: { width?: string; fontSize?: string }) =>
+      props?.width || '60%'};
+    z-index: 1;
+    padding: ${(props: {
+      width?: string;
+      fontSize?: string;
+      padding?: string | number;
+    }) => props?.padding || 0};
+  }
 `;
 
 const StartedTime = styled.span`
-  font-family: ${theme.fonts.fontFamily};
-  font-style: normal;
-  font-size: ${(props: { width?: string; fontSize?: string }) =>
-    props?.fontSize || '1rem'};
-  letter-spacing: 0.32em;
-  color: ${theme.colors.mainWhite};
-  text-align: center;
-  z-index: 1;
-  padding-top: 32px;
+  &&& {
+    font-family: ${theme.fonts.fontFamily};
+    font-style: normal;
+    font-size: ${(props: { width?: string; fontSize?: string }) =>
+      props?.fontSize || '1rem'};
+    letter-spacing: 0.32em;
+    color: ${theme.colors.mainWhite};
+    text-align: center;
+    z-index: 1;
+    padding-top: 32px;
+  }
 `;
 
 const IconWrapper = styled.div`
-  z-index: 1;
+  &&& {
+    z-index: 1;
+  }
 `;
 
 const Overlay = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background-color: ${theme.colors.mainBlack};
-  opacity: 0.6;
-  height: 500px;
-  @media (max-width: 768px) {
-    height: 400px;
-  }
-  @media (max-width: 576px) {
-    height: 300px;
+  &&& {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: ${theme.colors.mainBlack};
+    opacity: 0.6;
+    height: 500px;
+    @media (max-width: 768px) {
+      height: 400px;
+    }
+    @media (max-width: 576px) {
+      height: 300px;
+    }
   }
 `;
 
