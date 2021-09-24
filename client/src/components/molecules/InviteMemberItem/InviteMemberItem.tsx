@@ -8,51 +8,57 @@ import { theme } from '../../../constants';
 const AvatarWrapper = styled.div``;
 
 const StyledCard = styled(Card)`
-  .ant-card-body {
-    padding: 0 0 8px;
-    text-align: center;
-  }
-  .ant-card-head {
-    padding: 0;
-    margin-bottom: 0;
-    border: ${(props: { isActive?: boolean }) =>
-      props.isActive ? `5px solid ${theme.colors.blue.primary}` : 'none'};
-    border-radius: 0;
-  }
-  .ant-card-head-title {
-    padding: 0;
+  &&& {
+    .ant-card-body {
+      padding: 0 0 8px;
+      text-align: center;
+    }
+    .ant-card-head {
+      padding: 0;
+      margin-bottom: 0;
+      border: ${(props: { isActive?: boolean }) =>
+        props.isActive ? `5px solid ${theme.colors.blue.primary}` : 'none'};
+      border-radius: 0;
+    }
+    .ant-card-head-title {
+      padding: 0;
+    }
   }
 `;
 
 const StyledMenu = styled(Menu)`
-  border: 2px solid #000000;
-  .adminMenu {
-    font-family: ${theme.fonts.fontFamily};
-    font-style: normal;
-    font-weight: bold;
-    font-size: 14px;
-    line-height: 20px;
-    letter-spacing: 0.02em;
+  &&& {
+    border: 2px solid #000000;
+    .adminMenu {
+      font-family: ${theme.fonts.fontFamily};
+      font-style: normal;
+      font-weight: bold;
+      font-size: 14px;
+      line-height: 20px;
+      letter-spacing: 0.02em;
 
-    color: ${theme.colors.mainBlack};
-  }
+      color: ${theme.colors.mainBlack};
+    }
 
-  .adminMenuList {
-    font-family: ${theme.fonts.fontFamily};
-    font-style: normal;
-    font-weight: normal;
-    font-size: 14px;
-    line-height: 20px;
-    letter-spacing: 0.02em;
-    color: ${theme.colors.gray.gray989};
+    .adminMenuList {
+      font-family: ${theme.fonts.fontFamily};
+      font-style: normal;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 20px;
+      letter-spacing: 0.02em;
+      color: ${theme.colors.gray.gray989};
+    }
   }
 `;
 
 const HiddenContainer = styled.div`
-  width: 80px;
-  height: 110px;
-  position: absolute;
-  top: 0;
+  &&& {
+    width: 80px;
+    height: 110px;
+    position: absolute;
+    top: 0;
+  }
 `;
 
 const HiddenDropDownContainer = styled.div``;

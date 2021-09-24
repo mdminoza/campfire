@@ -11,16 +11,18 @@ import {
 } from '../../atoms/Icons';
 
 const Container = styled.div`
-  position: absolute;
-  z-index: 1;
-  padding: 0;
-  display: flex;
-  width: ${(props: { isAudience?: boolean }) =>
-    props?.isAudience ? 60 : 80}px;
-  height: ${(props: { isAudience?: boolean }) =>
-    props?.isAudience ? 60 : 80}px;
-  top: 30px;
-  left: 10px;
+  &&& {
+    position: absolute;
+    z-index: 1;
+    padding: 0;
+    display: flex;
+    width: ${(props: { isAudience?: boolean }) =>
+      props?.isAudience ? 60 : 80}px;
+    height: ${(props: { isAudience?: boolean }) =>
+      props?.isAudience ? 60 : 80}px;
+    top: 30px;
+    left: 10px;
+  }
 `;
 
 type Props = {

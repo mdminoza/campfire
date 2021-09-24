@@ -26,16 +26,20 @@ import { theme } from '../../../constants';
 const { Footer } = Layout;
 
 const StyledFooter = styled(Footer)`
-  position: fixed;
-  z-index: 2;
-  width: 100%;
-  bottom: 0;
-  padding: 0;
-  background-color: ${theme.colors.mainWhite};
+  &&& {
+    position: fixed;
+    z-index: 2;
+    width: 100%;
+    bottom: 0;
+    padding: 0;
+    background-color: ${theme.colors.mainWhite};
+  }
 `;
 
 const StyledRow = styled(Row)`
-  justify-content: center;
+  &&& {
+    justify-content: center;
+  }
 `;
 
 // const BottomContainer = styled.div`
@@ -52,121 +56,145 @@ const StyledRow = styled(Row)`
 // `;
 
 const OptionContainer = styled.div`
-  display: flex;
-  align-items: center;
+  &&& {
+    display: flex;
+    align-items: center;
+  }
 `;
 
 // const LinkWrapper = styled(Link)``;
 
 const IconLogo = styled.div`
-  height: 50px;
-  width: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
+  &&& {
+    height: 50px;
+    width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
 `;
 
 const EmojiWrapper = styled(Col)`
-  padding-left: 8px;
+  &&& {
+    padding-left: 8px;
+  }
 `;
 
 const EmojiButtonWrapper = styled.button`
-  height: 45px;
-  padding: 0;
-  border: none;
-  margin: 1px 2px 0;
-  background-color: ${theme.colors.mainWhite};
-  cursor: pointer;
-  &:focus {
-    outline: none;
-    box-shadow: none;
+  &&& {
+    height: 45px;
+    padding: 0;
+    border: none;
+    margin: 1px 2px 0;
+    background-color: ${theme.colors.mainWhite};
+    cursor: pointer;
+    &:focus {
+      outline: none;
+      box-shadow: none;
+    }
   }
 `;
 
 const RaiseHandBtnContent = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  &&& {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 `;
 
 const RaiseHandLabel = styled.span`
-  font-family: ${theme.fonts.fontFamily};
-  font-style: normal;
-  font-weight: bold;
-  font-size: 16px;
-  line-height: 112.7%;
-  letter-spacing: 0.02em;
-  color: ${theme.colors.mainWhite};
-  margin-left: 16px;
-`;
-
-const AvatarWrapper = styled.div`
-  .styledAvatar {
-    display: inline-block;
-  }
-  cursor: pointer;
-`;
-
-const RaiseHandWrapper = styled.div`
-  width: 59px;
-  height: 59px;
-  position: absolute;
-  top: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: ${theme.colors.mainBlack};
-`;
-
-const MuteBtnWrapper = styled.div`
-  width: auto;
-  background-color: ${theme.colors.gray.gray29};
-  display: flex;
-  height: 100%;
-  align-items: center;
-  justify-content: flex-end;
-`;
-
-const MutedBtnWrapper = styled.div`
-  background-color: #dfdfdf;
-  display: flex;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-  width: 170px;
-`;
-
-const MuteMeLabel = styled.span`
-  font-family: ${theme.fonts.fontFamily};
-  font-style: normal;
-  font-weight: bold;
-  font-size: 16px;
-  letter-spacing: 0.02em;
-  color: ${theme.colors.mainWhite};
-`;
-
-const StyledMenu = styled(Menu)`
-  border: 2px solid #000000;
-  .adminMenu {
+  &&& {
     font-family: ${theme.fonts.fontFamily};
     font-style: normal;
     font-weight: bold;
-    font-size: 14px;
-    line-height: 20px;
+    font-size: 16px;
+    line-height: 112.7%;
     letter-spacing: 0.02em;
-
-    color: ${theme.colors.mainBlack};
+    color: ${theme.colors.mainWhite};
+    margin-left: 16px;
   }
+`;
 
-  .adminMenuList {
+const AvatarWrapper = styled.div`
+  &&& {
+    .styledAvatar {
+      display: inline-block;
+    }
+    cursor: pointer;
+  }
+`;
+
+const RaiseHandWrapper = styled.div`
+  &&& {
+    width: 59px;
+    height: 59px;
+    position: absolute;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: ${theme.colors.mainBlack};
+  }
+`;
+
+const MuteBtnWrapper = styled.div`
+  &&& {
+    width: auto;
+    background-color: ${theme.colors.gray.gray29};
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: flex-end;
+  }
+`;
+
+const MutedBtnWrapper = styled.div`
+  &&& {
+    background-color: #dfdfdf;
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    width: 170px;
+  }
+`;
+
+const MuteMeLabel = styled.span`
+  &&& {
     font-family: ${theme.fonts.fontFamily};
     font-style: normal;
-    font-weight: normal;
-    font-size: 14px;
-    line-height: 20px;
+    font-weight: bold;
+    font-size: 16px;
     letter-spacing: 0.02em;
-    color: ${theme.colors.gray.gray989};
+    color: ${theme.colors.mainWhite};
+  }
+`;
+
+const StyledMenu = styled(Menu)`
+  &&& {
+    border: 2px solid #000000;
+    .adminMenu {
+      font-family: ${theme.fonts.fontFamily};
+      font-style: normal;
+      font-weight: bold;
+      font-size: 14px;
+      line-height: 20px;
+      letter-spacing: 0.02em;
+
+      color: ${theme.colors.mainBlack};
+    }
+
+    .adminMenuList {
+      font-family: ${theme.fonts.fontFamily};
+      font-style: normal;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 20px;
+      letter-spacing: 0.02em;
+      color: ${theme.colors.gray.gray989};
+    }
   }
 `;
 
@@ -191,16 +219,20 @@ type Props = {
 };
 
 const HiddenContainer = styled.div`
-  width: 59px;
-  height: 59px;
-  position: absolute;
-  top: 0;
+  &&& {
+    width: 59px;
+    height: 59px;
+    position: absolute;
+    top: 0;
+  }
 `;
 
 const MuteLabel = styled.span``;
 
 const UnLabel = styled.b`
-  color: ${theme.colors.mainBlack};
+  &&& {
+    color: ${theme.colors.mainBlack};
+  }
 `;
 
 const CampfireFooter = ({

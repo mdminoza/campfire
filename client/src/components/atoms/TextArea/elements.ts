@@ -10,8 +10,10 @@ const { TextArea } = Input;
 export const StyledTextArea: React.FunctionComponent<TextAreaProps> = styled(
   TextArea,
 )`
-  border-radius: 0;
-  font-family: ${theme.fonts.fontFamily};
+  &&& {
+    border-radius: 0;
+    font-family: ${theme.fonts.fontFamily};
+  }
 `;
 
 // for storybook

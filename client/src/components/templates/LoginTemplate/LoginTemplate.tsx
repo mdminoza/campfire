@@ -15,55 +15,69 @@ import { useUserAction, useUserState } from '../../../hooks/user';
 import { LoginSchema } from './validation';
 
 const Container = styled.div`
-  background: ${theme.colors.gray.gray2C};
-  height: 100vh;
-  width: 100%;
+  &&& {
+    background: ${theme.colors.gray.gray2C};
+    height: 100vh;
+    width: 100%;
+  }
 `;
 
 const Wrapper = styled.div`
-  width: 350px;
-  margin: auto;
-  position: relative;
-  top: 50%;
-  -webkit-transform: translateY(-50%);
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
+  &&& {
+    width: 350px;
+    margin: auto;
+    position: relative;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+  }
 `;
 const TitleContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
+  &&& {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 const InputTitle = styled.span`
-  color: ${theme.colors.mainWhite};
-  font-weight: 700;
+  &&& {
+    color: ${theme.colors.mainWhite};
+    font-weight: 700;
+  }
 `;
 
 const InputWrapper = styled.div`
-  width: 100%;
-  margin-top: 20px;
+  &&& {
+    width: 100%;
+    margin-top: 20px;
+  }
 `;
 
 const ButtonWrapper = styled.div`
-  margin-top: 55px;
-  display: flex;
-  justify-content: center;
+  &&& {
+    margin-top: 55px;
+    display: flex;
+    justify-content: center;
 
-  .ant-spin-dot-item {
-    background-color: #e75a0b;
+    .ant-spin-dot-item {
+      background-color: #e75a0b;
+    }
   }
 `;
 
 const ErrorLabel = styled.span`
-  font-family: Open Sans;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 12px;
-  letter-spacing: 0.02em;
-  color: #ff7373;
-  height: 19px;
+  &&& {
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    color: #ff7373;
+    height: 19px;
+  }
 `;
 
 const LoginButtonStyle = {
