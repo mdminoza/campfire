@@ -37,8 +37,6 @@ function DebounceSelect({ debounceTimeout = 800, ...props }) {
 
         setOptions(newOptions);
         setFetching(false);
-        console.log('newOptions: ', newOptions);
-        console.log('Options: ', options);
       });
     };
 
@@ -120,16 +118,17 @@ const InviteTags = ({
   };
 
   const handleChange = (selected: any[]) => {
-    const temp: (UserInterface | undefined)[] = [];
+    const temp: any[] = [];
     selected.forEach((id) => {
-      temp.push(allUsers.find((user) => user.id === id));
+      const foo = allUsers.find((user) => user.id === id);
+      temp.push({
+        uid: foo?.id,
+        name: `${foo?.firstName} ${foo?.lastName}`,
+        profileUrl: foo?.avatar,
+      });
     });
     setValue(temp);
   };
-
-  useEffect(() => {
-    console.log('Selected invite value: ', value);
-  }, [value]);
 
   return (
     <Container>
