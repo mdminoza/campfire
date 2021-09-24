@@ -27,22 +27,24 @@ import { theme } from '../../../constants';
 const { Footer } = Layout;
 
 const StyledFooter = styled(Footer)`
-  position: fixed;
-  z-index: 2;
-  width: 100%;
-  bottom: 0;
-  padding: 0;
-  background-color: ${theme.colors.gray.gray29};
+  &&& {
+    position: fixed !important;
+    z-index: 2;
+    width: 100% !important;
+    bottom: 0 !important;
+    padding: 0 !important;
+    background-color: ${theme.colors.gray.gray29} !important;
+  }
 `;
 
 const StyledRow = styled(Row)`
-  justify-content: center;
+  justify-content: center !important;
 `;
 
 const OptionContainer = styled.div`
-  display: flex;
-  align-items: center;
-  cursor: pointer;
+  display: flex !important;
+  align-items: center !important;
+  cursor: pointer !important;
 `;
 
 const IconLogo = styled.div`
@@ -141,7 +143,7 @@ const RaiseHandWrapper = styled.div`
 
 const StyledMenu = styled(Menu)`
   border: 2px solid #000000;
-  .adminMenu {
+  & .adminMenu {
     font-family: ${theme.fonts.fontFamily};
     font-style: normal;
     font-weight: bold;
@@ -152,7 +154,7 @@ const StyledMenu = styled(Menu)`
     color: ${theme.colors.mainBlack};
   }
 
-  .adminMenuList {
+  & .adminMenuList {
     font-family: ${theme.fonts.fontFamily};
     font-style: normal;
     font-weight: normal;

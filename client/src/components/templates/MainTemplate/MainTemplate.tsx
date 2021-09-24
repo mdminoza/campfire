@@ -9,7 +9,6 @@ import { useQuery, useMutation } from 'react-query';
 
 import { theme } from '../../../constants';
 import { arrayToObject } from '../../../utils/helpers/common';
-import { cipherText } from '../../../utils/helpers/crypto';
 import { TextInput } from '../../atoms/TextInput';
 import { Search } from '../../atoms/Icons';
 import { Loader } from '../../atoms/Loader';
@@ -37,68 +36,88 @@ import {
 const { useBreakpoint } = Grid;
 
 const TabWrapper = styled.div<{ campfiretoggled: boolean }>`
-  margin: 0 40px;
-  z-index: ${(props) => (props.campfiretoggled ? '-1;' : 'auto')};
+  &&& {
+    margin: 0 40px;
+    z-index: ${(props) => (props.campfiretoggled ? '-1;' : 'auto')};
+  }
 `;
 
 const TitleWrapper = styled.div<{ campfiretoggled: boolean }>`
-  z-index: ${(props) => (props.campfiretoggled ? '-1;' : 'auto')};
+  &&& {
+    z-index: ${(props) => (props.campfiretoggled ? '-1;' : 'auto')};
+  }
 `;
 
 const SearchIconWrapper = styled.div`
-  padding: 14px 14px 14px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  &&& {
+    padding: 14px 14px 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 `;
 
 const TabContentWrapper = styled(Row)`
-  padding: 0 2px 64px;
+  &&& {
+    padding: 0 2px 64px;
+  }
 `;
 
 const CardWrapper = styled(Row)`
-  padding: 32px 0;
+  &&& {
+    padding: 32px 0;
+  }
 `;
 
 const CreateCampFireWrapper = styled.div`
-  margin: -70px 0 24px;
-  z-index: 1;
+  &&& {
+    margin: -70px 0 24px;
+    z-index: 1;
+  }
 `;
 
 const Cover = styled.div`
-  height: 100%;
-  width: 100%;
-  padding: 0;
-  margin: 0;
-  top: 0;
-  left: 0;
-  z-index: 1;
-  display: flex;
-  justify-content: center;
+  &&& {
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+  }
 `;
 
 const Wrapper = styled.div`
-  width: 100%;
+  &&& {
+    width: 100%;
+  }
 `;
 
 const StyledLayout = styled(Layout)<{ campfiretoggled?: string }>`
-  .campfiretabs: {
-    z-index: ${(props) => (props.campfiretoggled === 'true' ? '-1' : 'auto')};
+  &&& {
+    & .campfiretabs: {
+      z-index: ${(props) => (props.campfiretoggled === 'true' ? '-1' : 'auto')};
+    }
+    background: ${(props) =>
+      props.campfiretoggled === 'true' ? 'rgb(0 0 0 / 45%)' : ''};
+    z-index: 9;
+    position: inherit;
   }
-  background: ${(props) =>
-    props.campfiretoggled === 'true' ? 'rgb(0 0 0 / 45%)' : ''};
-  z-index: 9;
-  position: inherit;
 `;
 
 const LoaderWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 300px;
+  &&& {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
 
-  .ant-spin-dot-item {
-    background-color: #e75a0b;
+    & .ant-spin-dot-item {
+      background-color: #e75a0b;
+    }
   }
 `;
 
