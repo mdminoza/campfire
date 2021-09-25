@@ -256,12 +256,14 @@ const CampfireFooter1 = ({
     backgroundColor: theme.colors.gray.gray29,
     padding: 0,
     width: 45,
+    height: '100%',
   };
 
   const raisedHandBtnStyle = {
     backgroundColor: theme.colors.gray.gray29,
     textAlign: 'end',
     paddingRight: 24,
+    height: '100%',
   };
 
   const emojiWinkStyle = { marginTop: 10 };
