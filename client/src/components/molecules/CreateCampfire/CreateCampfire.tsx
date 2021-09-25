@@ -165,18 +165,14 @@ const CreateCampfire = ({
       !inviteWrapperRef?.current?.contains(e.target) &&
       e.target.className.substring(0, 10) !== 'ant-select'
     ) {
-      console.log('got here ! DS');
       if (!dropdownVisible) {
         onClickShowInvites(false);
-        console.log('got here ! dropdownVisible');
       }
     }
 
     if (!durationWrapperRef?.current?.contains(e.target)) {
       setDurationPicker(false);
     }
-
-    console.log('clicked! Classname: ', e.target.className.substring(0, 10));
   };
 
   const handleShowInvites = () => {

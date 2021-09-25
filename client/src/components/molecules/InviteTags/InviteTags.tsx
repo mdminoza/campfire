@@ -82,7 +82,7 @@ const Selections = ({ ...props }) => {
         key={allUsers[i].username}
         // eslint-disable-next-line react/no-children-prop
         children={allUsers[i].username}
-        value={allUsers[i].id}
+        value={allUsers[i].username}
       />,
     );
   }
@@ -119,8 +119,8 @@ const InviteTags = ({
 
   const handleChange = (selected: any[]) => {
     const temp: any[] = [];
-    selected.forEach((id) => {
-      const foo = allUsers.find((user) => user.id === id);
+    selected.forEach((val) => {
+      const foo = allUsers.find((user) => user.username === val);
       temp.push({
         uid: foo?.id,
         name: `${foo?.firstName} ${foo?.lastName}`,

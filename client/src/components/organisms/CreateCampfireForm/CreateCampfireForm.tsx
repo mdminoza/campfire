@@ -79,14 +79,8 @@ const CreateCampfireForm = ({
           isLoading={isLoading}
           fetchUserList={fetchUserList}
           onChangeOpenTo={(type, invited) => {
-            const invitedData = invited.map((val: any) => ({
-              uid: v4(),
-              name: val,
-              profileUrl:
-                'https://staging.godtribe.com/app/plugins/buddyboss-platform/bp-core/images/mystery-man.jpg',
-            }));
             setFieldValue('openTo', type);
-            setFieldValue('invited', type === 'Everyone' ? [] : invitedData);
+            setFieldValue('invited', type === 'Everyone' ? [] : invited);
           }}
           onChangeDuration={(duration) => {
             setFieldValue('duration', duration);
