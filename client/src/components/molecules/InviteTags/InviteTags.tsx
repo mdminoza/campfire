@@ -75,14 +75,18 @@ async function fetchUserLists(username: any) {
 const Selections = ({ ...props }) => {
   const { Option } = Select;
   const users = Array<any>();
-  const { allUsers } = useUserState();
-  for (let i = 0; i < allUsers.length; i++) {
+  const { allUsers, currentUser } = useUserState();
+  let filtered: any = [];
+  if (allUsers.length > 0) {
+    filtered = allUsers.filter((userVal) => userVal.id !== currentUser?.id);
+  }
+  for (let i = 0; i < filtered.length; i++) {
     users.push(
       <Option
-        key={allUsers[i].username}
+        key={filtered[i].username}
         // eslint-disable-next-line react/no-children-prop
-        children={allUsers[i].username}
-        value={allUsers[i].username}
+        children={filtered[i].username}
+        value={filtered[i].username}
       />,
     );
   }
