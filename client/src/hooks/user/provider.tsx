@@ -9,6 +9,7 @@ const UserProvider = (props: any): React.ReactElement => {
   const [auth, setAuth] = useState(undefined);
   const [token, setToken] = useState(undefined);
   const [activeCampfire, setActiveCampfire] = useState(null);
+  const [allUsers, setAllUsers] = useState(undefined);
 
   const useUserState = {
     currentUser,
@@ -21,6 +22,8 @@ const UserProvider = (props: any): React.ReactElement => {
     setAuth,
     activeCampfire,
     setActiveCampfire,
+    allUsers,
+    setAllUsers,
   };
 
   const combinedValues = {

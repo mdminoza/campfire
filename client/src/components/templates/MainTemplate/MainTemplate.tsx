@@ -430,7 +430,6 @@ const MainTemplate = (): React.ReactElement => {
       creator,
       members: invited,
     };
-
     handleAddCampfire(params);
   };
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useClient } from '../client';
+import { UserInterface } from './combined/types';
 
 export type UserHooks = {
   useUserAction(): {
@@ -11,6 +12,7 @@ export type UserHooks = {
       email: string;
       profileUrl: string;
     }>;
+    fetchAllUsers: () => Promise<UserInterface[] | undefined>;
   };
   useUserState: {
     currentUser?: {
@@ -38,6 +40,8 @@ export type UserHooks = {
     setAuth: (auth?: { userAuth: boolean; token: string }) => void;
     activeCampfire: string | null;
     setActiveCampfire: (val: string | null) => void;
+    allUsers: UserInterface[];
+    setAllUsers: (arr: UserInterface[]) => void;
   };
 };
 
