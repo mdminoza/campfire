@@ -8,19 +8,21 @@ import { theme } from '../../../constants';
 export const StyledButton: React.FunctionComponent<ButtonProps> = styled(
   antButton,
 )`
-  display: block;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  border-radius: inherit;
-  font-family: ${theme.fonts.fontFamily};
-  outline: none;
-  cursor: pointer;
-  border: 0;
-  &:focus {
+  &&& {
+    display: block;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    font-family: ${theme.fonts.fontFamily};
     outline: none;
-    box-shadow: none;
+    cursor: pointer;
+    border: 0;
+    &:focus {
+      outline: none;
+      box-shadow: none;
+    }
   }
 `;
 

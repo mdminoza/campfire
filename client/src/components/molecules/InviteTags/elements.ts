@@ -2,59 +2,63 @@ import styled from 'styled-components';
 import { theme } from '../../../constants';
 
 export const SelectionWrapper = styled.div`
-  max-height: 430px;
-  padding: 20px;
-  background: ${theme.colors.mainWhite};
-  display: flex;
-  flex-direction: column;
-
-  .ant-radio-group {
+  &&& {
+    max-height: 430px;
+    padding: 20px;
+    background: ${theme.colors.mainWhite};
     display: flex;
     flex-direction: column;
-    padding-bottom: 10px;
-  }
 
-  .ant-radio-wrapper {
-    padding-bottom: 3px;
-    align-items: center;
-    font-size: 1.1rem;
-    font-weight: 400;
-    color: ${theme.colors.red.light};
-  }
+    .ant-radio-group {
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 10px;
+    }
 
-  .ant-radio-wrapper-checked {
-    font-weight: 700;
-  }
+    .ant-radio-wrapper {
+      padding-bottom: 3px;
+      align-items: center;
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: ${theme.colors.red.light};
+    }
 
-  .ant-select-multiple .ant-select-selection-item {
-    background: ${theme.colors.red.light};
-    height: 32px;
-    line-height: 28px;
-  }
+    .ant-radio-wrapper-checked {
+      font-weight: 700;
+    }
 
-  .ant-select-multiple .ant-select-selection-item-content {
-    color: ${theme.colors.mainWhite};
-    font-size: 0.9rem;
-    font-weight: 100;
-  }
+    .ant-select-multiple .ant-select-selection-item {
+      background: ${theme.colors.red.light};
+      height: 32px;
+      line-height: 28px;
+    }
 
-  .ant-select:not(.ant-select-customize-input) .ant-select-selector {
-    border: 0;
-    border-radius: 0;
-    background: ${theme.colors.gray.light};
-  }
+    .ant-select-multiple .ant-select-selection-item-content {
+      color: ${theme.colors.mainWhite};
+      font-size: 0.9rem;
+      font-weight: 100;
+    }
 
-  .ant-select-selection-overflow-item {
-    align-self: auto;
-  }
+    .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+      border: 0;
+      border-radius: 0;
+      background: ${theme.colors.gray.light};
+    }
 
-  .ant-select-selection-overflow {
-    min-height: 100px;
+    .ant-select-selection-overflow-item {
+      align-self: auto;
+    }
+
+    .ant-select-selection-overflow {
+      min-height: 100px;
+    }
   }
 `;
 
 export const Container = styled.div`
-  width: 100%;
+  &&& {
+    width: 100%;
+  }
 `;
 
 export const SelectStyle = {

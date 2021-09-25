@@ -2,46 +2,56 @@ import styled from 'styled-components';
 import { theme } from '../../../constants';
 
 export const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 72px;
+  &&& {
+    display: flex;
+    flex-direction: column;
+    width: 72px;
+  }
 `;
 
 export const TimeContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 35px;
-  text-align: center;
-  background: ${theme.colors.mainWhite};
-  overflow-y: scroll;
-  height: 200px;
-  ::-webkit-scrollbar {
-    display: none;
+  &&& {
+    display: flex;
+    flex-direction: column;
+    width: 35px;
+    text-align: center;
+    background: ${theme.colors.mainWhite};
+    overflow-y: scroll;
+    height: 200px;
+    ::-webkit-scrollbar {
+      display: none;
+    }
   }
 `;
 
 export const TextWrapper = styled.div`
-  property: inherit;
+  &&& {
+    property: inherit;
+  }
 `;
 
 export const TimeWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width: 100%;
+  &&& {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+  }
 `;
 
 export const TextStyle = styled.span`
-  color: ${(props: { isSelected?: boolean }): string =>
+  &&& {
+    color: ${(props: { isSelected?: boolean }): string =>
     props?.isSelected ? theme.colors.red.light : theme.colors.gray.gray989};
-  font-weight: ${(props: { isSelected?: boolean }): string =>
+    font-weight: ${(props: { isSelected?: boolean }): string =>
     props?.isSelected ? '700' : '100'};
-  font-family: ${theme.fonts.fontFamily};
-  font-size: 1.1rem;
-  &:hover {
-    color: ${theme.colors.red.light};
-    font-weight: 700;
-    cursor: pointer;
+    font-family: ${theme.fonts.fontFamily};
+    font-size: 1.1rem;
+    &:hover {
+      color: ${theme.colors.red.light};
+      font-weight: 700;
+      cursor: pointer;
+    }
   }
 `;
 

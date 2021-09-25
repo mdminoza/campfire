@@ -5,15 +5,17 @@ import { Link } from 'react-router-dom';
 import { theme } from '../../../constants';
 
 const AntdLink = styled(Link)`
-  font-style: normal;
-  font-weight: bold;
-  font-size: 1.18rem;
-  line-height: 25px;
+  &&& {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 1.18rem;
+    line-height: 25px;
 
-  text-align: center;
-  letter-spacing: 0.02em;
-  text-decoration: none;
-  padding: 0 8px;
+    text-align: center;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    padding: 0 8px;
+  }
 `;
 
 type Props = {

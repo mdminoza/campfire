@@ -38,151 +38,182 @@ const StyledFooter = styled(Footer)`
 `;
 
 const StyledRow = styled(Row)`
-  justify-content: center !important;
+  &&& {
+    justify-content: center !important;
+  }
 `;
 
 const OptionContainer = styled.div`
-  display: flex !important;
-  align-items: center !important;
-  cursor: pointer !important;
+  &&& {
+    display: flex !important;
+    align-items: center !important;
+    cursor: pointer !important;
+  }
 `;
 
 const IconLogo = styled.div`
-  height: 50px;
-  width: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
+  &&& {
+    height: 50px;
+    width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
 `;
 
 const EmojisWrapper = styled.div`
-  width: 45px;
-  height: 177px;
-  position: fixed;
-  z-index: 100;
-  padding: 0;
-  bottom: 7px;
-  background-color: #424242;
-  right: 50px;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-around;
-  display: ${(props: { isOpen?: boolean }) => (props.isOpen ? 'flex' : 'none')};
+  &&& {
+    width: 45px;
+    height: 177px;
+    position: fixed;
+    z-index: 100;
+    padding: 0;
+    bottom: 7px;
+    background-color: #424242;
+    right: 50px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    display: ${(props: { isOpen?: boolean }) =>
+      props.isOpen ? 'flex' : 'none'};
+  }
 `;
 
 const EmojiButtonWrapper = styled.button`
-  padding: 0;
-  border: none;
-  background-color: #424242;
-  cursor: pointer;
-  border-radius: 10px;
-  &:focus {
-    outline: none;
-    box-shadow: none;
+  &&& {
+    padding: 0;
+    border: none;
+    background-color: #424242;
+    cursor: pointer;
+    border-radius: 10px;
+    &:focus {
+      outline: none;
+      box-shadow: none;
+    }
   }
 `;
 
 const EmojiMainWrapper = styled.div`
-  width: 45px;
-  height: 45px;
-  background-color: #424242;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
+  &&& {
+    width: 45px;
+    height: 45px;
+    background-color: #424242;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
 `;
 
 const EmojiCol = styled(Col)`
-  display: flex;
-  align-items: center;
+  &&& {
+    display: flex;
+    align-items: center;
+  }
 `;
 
 const RaiseHandBtnContent = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #424242;
-  border-radius: 10px;
-  width: 45px;
-  height: 45px;
-  padding: 12px;
+  &&& {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #424242;
+    border-radius: 10px;
+    width: 45px;
+    height: 45px;
+    padding: 12px;
+  }
 `;
 
 const RaiseHandLabel = styled.span`
-  font-family: ${theme.fonts.fontFamily};
-  font-style: normal;
-  font-weight: bold;
-  font-size: 16px;
-  line-height: 112.7%;
-  letter-spacing: 0.02em;
-  color: ${theme.colors.mainWhite};
-  margin-left: 16px;
-`;
-
-const AvatarWrapper = styled.div`
-  .styledAvatar {
-    display: inline-block;
-  }
-  cursor: pointer;
-`;
-
-const RaiseHandWrapper = styled.div`
-  width: 59px;
-  height: 59px;
-  position: absolute;
-  top: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: ${theme.colors.mainBlack};
-`;
-
-const StyledMenu = styled(Menu)`
-  border: 2px solid #000000;
-  & .adminMenu {
+  &&& {
     font-family: ${theme.fonts.fontFamily};
     font-style: normal;
     font-weight: bold;
-    font-size: 14px;
-    line-height: 20px;
+    font-size: 16px;
+    line-height: 112.7%;
     letter-spacing: 0.02em;
-
-    color: ${theme.colors.mainBlack};
+    color: ${theme.colors.mainWhite};
+    margin-left: 16px;
   }
+`;
 
-  & .adminMenuList {
-    font-family: ${theme.fonts.fontFamily};
-    font-style: normal;
-    font-weight: normal;
-    font-size: 14px;
-    line-height: 20px;
-    letter-spacing: 0.02em;
-    color: ${theme.colors.gray.gray989};
+const AvatarWrapper = styled.div`
+  &&& {
+    .styledAvatar {
+      display: inline-block;
+    }
+    cursor: pointer;
+  }
+`;
+
+const RaiseHandWrapper = styled.div`
+  &&& {
+    width: 59px;
+    height: 59px;
+    position: absolute;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: ${theme.colors.mainBlack};
+  }
+`;
+
+const StyledMenu = styled(Menu)`
+  &&& {
+    border: 2px solid #000000;
+    & .adminMenu {
+      font-family: ${theme.fonts.fontFamily};
+      font-style: normal;
+      font-weight: bold;
+      font-size: 14px;
+      line-height: 20px;
+      letter-spacing: 0.02em;
+
+      color: ${theme.colors.mainBlack};
+    }
+
+    & .adminMenuList {
+      font-family: ${theme.fonts.fontFamily};
+      font-style: normal;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 20px;
+      letter-spacing: 0.02em;
+      color: ${theme.colors.gray.gray989};
+    }
   }
 `;
 
 const HiddenDropDownContainer = styled.div``;
 
 const HiddenContainer = styled.div`
-  width: 59px;
-  height: 59px;
-  position: absolute;
-  top: 0;
+  &&& {
+    width: 59px;
+    height: 59px;
+    position: absolute;
+    top: 0;
+  }
 `;
 
 const MuteLabel = styled.span``;
 
 const UnLabel = styled.b`
-  color: ${theme.colors.mainBlack};
+  &&& {
+    color: ${theme.colors.mainBlack};
+  }
 `;
 
 const MicWrapper = styled(Col)`
-  display: flex;
-  align-items: center;
+  &&& {
+    display: flex;
+    align-items: center;
+  }
 `;
 
 type Props = {

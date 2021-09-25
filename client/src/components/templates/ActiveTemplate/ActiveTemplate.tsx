@@ -30,22 +30,28 @@ import { useUserState } from '../../../hooks/user';
 import { MemberParams } from '../../../../common/domain/entities/member';
 
 const ActiveSpeakersWrapper = styled.div`
-  margin: -70px 0 24px;
-  z-index: 1;
+  &&& {
+    margin: -70px 0 24px;
+    z-index: 1;
+  }
 `;
 
 const AudienceWrapper = styled.div`
-  margin: 0 40px 150px;
-  @media (max-width: 500px) {
-    margin: 0 0 100px;
+  &&& {
+    margin: 0 40px 150px;
+    @media (max-width: 500px) {
+      margin: 0 0 100px;
+    }
   }
 `;
 
 const NotSupportedContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  &&& {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
 `;
 
 const { useBreakpoint } = Grid;
