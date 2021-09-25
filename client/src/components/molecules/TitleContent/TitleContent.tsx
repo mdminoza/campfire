@@ -31,7 +31,7 @@ const Container = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 500px;
+    height: 390px;
     flex-direction: column;
     background: url(${campfireBackground});
     background-position: center;
@@ -39,9 +39,6 @@ const Container = styled.div`
     background-repeat: no-repeat;
     text-align: center;
     position: relative;
-    @media (max-width: 768px) {
-      height: 400px;
-    }
     @media (max-width: 576px) {
       height: 300px;
     }
@@ -123,10 +120,7 @@ const Overlay = styled.div`
     right: 0;
     background-color: ${theme.colors.mainBlack};
     opacity: 0.6;
-    height: 500px;
-    @media (max-width: 768px) {
-      height: 400px;
-    }
+    height: 390px;
     @media (max-width: 576px) {
       height: 300px;
     }
