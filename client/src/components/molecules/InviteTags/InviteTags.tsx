@@ -77,7 +77,7 @@ const Selections = ({ ...props }) => {
   const users = Array<any>();
   const { allUsers, currentUser } = useUserState();
   let filtered: any = [];
-  if (allUsers.length > 0) {
+  if (allUsers && allUsers.length > 0) {
     filtered = allUsers.filter((userVal) => userVal.id !== currentUser?.id);
   }
   for (let i = 0; i < filtered.length; i++) {
