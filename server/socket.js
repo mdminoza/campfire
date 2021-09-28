@@ -62,7 +62,6 @@ const socketInit = (server) => {
             }
             socketToRoom[socket.id] = campfireId;
             const newUsers = users[campfireId];
-            console.log(newUsers, 'newUsers');
             socket.emit('send newUsers', newUsers);
         });
 

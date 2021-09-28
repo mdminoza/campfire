@@ -172,7 +172,6 @@ const MainTemplate = (): React.ReactElement => {
     () => fetchPublicCampfires(currentUser?.id || ''),
     {
       onSuccess: (res) => {
-        console.log();
         if (res && res.length > 0) {
           const filtered = arrayToObject(res);
           setPublicCampfires(filtered as { [_id: string]: Campfire });

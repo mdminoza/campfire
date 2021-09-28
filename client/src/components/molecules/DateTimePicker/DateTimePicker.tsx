@@ -46,7 +46,6 @@ const DateTimePicker = ({
     if (month === 0) {
       handleImmidiately();
     }
-    console.log('Schedule: ', month, day, time); // for testing purposes only
   }, [month, day, time]);
 
   const handleSetMonth = (index: number) => {

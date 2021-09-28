@@ -56,10 +56,8 @@ export const useUserAction: UserHooks['useUserAction'] = () => {
         // eslint-disable-next-line no-extra-boolean-cast
         if (res.data.data.length > 0) {
           users = [...users, ...res.data.data];
-          console.log('RESPONSE: ', res.data.data, users);
           page += 1;
         } else {
-          console.log('break: ', users);
           break;
         }
       }

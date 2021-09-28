@@ -86,9 +86,7 @@ const Navigator = () => {
   );
 
   const handleAllUsers = (arr: UserInterface[] | undefined) => {
-    console.log('handleAll Users; ', arr, allUsers);
     setAllUsers(arr || []);
-    console.log('allUsers: ', allUsers);
   };
 
   const { mutate: getAllUsers } = useMutation(() => fetchAllUsers(), {
