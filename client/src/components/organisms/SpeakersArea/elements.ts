@@ -18,13 +18,26 @@ export const StyledCard = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: ${theme.colors.gray.light};
+    background: ${theme.colors.mainWhite};
     padding-bottom: 24px;
     margin: 0 40px 0;
-    border-bottom: 1px ${theme.colors.mainBlack} solid;
     @media (max-width: 500px) {
       margin: 0;
     }
+  }
+`;
+
+export const StyledShadow = styled.div`
+  $$$ {
+    border: 1px solid #202020;
+    margin-top: 25px;
+    margin-left: 25px;
+    width: 158px;
+    height: 158px;
+    padding-top: 25px;
+    -webkit-box-shadow: 0px -4px 3px rgba(50, 50, 50, 0.75);
+    -moz-box-shadow: 0px -4px 3px rgba(50, 50, 50, 0.75);
+    box-shadow: 0px -4px 3px rgba(50, 50, 50, 0.75);
   }
 `;
 
@@ -100,7 +113,9 @@ export const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
-    background: ${theme.colors.gray.light};
+    background: ${theme.colors.mainWhite};
+
+    box-shadow: 0px 15px 10px -15px #111;
   }
 `;
 
