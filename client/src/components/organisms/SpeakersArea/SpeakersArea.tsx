@@ -12,6 +12,7 @@ import {
   Wrapper,
   SubTitle,
   NoSpeakerWrapper,
+  StyledShadow,
   // LeaveButton,
   // ButtoWrapper,
   // LinkWrapper,
@@ -157,6 +158,7 @@ const SpeakersArea = ({
         </SpeakersWrapper>
       </SubWrapper>
     )}
+    <StyledShadow />
   </Wrapper>
 );
 export default SpeakersArea;

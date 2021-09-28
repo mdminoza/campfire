@@ -54,6 +54,20 @@ const NotSupportedContainer = styled.div`
   }
 `;
 
+// export const StyledShadow = styled.div`
+//   $$$ {
+//     border: 1px solid #202020;
+//     margin-top: 25px;
+//     margin-left: 25px;
+//     width: 158px;
+//     height: 158px;
+//     padding-top: 25px;
+//     -webkit-box-shadow: 0px -4px 3px rgba(50, 50, 50, 0.75);
+//     -moz-box-shadow: 0px -4px 3px rgba(50, 50, 50, 0.75);
+//     box-shadow: 0px -4px 3px rgba(50, 50, 50, 0.75);
+//   }
+// `;
+
 const { useBreakpoint } = Grid;
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -1013,11 +1027,12 @@ const ActiveTemplate = () => {
       case 'xxl':
       case 'xl':
       case 'lg':
-        if (size <= 1) {
-          setAvatarSize(screenWidth * 0.35);
-        } else if (size <= 2) {
-          setAvatarSize(screenWidth * 0.3);
-        } else if (size <= 3) {
+        // if (size <= 1) {
+        //   setAvatarSize(screenWidth * 0.35);
+        // } else if (size <= 2) {
+        //   setAvatarSize(screenWidth * 0.3);
+        // } else
+        if (size <= 3) {
           setAvatarSize(screenWidth * 0.2);
         } else if (size >= 4 && size <= 8) {
           setAvatarSize(screenWidth * 0.2);
@@ -1030,11 +1045,12 @@ const ActiveTemplate = () => {
         }
         break;
       case 'md':
-        if (size === 1) {
-          setAvatarSize(screenWidth * 0.25);
-        } else if (size === 2) {
-          setAvatarSize(screenWidth * 0.2);
-        } else if (size === 3) {
+        // if (size === 1) {
+        //   setAvatarSize(screenWidth * 0.25);
+        // } else if (size === 2) {
+        //   setAvatarSize(screenWidth * 0.2);
+        // } else
+        if (size <= 3) {
           setAvatarSize(200);
         } else if (size >= 4 && size <= 8) {
           setAvatarSize(150);
@@ -1045,11 +1061,12 @@ const ActiveTemplate = () => {
         }
         break;
       case 'sm':
-        if (size === 1) {
-          setAvatarSize(250);
-        } else if (size === 2) {
-          setAvatarSize(200);
-        } else if (size === 3) {
+        // if (size === 1) {
+        //   setAvatarSize(250);
+        // } else if (size === 2) {
+        //   setAvatarSize(200);
+        // } else
+        if (size <= 3) {
           setAvatarSize(150);
         } else if (size >= 4 && size <= 8) {
           setAvatarSize(120);
@@ -1058,11 +1075,12 @@ const ActiveTemplate = () => {
         }
         break;
       case 'xs':
-        if (size === 1) {
-          setAvatarSize(200);
-        } else if (size <= 2) {
-          setAvatarSize(150);
-        } else if (size <= 3) {
+        // if (size === 1) {
+        //   setAvatarSize(200);
+        // } else if (size <= 2) {
+        //   setAvatarSize(150);
+        // } else
+        if (size <= 3) {
           setAvatarSize(120);
         } else if (size >= 4) {
           setAvatarSize(110);
@@ -1204,6 +1222,7 @@ const ActiveTemplate = () => {
             size={avatarSize}
           />
         </ActiveSpeakersWrapper>
+        {/* <StyledShadow /> */}
         <AudienceWrapper>
           <MembersList
             onClick={handleClickMember}
