@@ -9,7 +9,8 @@ import RootNavigator from './navigators/root/RootNavigator';
 
 import { CampfireHooksContext } from './hooks/campfire';
 import { MemberHooksContext } from './hooks/member';
-// import { UserHooksContext } from './hooks/user';
+import SocketProvider from './hooks/socket/provider';
+import MediaStreamProvider from './hooks/mediaStream/provider';
 import UserProvider from './hooks/user/provider';
 import * as combinedCampfireHooks from './hooks/campfire/combined';
 import * as combinedMemberHooks from './hooks/member/combined';
@@ -20,11 +21,15 @@ ReactDOM.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <UserProvider>
-        <CampfireHooksContext.Provider value={combinedCampfireHooks}>
-          <MemberHooksContext.Provider value={combinedMemberHooks}>
-            <RootNavigator />
-          </MemberHooksContext.Provider>
-        </CampfireHooksContext.Provider>
+        <MediaStreamProvider>
+          <SocketProvider>
+            <CampfireHooksContext.Provider value={combinedCampfireHooks}>
+              <MemberHooksContext.Provider value={combinedMemberHooks}>
+                <RootNavigator />
+              </MemberHooksContext.Provider>
+            </CampfireHooksContext.Provider>
+          </SocketProvider>
+        </MediaStreamProvider>
       </UserProvider>
     </QueryClientProvider>
   </React.StrictMode>,

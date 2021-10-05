@@ -187,8 +187,8 @@ const UnLabel = styled.b`
 `;
 
 type Props = {
-  isActive: boolean;
-  isSpeaker: boolean;
+  isActive?: boolean;
+  isSpeaker?: boolean;
   isModerator?: boolean;
   isRaising?: boolean;
   isMuted?: boolean;
@@ -369,6 +369,7 @@ const MemberItem = ({
             size={size}
             playsInline
             autoPlay
+            muted
             ref={isLoggedIn ? peer : ref}
           />
         </AvatarWrapper>

@@ -7,15 +7,18 @@ import ErrorBoundary from '../../components/HOCs/ErrorBoundary';
 import { Loader } from '../../components/atoms/Loader';
 import { MainPage } from '../../components/pages/MainPage';
 import { ActivePage } from '../../components/pages/ActivePage';
+import { NewActivePage } from '../../components/pages/NewActivePage';
 import { LoginPage } from '../../components/pages/LoginPage';
 
 import { useUserState, useUserAction } from '../../hooks/user';
+import { useSocketAction } from '../../hooks/socket';
 import { UserInterface } from '../../hooks/user/combined/types';
+// import { socketInit } from '../../utils/socketConnection/socketConnection';
 
 const ProtectedRoutes = () => (
   <Routes>
     <Route path="/*" element={<Navigate to="/campfires" />} />
-    <Route path="/campfires/active/:id" element={<ActivePage />} />
+    <Route path="/campfires/active/:id" element={<NewActivePage />} />
     <Route path="/campfires" element={<MainPage />} />
   </Routes>
 );
@@ -36,44 +39,81 @@ const Navigator = () => {
     allUsers,
     setAllUsers,
   } = useUserState();
-  const { fetchCurrentUser, fetchAllUsers } = useUserAction();
+  const {
+    fetchCurrentUser,
+    fetchAllUsers,
+    fetchRandomTestUser,
+  } = useUserAction();
+
+  const { socketInit } = useSocketAction();
 
   // TODO: use this to manually logout for testing purposes
   // localStorage.removeItem('access-token');
   // setToken('');
 
-  const token = localStorage.getItem('access-token') || stateToken;
+  // const token = localStorage.getItem('access-token') || stateToken;
+  const token = 'testtoken';
 
-  const { refetch: refetchCurrentUser, isLoading } = useQuery(
+  // const { refetch: refetchCurrentUser, isLoading } = useQuery(
+  //   'current-user',
+  //   () => fetchCurrentUser(token),
+  //   {
+  //     enabled: false,
+  //     onSuccess: (response: {
+  //       avatar: string;
+  //       firstName: string;
+  //       lastName: string;
+  //       role: [];
+  //       id: string;
+  //       email: string;
+  //       username: string;
+  //     }) => {
+  //       const {
+  //         id,
+  //         avatar,
+  //         firstName,
+  //         lastName,
+  //         role,
+  //         email,
+  //         username,
+  //       } = response;
+  //       const user = {
+  //         id,
+  //         name: `${firstName} ${lastName}`,
+  //         email,
+  //         profileUrl: avatar,
+  //         role,
+  //         username,
+  //       };
+  //       setCurrentUser(user);
+  //     },
+  //     onError: () => {
+  //       setCurrentUser(undefined);
+  //       localStorage.removeItem('access-token');
+  //       setToken('');
+  //     },
+  //   },
+  // );
+
+  const { refetch: refetchRandomUser, isLoading: isLoadingRandom } = useQuery(
     'current-user',
-    () => fetchCurrentUser(token),
+    () => fetchRandomTestUser(),
     {
       enabled: false,
       onSuccess: (response: {
-        avatar: string;
-        firstName: string;
-        lastName: string;
-        role: [];
+        profileUrl: string;
+        name: string;
         id: string;
         email: string;
-        username: string;
       }) => {
-        const {
-          id,
-          avatar,
-          firstName,
-          lastName,
-          role,
-          email,
-          username,
-        } = response;
+        const { id, profileUrl, name, email } = response;
         const user = {
           id,
-          name: `${firstName} ${lastName}`,
+          name,
           email,
-          profileUrl: avatar,
-          role,
-          username,
+          profileUrl,
+          role: '',
+          username: '',
         };
         setCurrentUser(user);
       },
@@ -85,40 +125,44 @@ const Navigator = () => {
     },
   );
 
-  const handleAllUsers = (arr: UserInterface[] | undefined) => {
-    setAllUsers(arr || []);
-  };
+  // const handleAllUsers = (arr: UserInterface[] | undefined) => {
+  //   setAllUsers(arr || []);
+  // };
 
-  const { mutate: getAllUsers } = useMutation(() => fetchAllUsers(), {
-    onSuccess: (res) => {
-      handleAllUsers(res);
-    },
-    onError: (error) => {
-      console.log('getALl Error: ', error);
-    },
-  });
+  // const { mutate: getAllUsers } = useMutation(() => fetchAllUsers(), {
+  //   onSuccess: (res) => {
+  //     handleAllUsers(res);
+  //   },
+  //   onError: (error) => {
+  //     console.log('getALl Error: ', error);
+  //   },
+  // });
 
   useEffect(() => {
     if (token) {
-      refetchCurrentUser();
-      getAllUsers();
+      refetchRandomUser();
+      // getAllUsers();
     } else {
       setCurrentUser(undefined);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token, setCurrentUser, refetchCurrentUser]);
+  }, [token, setCurrentUser, refetchRandomUser]);
 
   const isLoggedIn = !!token;
 
   useEffect(() => {
-    setIsLoading(isLoading);
-  }, [isLoading, setIsLoading]);
+    setIsLoading(isLoadingRandom);
+  }, [isLoadingRandom, setIsLoading]);
+
+  useEffect(() => {
+    socketInit();
+  }, []);
 
   return (
     <ErrorBoundary
       fallback={(error: any) => <div>ERROR!!! {error?.message}</div>}>
       <BrowserRouter>
-        {!isLoading ? (
+        {!isLoadingRandom ? (
           isLoggedIn ? (
             <ProtectedRoutes />
           ) : (
