@@ -8,6 +8,7 @@ const socketInit = (server, app) => {
     const rooms = [];
     let admins = [];
     let audiences = [];
+    
 
 
     // const peerServer = ExpressPeerServer(server, {
@@ -48,8 +49,26 @@ const socketInit = (server, app) => {
 
         socket.on('join-campfire-group', (data) => {
             console.log(data, 'join group');
-            io.to(data.campfireId).emit('join-campfire-group', data);
             socket.join(data.campfireId);
+            io.to(data.campfireId).emit('receive-join-campfire-group', data);
+            if (data.isAdmin) {
+                const isExist = admins.find(item => item.campfireId === data.campfireId && item.userId === data.userId);
+                if (!isExist) {
+                    admins.push(data);
+                }
+            } else {
+                const isExist = audiences.find(item => item.campfireId === data.campfireId && item.userId === data.userId);
+                if (!isExist) {
+                    audiences.push(data);
+                }
+            }
+            const filterAudiences = audiences.filter(item => item.userId !== data.userId && item.campfireId === data.campfireId);
+            const filterAdmins = admins.filter(item => item.userId !== data.userId && item.campfireId === data.campfireId);
+            io.to(data.campfireId).emit('broadcast-join', {
+                audiences: filterAudiences,
+                admins: filterAdmins,
+                newUid: data.userId,
+            });
         });
 
         socket.on('disconnect', () => {
@@ -63,12 +82,16 @@ const socketInit = (server, app) => {
         });
 
         socket.on('leave', (data) => {
+            socket.leave(data.campfireId);
             console.log('leave', data);
             audiences = audiences.filter(peer => peer.userId !== data.userId);
             admins = admins.filter(peer => peer.userId !== data.userId);
-            io.sockets.emit('broadcast', {
-                audiences,
-                admins,
+            // io.sockets.emit('broadcast', {
+            //     audiences,
+            //     admins,
+            // });
+            io.to(data.campfireId).emit('user-leave', {
+                userId: data.userId,
             });
         })
     });

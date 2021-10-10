@@ -10,10 +10,17 @@ export type MediaStreamHooks = {
     setLocalStreamError: (err: any) => any;
     setMyPeerId: (peer: any) => any;
     myPeerId: any;
+    audienceStreams: any;
+    setAudienceStreams: (streams: any) => any;
+    adminStreams: any;
+    setAdminStreams: (streams: any) => any;
   };
   getLocalStream: () => any;
   connectWithMyPeer: () => any;
   connectToNewUser: (data: any) => any;
+  connectToUsers: (data: any) => any;
+  leaveCampfire: () => any;
+  userLeft: (data: any) => void;
 };
 
 export const MediaStreamHooksContext = React.createContext<MediaStreamHooks | null>(

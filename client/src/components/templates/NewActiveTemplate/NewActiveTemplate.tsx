@@ -91,8 +91,15 @@ const NewActiveTemplate = (): React.ReactElement => {
   const screens = useBreakpoint();
 
   // WEBRTCS & SOCKETS
-  const { admins, audiences, localUser, setLocalUser } = useSocketState;
-  const { localStreamError, localStream, myPeerId } = useMediaStreamState;
+  const { localUser, setLocalUser } = useSocketState;
+  const {
+    localStreamError,
+    localStream,
+    setLocalStream,
+    myPeerId,
+    adminStreams,
+    audienceStreams,
+  } = useMediaStreamState;
 
   const {
     refetch: refetchCampfire,
@@ -243,7 +250,8 @@ const NewActiveTemplate = (): React.ReactElement => {
   );
 
   const handleRejoin = () => {
-    setActiveCampfire(campfireIdParam);
+    // setActiveCampfire({
+    // });
   };
 
   const handleOnClickMenu = (key: string) => {
@@ -324,7 +332,10 @@ const NewActiveTemplate = (): React.ReactElement => {
     const screenWidth = screen.width;
     // const size =
     //   members.length > speakers.length ? members.length : speakers.length;
-    const size = audiences.length;
+    const size =
+      audienceStreams.length > adminStreams.length
+        ? audienceStreams.length
+        : adminStreams.length;
     switch (breakPoint) {
       case 'xxl':
       case 'xl':
@@ -371,24 +382,14 @@ const NewActiveTemplate = (): React.ReactElement => {
       default:
         setAvatarSize(110);
     }
-  }, [breakPoint, audiences]);
+  }, [breakPoint, adminStreams, audienceStreams]);
 
   useEffect(() => {
     getLocalStream();
     connectWithMyPeer();
 
     return () => {
-      console.log('leav', currentUser?.id, campfire?.creator?.uid);
-      // if (userVideoStream && userVideoStream.srcObject) {
-      //   userVideoStream.srcObject
-      //     .getTracks()
-      //     .forEach((track: any) => track.stop());
-      // }
-      if (localStream) {
-        console.log(localStream, 'localStream');
-        console.log(localStream.getTracks(), 'getTracks');
-      }
-      leaveCampfire(currentUser?.id);
+      leaveCampfire(currentUser?.id, campfireIdParam);
     };
   }, []);
 
@@ -409,21 +410,26 @@ const NewActiveTemplate = (): React.ReactElement => {
   }, [isRaising]);
 
   useEffect(() => {
-    console.log(currentUser, localStream, myPeerId, 'join');
-    if (currentUser && localStream && myPeerId) {
+    if (currentUser && localStream && myPeerId && activeCampfire && campfire) {
       joinCampfire({
         campfireId: campfireIdParam || '',
         userId: currentUser?.id || '',
-        isAdmin: false,
-        isModerator: false,
-        isSpeaker: false,
+        isAdmin: currentUser?.id === campfire?.creator?.uid,
+        isModerator: currentUser?.id === campfire?.creator?.uid,
+        isSpeaker: currentUser?.id === campfire?.creator?.uid,
         userName: currentUser?.name || '',
         profileUrl: currentUser?.profileUrl || '',
         peerId: myPeerId,
-        localStreamId: localStream.id,
+        streamId: localStream.id,
+        stream: localStream,
       });
     }
-  }, [currentUser, localStream, myPeerId]);
+  }, [currentUser, localStream, myPeerId, activeCampfire, campfire]);
+
+  useEffect(() => {
+    console.log(adminStreams, 'adminStreams');
+    console.log(audienceStreams, 'audienceStreams');
+  }, [adminStreams, audienceStreams]);
   // END USE EFFECTS
 
   // STYLES
@@ -446,21 +452,26 @@ const NewActiveTemplate = (): React.ReactElement => {
   // END STYLES
 
   // DATA FILTER
-  const filteredAudience = audiences?.map((item) => ({
-    profileUrl: item.profileUrl,
-    onClickMenu: (key: string) => handleOnClickMenu(key),
-    speaker: item.userName,
-    onClick: () => ({}),
-    isSpeaker: false,
-    isActive: false,
-    uid: item.userId,
-    // TODO:
-    isRaising: false,
-    emoji: '',
-    emojiId: '',
-    isMuted: false,
-  }));
-  const filteredAdmins = admins?.map((item) => ({
+  const filteredAudience = audienceStreams?.map((item: any) => {
+    const strm = item.stream;
+    // strm.getAudioTracks()[0].enabled = false;
+    return {
+      profileUrl: item.profileUrl,
+      onClickMenu: (key: string) => handleOnClickMenu(key),
+      speaker: item.userName,
+      onClick: () => ({}),
+      isSpeaker: false,
+      isActive: false,
+      uid: item.userId,
+      // TODO:
+      isRaising: false,
+      emoji: '',
+      emojiId: '',
+      isMuted: false,
+      stream: strm,
+    };
+  });
+  const filteredAdmins = adminStreams?.map((item: any) => ({
     profileUrl: item.profileUrl,
     onClickMenu: (key: string) => handleOnClickMenu(key),
     speaker: item.userName,
@@ -474,24 +485,27 @@ const NewActiveTemplate = (): React.ReactElement => {
     emoji: '',
     emojiId: '',
     isMuted: false,
+    stream: item.stream,
   }));
-  const filterLocal = localUser
-    ? {
-        profileUrl: localUser.profileUrl,
-        onClickMenu: (key: string) => handleOnClickMenu(key),
-        speaker: localUser.userName,
-        onClick: () => ({}),
-        uid: localUser.userId,
-        isSpeaker: localUser.isAdmin,
-        isActive: localUser.isAdmin,
-        isModerator: localUser.isAdmin,
-        // TODO:
-        isRaising: localUser.isRaising,
-        emoji: localUser.emoji,
-        emojiId: localUser.emojiId,
-        isMuted: localUser.isMuted,
-      }
-    : null;
+  const filterLocal =
+    localUser && localUser.stream
+      ? {
+          profileUrl: localUser.profileUrl,
+          onClickMenu: (key: string) => handleOnClickMenu(key),
+          speaker: localUser.userName,
+          onClick: () => ({}),
+          uid: localUser.userId,
+          isSpeaker: localUser.isAdmin,
+          isActive: localUser.isAdmin,
+          isModerator: localUser.isAdmin,
+          // TODO:
+          isRaising: localUser.isRaising,
+          emoji: localUser.emoji,
+          emojiId: localUser.emojiId,
+          isMuted: false,
+          stream: localUser.stream,
+        }
+      : null;
   const audienceData =
     localUser && !localUser.isAdmin
       ? [filterLocal, ...filteredAudience]
@@ -500,6 +514,10 @@ const NewActiveTemplate = (): React.ReactElement => {
     localUser && localUser.isAdmin
       ? [filterLocal, ...filteredAdmins]
       : filteredAdmins;
+  useEffect(() => {
+    console.log(adminData, 'adminStreams');
+    console.log(audienceData, 'audienceStreams');
+  }, [adminStreams, audienceStreams]);
   // END DATA FILTER
 
   if (

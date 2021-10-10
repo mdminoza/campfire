@@ -14,7 +14,7 @@ export type SocketHooks = {
   };
   socketInit: () => any;
   joinCampfire: (user: JoinedParams) => any;
-  leaveCampfire: (userId?: string) => any;
+  leaveCampfire: (userId?: string, campfireId?: string) => any;
 };
 
 export const SocketHooksContext = React.createContext<SocketHooks | null>(null);

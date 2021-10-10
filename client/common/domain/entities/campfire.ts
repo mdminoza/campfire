@@ -30,7 +30,8 @@ export type JoinedParams = {
   profileUrl: string;
   socketId?: string;
   peerId?: string;
-  localStreamId?: string;
+  streamId?: string;
+  stream?: any;
 };
 
 export type Campfire = CampfireParams & BaseModel;

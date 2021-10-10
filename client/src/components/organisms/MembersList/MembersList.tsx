@@ -23,7 +23,7 @@ const MembersList = ({
   <Container>
     <Row gutter={[24, 32]} justify="center">
       {data && data.length > 0 ? (
-        data.map((_data: MemberItemParams) => (
+        data.map((_data: any) => (
           <ItemCol>
             <ItemWrapper>
               <AnimatedEmoji
@@ -32,6 +32,7 @@ const MembersList = ({
                 emojiId={_data.emojiId || ''}
               />
               <MemberItem
+                key={_data.uid}
                 id={_data.uid}
                 selectedId={selectedId}
                 profileUrl={_data.profileUrl}
@@ -44,6 +45,7 @@ const MembersList = ({
                 isLoggedIn={_data?.isLoggedIn}
                 isMuted={_data?.isMuted}
                 size={size}
+                stream={_data?.stream}
               />
             </ItemWrapper>
           </ItemCol>

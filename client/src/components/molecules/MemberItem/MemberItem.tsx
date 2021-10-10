@@ -202,6 +202,7 @@ type Props = {
   isLoggedIn?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   peer?: any;
+  stream?: any;
 };
 
 const MemberItem = ({
@@ -219,17 +220,29 @@ const MemberItem = ({
   size,
   isLoggedIn = false,
   peer = null,
+  stream,
 }: Props): React.ReactElement => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const ref = useRef<any>();
+  // const ref = useRef<any>();
+  const videoRef = useRef<any>({ srcObject: null });
+
+  // useEffect(() => {
+  //   if (peer && !isLoggedIn) {
+  //     peer.on('stream', (pstream: any) => {
+  //       ref.current.srcObject = pstream;
+  //     });
+  //   }
+  // }, [peer, isLoggedIn]);
 
   useEffect(() => {
-    if (peer && !isLoggedIn) {
-      peer.on('stream', (stream: any) => {
-        ref.current.srcObject = stream;
-      });
-    }
-  }, [peer, isLoggedIn]);
+    const remoteVideoStream = videoRef.current;
+    // eslint-disable-next-line dot-notation
+    remoteVideoStream.srcObject = stream;
+
+    remoteVideoStream.onloadedmetadata = () => {
+      remoteVideoStream.play();
+    };
+  }, [stream]);
 
   const menu = (
     <StyledMenu
@@ -369,8 +382,8 @@ const MemberItem = ({
             size={size}
             playsInline
             autoPlay
-            muted
-            ref={isLoggedIn ? peer : ref}
+            muted={!isModerator}
+            ref={videoRef}
           />
         </AvatarWrapper>
       }>

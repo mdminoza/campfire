@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import io from 'socket.io-client';
 
 import { SocketHooksContext } from '.';
@@ -11,7 +11,12 @@ const SocketProvider = (props: any): React.ReactElement => {
   const [audiences, setAudiences] = useState([]);
   const [localUser, setLocalUser] = useState<any>(null);
 
-  const { connectToNewUser } = useMediaStreamAction();
+  const {
+    connectToNewUser,
+    connectToUsers,
+    leaveCampfire: leaveCampfireCall,
+    userLeft,
+  } = useMediaStreamAction();
 
   const socket = useRef<any>();
 
@@ -34,23 +39,25 @@ const SocketProvider = (props: any): React.ReactElement => {
         console.log(socket.current.id, 'socket.current connected');
       });
 
-      socket.current.on('join-campfire-group', (data: any) => {
-        console.log(data, 'data');
+      socket.current.on('receive-join-campfire-group', (data: any) => {
         connectToNewUser(data);
       });
 
-      // socket.current.on('broadcast', (data: any) => {
-      //   if (window.location.pathname.includes('active')) {
-      //     const filterAdmins = data.admins?.filter(
-      //       (val: JoinedParams) => val.socketId !== socket.current.id,
-      //     );
-      //     const filterAudiences = data.audiences?.filter(
-      //       (val: JoinedParams) => val.socketId !== socket.current.id,
-      //     );
-      //     setAdmins(filterAdmins);
-      //     setAudiences(filterAudiences);
-      //   }
-      // });
+      socket.current.on('broadcast-join', (data: any) => {
+        connectToUsers(data);
+        // if (window.location.pathname.includes('active')) {
+        //   const filterAdmins = data.admins?.filter(
+        //     (val: JoinedParams) => val.socketId !== socket.current.id,
+        //   );
+        //   const filterAudiences = data.audiences?.filter(
+        //     (val: JoinedParams) => val.socketId !== socket.current.id,
+        //   );
+        //   setAdmins(filterAdmins);
+        //   setAudiences(filterAudiences);
+        // }
+      });
+
+      socket.current.on('user-leave', userLeft);
     }
   };
 
@@ -62,14 +69,16 @@ const SocketProvider = (props: any): React.ReactElement => {
       });
       setLocalUser({
         ...user,
+        isRaising: false,
         socketId: socket.current.id,
       });
     }
   };
 
-  const leaveCampfire = (userId?: string): any => {
+  const leaveCampfire = (userId?: string, campfireId?: string): any => {
     if (socket.current) {
-      socket.current.emit('leave', { userId });
+      leaveCampfireCall();
+      socket.current.emit('leave', { userId, campfireId });
     }
   };
 

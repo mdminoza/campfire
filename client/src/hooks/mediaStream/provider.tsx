@@ -1,16 +1,26 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 
 import { MediaStreamHooksContext } from '.';
+import { useUserState } from '../user';
 
 const MediaStreamProvider = (props: any): React.ReactElement => {
   const [localStream, setLocalStream] = useState<any>(null);
   const [localStreamError, setLocalStreamError] = useState<any>(null);
   const [myPeerId, setMyPeerId] = useState<any>(null);
+  const [audienceStreams, setAudienceStreams] = useState<any>([]);
+  const [adminStreams, setAdminStreams] = useState<any>([]);
+
+  // const [myPeerId, setMyPeerId] = useState<any>(null);
   const peerConnection = useRef<any>(null);
   const myPeer = useRef<any>(null);
-  const testStream = useRef<any>(null);
+  const ownLocalStream = useRef<any>(null);
+
+  const adminStreamsRef = useRef<any>([]);
+  const audienceStreamsRef = useRef<any>([]);
+
+  const { currentUser, getCurrentUser } = useUserState();
 
   const useMediaStreamState = {
     localStream,
@@ -19,6 +29,10 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
     setLocalStreamError,
     setMyPeerId,
     myPeerId,
+    audienceStreams,
+    setAudienceStreams,
+    adminStreams,
+    setAdminStreams,
   };
 
   const defaultConstraints = {
@@ -37,7 +51,6 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
   const createPeerConnection = (peerStream: any) => {
     peerConnection.current = new RTCPeerConnection(configuration);
     console.log(peerConnection.current, 'peerConnection.current');
-    console.log(peerStream, 'peerStream');
     if (peerStream) {
       // eslint-disable-next-line no-restricted-syntax
       for (const track of peerStream.getTracks()) {
@@ -54,7 +67,7 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
 
       peerConnection.current.onconnectionstatechange = () => {
         if (peerConnection.current.connectionState === 'connected') {
-          console.log('succesfully connected with other peer');
+          // console.log('succesfully connected with other peer');
         }
       };
     }
@@ -63,21 +76,47 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
   const connectWithMyPeer = () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    myPeer.current = new window.Peer(undefined, {
+    myPeer.current = new Peer(undefined, {
       path: '/peerjs',
       host: 'localhost',
       port: '5001',
     });
-    console.log(myPeer.current, 'myPeer.current');
     myPeer.current.on('open', (id: string) => {
       setMyPeerId(id);
-      console.log(id, 'connected to peer server');
     });
     myPeer.current.on('call', (call: any) => {
-      if (testStream.current) {
-        call.answer(testStream.current);
-        call.on('stream', (incomingStream: any) => {
-          console.log('stream came');
+      if (ownLocalStream.current) {
+        call.answer(ownLocalStream.current);
+        call.on('stream', (incomingStreamCall: any) => {
+          console.log(
+            incomingStreamCall,
+            'incomingStreamCall connect with my peer',
+          );
+          console.log(adminStreamsRef.current, 'adminStreamsRef.current');
+          console.log(audienceStreamsRef.current, 'audienceStreamsRef.current');
+
+          const streamsAdmin = adminStreamsRef.current.map((item: any) =>
+            item.streamId === incomingStreamCall.id
+              ? {
+                  ...item,
+                  stream: incomingStreamCall,
+                }
+              : item,
+          );
+          const streamsAudience = audienceStreamsRef.current.map((item: any) =>
+            item.streamId === incomingStreamCall.id
+              ? {
+                  ...item,
+                  stream: incomingStreamCall,
+                }
+              : item,
+          );
+          adminStreamsRef.current = streamsAdmin;
+          audienceStreamsRef.current = streamsAudience;
+          console.log(streamsAdmin, 'isAdminStreamExist');
+          console.log(streamsAudience, 'isAudienceStreamExist');
+          setAdminStreams(streamsAdmin);
+          setAudienceStreams(streamsAudience);
         });
       }
     });
@@ -90,31 +129,97 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
         setLocalStream(stream);
         setLocalStreamError(null);
         createPeerConnection(stream);
-        testStream.current = stream;
+        ownLocalStream.current = stream;
       })
       .catch((err) => {
         setLocalStreamError(err);
       });
   };
 
-  const connectToNewUser = useCallback(
-    (data: any) => {
-      if (testStream.current) {
-        const call = myPeer.current.call(data.peerId, testStream.current);
-        call.on('stream', (incomingStream: any) => {
-          console.log(incomingStream, 'incomingStream');
-          console.log('stream came');
-        });
-      }
-    },
-    [localStream],
-  );
+  const connectToNewUser = (data: any) => {
+    if (ownLocalStream.current) {
+      const call = myPeer.current.call(data.peerId, ownLocalStream.current);
+      call.on('stream', (incomingStreamCall: any) => {
+        if (data.isAdmin) {
+          const filterStreams = adminStreamsRef.current.find(
+            (adminStream: any) =>
+              adminStream?.stream?.id === incomingStreamCall.id,
+          );
+          console.log(filterStreams, 'filterStreams');
+          if (!filterStreams) {
+            adminStreamsRef.current = [
+              ...adminStreamsRef.current,
+              {
+                ...data,
+                stream: incomingStreamCall,
+              },
+            ];
+            setAdminStreams(adminStreamsRef.current);
+          }
+        } else {
+          const filterStreams = audienceStreamsRef.current.find(
+            (audienceStream: any) =>
+              audienceStream?.stream?.id === incomingStreamCall.id,
+          );
+          if (!filterStreams) {
+            audienceStreamsRef.current = [
+              ...audienceStreamsRef.current,
+              {
+                ...data,
+                stream: incomingStreamCall,
+              },
+            ];
+            setAudienceStreams(audienceStreamsRef.current);
+          }
+        }
+      });
+    }
+  };
+
+  const connectToUsers = (data: any) => {
+    const user = getCurrentUser();
+    if (user.id === data.newUid) {
+      audienceStreamsRef.current = data.audiences;
+      adminStreamsRef.current = data.admins;
+      setAudienceStreams(data.audiences);
+      setAdminStreams(data.admins);
+    }
+  };
+
+  const userLeft = (data: any) => {
+    const prevAudiencesData = audienceStreamsRef.current || [];
+    const prevAdminsData = adminStreamsRef.current || [];
+    const filterAudiences = prevAudiencesData.filter(
+      (peer: any) => peer.userId !== data.userId,
+    );
+    const filterAdmins = prevAdminsData.filter(
+      (peer: any) => peer.userId !== data.userId,
+    );
+    audienceStreamsRef.current = filterAudiences;
+    adminStreamsRef.current = filterAdmins;
+    setAudienceStreams(filterAudiences);
+    setAdminStreams(filterAdmins);
+  };
+
+  const leaveCampfire = () => {
+    if (myPeer.current) {
+      console.log(localStream, 'localStream');
+      myPeer.current.destroy();
+      ownLocalStream.current = null;
+      audienceStreamsRef.current = [];
+      adminStreamsRef.current = [];
+      // connectWithMyPeer();
+    }
+  };
 
   const combinedValues = {
     useMediaStreamState,
     getLocalStream,
     connectWithMyPeer,
     connectToNewUser,
+    connectToUsers,
+    leaveCampfire,
+    userLeft,
   };
 
   return <MediaStreamHooksContext.Provider value={combinedValues} {...props} />;
