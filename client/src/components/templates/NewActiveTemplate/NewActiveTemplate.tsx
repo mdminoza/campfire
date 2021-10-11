@@ -20,6 +20,7 @@ import { useMediaStreamAction } from '../../../hooks/mediaStream';
 import { useCampfireAction } from '../../../hooks/campfire';
 import { useMemberAction } from '../../../hooks/member';
 import { useUserState } from '../../../hooks/user';
+import { useTurnAction } from '../../../hooks/turn';
 import { MemberItemParams } from '../../molecules/MemberItem/types';
 
 const { useBreakpoint } = Grid;
@@ -57,7 +58,6 @@ const NewActiveTemplate = (): React.ReactElement => {
   const [avatarSize, setAvatarSize] = useState<number>();
   const [breakPoint, setBreakPoint] = useState<string>('');
   const [isRaising, setHandRaised] = useState(false);
-  const [errorMsg, setErrorMsg] = useState<string>('');
   const [isEndCampfireModal, setEndCampfireModal] = useState(false);
   const [isKickAllModal, setKickAllModal] = useState(false);
   const [isEndedCampfire, setEndedCampfire] = useState(false);
@@ -80,6 +80,8 @@ const NewActiveTemplate = (): React.ReactElement => {
     deleteMember,
     deleteMembers,
   } = useMemberAction();
+  const { getTurnCredentials } = useTurnAction();
+
   const {
     activeCampfire,
     setActiveCampfire,
@@ -95,10 +97,11 @@ const NewActiveTemplate = (): React.ReactElement => {
   const {
     localStreamError,
     localStream,
-    setLocalStream,
     myPeerId,
     adminStreams,
     audienceStreams,
+    isMediaSupported,
+    setTurnServers,
   } = useMediaStreamState;
 
   const {
@@ -145,6 +148,23 @@ const NewActiveTemplate = (): React.ReactElement => {
       enabled: false,
     },
   );
+
+  const {
+    refetch: refetchTurnCredentials,
+    data: turnCredentials,
+    isLoading: isFetchingTurnCredentialsLoading,
+    error: fetchingTurnError,
+  } = useQuery(['turn-credentials'], () => getTurnCredentials(), {
+    onSuccess: (res) => {
+      setTurnServers(res.iceServers);
+      getLocalStream();
+      connectWithMyPeer();
+    },
+    //   onError: (err: any) => {
+    //     console.log(err, 'err fetching campfire member');
+    //   },
+    enabled: false,
+  });
 
   const {
     refetch: refetchCampfireMembers,
@@ -385,8 +405,7 @@ const NewActiveTemplate = (): React.ReactElement => {
   }, [breakPoint, adminStreams, audienceStreams]);
 
   useEffect(() => {
-    getLocalStream();
-    connectWithMyPeer();
+    refetchTurnCredentials();
 
     return () => {
       leaveCampfire(currentUser?.id, campfireIdParam);
@@ -427,9 +446,9 @@ const NewActiveTemplate = (): React.ReactElement => {
   }, [currentUser, localStream, myPeerId, activeCampfire, campfire]);
 
   useEffect(() => {
-    console.log(adminStreams, 'adminStreams');
-    console.log(audienceStreams, 'audienceStreams');
-  }, [adminStreams, audienceStreams]);
+    // eslint-disable-next-line no-unused-expressions
+    localStreamError && ToastMessage('error', 'Error', localStreamError, 10);
+  }, [localStreamError]);
   // END USE EFFECTS
 
   // STYLES
@@ -514,27 +533,46 @@ const NewActiveTemplate = (): React.ReactElement => {
     localUser && localUser.isAdmin
       ? [filterLocal, ...filteredAdmins]
       : filteredAdmins;
-  useEffect(() => {
-    console.log(adminData, 'adminStreams');
-    console.log(audienceData, 'audienceStreams');
-  }, [adminStreams, audienceStreams]);
   // END DATA FILTER
+
+  if (!isMediaSupported) {
+    return (
+      <NotSupportedContainer>
+        <Result
+          status="warning"
+          title="Oops. It seems this browser does not support the media API yet. Try using one of this browsers: Chrome, Edge, Firefox, Opera or Safari."
+          extra={
+            <Button
+              type="primary"
+              key="console"
+              onClick={() => navigate('/campfires')}>
+              Back to Home
+            </Button>
+          }
+        />
+      </NotSupportedContainer>
+    );
+  }
 
   if (
     (!activeCampfire ||
       fetchingCampfireError ||
       fetchingCampfireMemberError ||
-      !campfireMember) &&
+      !campfireMember ||
+      localStreamError ||
+      fetchingTurnError) &&
     !isFetchingCampfireLoading &&
     !isFetchingCampfireMemberLoading &&
-    !isLoadingCurrentUser
+    !isLoadingCurrentUser &&
+    !isFetchingTurnCredentialsLoading
   ) {
     return (
       <ActiveResult
         onClickHome={() => navigate('/campfires')}
         onClickRejoin={handleRejoin}
-        data={!campfireMember ? undefined : campfire}
+        data={!campfireMember || localStreamError ? undefined : campfire}
         error={fetchingCampfireError}
+        streamError={localStreamError}
       />
     );
   }
@@ -545,7 +583,9 @@ const NewActiveTemplate = (): React.ReactElement => {
       endCampfireLoading ||
       isFetchingCampfireMemberLoading ||
       isFetchingCampfireMembersLoading ||
-      isLoadingCurrentUser)
+      isLoadingCurrentUser ||
+      !localStream ||
+      isFetchingTurnCredentialsLoading)
   ) {
     return <Loader style={mainLoader} />;
   }
@@ -569,7 +609,7 @@ const NewActiveTemplate = (): React.ReactElement => {
     );
   }
 
-  if (activeCampfire === campfireIdParam && campfireMember) {
+  if (activeCampfire === campfireIdParam && campfireMember && localStream) {
     return (
       <Layout>
         <TitleContent

@@ -42,9 +42,9 @@ export const TimeWrapper = styled.div`
 export const TextStyle = styled.span`
   &&& {
     color: ${(props: { isSelected?: boolean }): string =>
-    props?.isSelected ? theme.colors.red.light : theme.colors.gray.gray989};
+      props?.isSelected ? theme.colors.red.light : theme.colors.gray.gray989};
     font-weight: ${(props: { isSelected?: boolean }): string =>
-    props?.isSelected ? '700' : '100'};
+      props?.isSelected ? '700' : '100'};
     font-family: ${theme.fonts.fontFamily};
     font-size: 1.1rem;
     &:hover {

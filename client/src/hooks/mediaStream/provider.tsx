@@ -7,10 +7,12 @@ import { useUserState } from '../user';
 
 const MediaStreamProvider = (props: any): React.ReactElement => {
   const [localStream, setLocalStream] = useState<any>(null);
-  const [localStreamError, setLocalStreamError] = useState<any>(null);
+  const [isMediaSupported, setIsMediaSupported] = useState<boolean>(true);
+  const [localStreamError, setLocalStreamError] = useState<any>('');
   const [myPeerId, setMyPeerId] = useState<any>(null);
   const [audienceStreams, setAudienceStreams] = useState<any>([]);
   const [adminStreams, setAdminStreams] = useState<any>([]);
+  const [turnServers, setTurnServers] = useState<any>([]);
 
   // const [myPeerId, setMyPeerId] = useState<any>(null);
   const peerConnection = useRef<any>(null);
@@ -19,6 +21,7 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
 
   const adminStreamsRef = useRef<any>([]);
   const audienceStreamsRef = useRef<any>([]);
+  const turnServersRef = useRef<any>([]);
 
   const { currentUser, getCurrentUser } = useUserState();
 
@@ -33,6 +36,10 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
     setAudienceStreams,
     adminStreams,
     setAdminStreams,
+    isMediaSupported,
+    setIsMediaSupported,
+    turnServers,
+    setTurnServers,
   };
 
   const defaultConstraints = {
@@ -40,17 +47,18 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
     audio: true,
   };
 
-  const configuration = {
-    iceServers: [
-      {
-        urls: 'stun:stun.l.google.com:13902',
-      },
-    ],
-  };
-
   const createPeerConnection = (peerStream: any) => {
-    peerConnection.current = new RTCPeerConnection(configuration);
-    console.log(peerConnection.current, 'peerConnection.current');
+    const configuration = {
+      iceServers: [
+        ...turnServersRef.current,
+        {
+          url: 'stun:stun.1und1.de:3478',
+        },
+      ],
+      iceTransportPolicy: 'relay',
+    };
+
+    peerConnection.current = new RTCPeerConnection(configuration as any);
     if (peerStream) {
       // eslint-disable-next-line no-restricted-syntax
       for (const track of peerStream.getTracks()) {
@@ -77,9 +85,15 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     myPeer.current = new Peer(undefined, {
-      path: '/peerjs',
-      host: 'localhost',
-      port: '5001',
+      // path: '/peerjs',
+      // host: 'localhost',
+      // port: '5001',
+      config: {
+        iceServers: [
+          ...turnServersRef.current,
+          { url: 'stun:stun.1und1.de:3478' },
+        ],
+      },
     });
     myPeer.current.on('open', (id: string) => {
       setMyPeerId(id);
@@ -88,13 +102,6 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
       if (ownLocalStream.current) {
         call.answer(ownLocalStream.current);
         call.on('stream', (incomingStreamCall: any) => {
-          console.log(
-            incomingStreamCall,
-            'incomingStreamCall connect with my peer',
-          );
-          console.log(adminStreamsRef.current, 'adminStreamsRef.current');
-          console.log(audienceStreamsRef.current, 'audienceStreamsRef.current');
-
           const streamsAdmin = adminStreamsRef.current.map((item: any) =>
             item.streamId === incomingStreamCall.id
               ? {
@@ -113,8 +120,6 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
           );
           adminStreamsRef.current = streamsAdmin;
           audienceStreamsRef.current = streamsAudience;
-          console.log(streamsAdmin, 'isAdminStreamExist');
-          console.log(streamsAudience, 'isAudienceStreamExist');
           setAdminStreams(streamsAdmin);
           setAudienceStreams(streamsAudience);
         });
@@ -123,16 +128,27 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
   };
 
   const getLocalStream = (): any => {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+      setIsMediaSupported(false);
+      return;
+    }
+
     navigator.mediaDevices
       .getUserMedia(defaultConstraints)
       .then((stream) => {
         setLocalStream(stream);
-        setLocalStreamError(null);
+        setLocalStreamError('');
         createPeerConnection(stream);
         ownLocalStream.current = stream;
       })
       .catch((err) => {
-        setLocalStreamError(err);
+        if (err.message === 'Permission denied') {
+          setLocalStreamError(
+            'Campfire requires access to your microphone so others on the call can hear you.',
+          );
+        } else {
+          setLocalStreamError(err.message);
+        }
       });
   };
 
@@ -145,7 +161,6 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
             (adminStream: any) =>
               adminStream?.stream?.id === incomingStreamCall.id,
           );
-          console.log(filterStreams, 'filterStreams');
           if (!filterStreams) {
             adminStreamsRef.current = [
               ...adminStreamsRef.current,
@@ -203,7 +218,6 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
 
   const leaveCampfire = () => {
     if (myPeer.current) {
-      console.log(localStream, 'localStream');
       myPeer.current.destroy();
       ownLocalStream.current = null;
       audienceStreamsRef.current = [];
@@ -221,6 +235,12 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
     leaveCampfire,
     userLeft,
   };
+
+  useEffect(() => {
+    if (turnServers && turnServers.length > 0) {
+      turnServersRef.current = turnServers;
+    }
+  }, [turnServers]);
 
   return <MediaStreamHooksContext.Provider value={combinedValues} {...props} />;
 };

@@ -224,7 +224,14 @@ const MemberItem = ({
 }: Props): React.ReactElement => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   // const ref = useRef<any>();
-  const videoRef = useRef<any>({ srcObject: null });
+  const videoRef = useRef<
+    | {
+        srcObject: null;
+        play: any;
+        onloadedmetadata: any;
+      }
+    | any
+  >();
 
   // useEffect(() => {
   //   if (peer && !isLoggedIn) {
@@ -235,13 +242,15 @@ const MemberItem = ({
   // }, [peer, isLoggedIn]);
 
   useEffect(() => {
-    const remoteVideoStream = videoRef.current;
-    // eslint-disable-next-line dot-notation
-    remoteVideoStream.srcObject = stream;
+    if (stream && stream.id) {
+      const remoteVideoStream = videoRef.current;
+      // eslint-disable-next-line dot-notation
+      remoteVideoStream.srcObject = stream;
 
-    remoteVideoStream.onloadedmetadata = () => {
-      remoteVideoStream.play();
-    };
+      remoteVideoStream.onloadedmetadata = () => {
+        remoteVideoStream.play();
+      };
+    }
   }, [stream]);
 
   const menu = (

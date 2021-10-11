@@ -14,6 +14,10 @@ export type MediaStreamHooks = {
     setAudienceStreams: (streams: any) => any;
     adminStreams: any;
     setAdminStreams: (streams: any) => any;
+    isMediaSupported: boolean;
+    setIsMediaSupported: (value: boolean) => any;
+    turnServers: any;
+    setTurnServers: (value: any) => any;
   };
   getLocalStream: () => any;
   connectWithMyPeer: () => any;

@@ -8,8 +8,6 @@ const socketInit = (server, app) => {
     const rooms = [];
     let admins = [];
     let audiences = [];
-    
-
 
     // const peerServer = ExpressPeerServer(server, {
     //     debug: true,
@@ -48,7 +46,6 @@ const socketInit = (server, app) => {
         });
 
         socket.on('join-campfire-group', (data) => {
-            console.log(data, 'join group');
             socket.join(data.campfireId);
             io.to(data.campfireId).emit('receive-join-campfire-group', data);
             if (data.isAdmin) {
@@ -71,25 +68,29 @@ const socketInit = (server, app) => {
             });
         });
 
-        socket.on('disconnect', () => {
-            console.log('user disconnected');
+        socket.on('disconnect', (data) => {
+            let user = null;
+            const audience = audiences.find(item => item.socketId === socket.id);
+            const admin = admins.find(item => item.socketId === socket.id);
+            if (audience) {
+                user = audience;
+            }
+            if (admin) {
+                user = admin;
+            }
             audiences = audiences.filter(peer => peer.socketId !== socket.id);
             admins = admins.filter(peer => peer.socketId !== socket.id);
-            io.sockets.emit('broadcast', {
-                audiences,
-                admins,
-            });
+            if (user) {
+                io.to(user.campfireId).emit('user-leave', {
+                    userId: user.userId,
+                });
+            }
         });
 
         socket.on('leave', (data) => {
             socket.leave(data.campfireId);
-            console.log('leave', data);
             audiences = audiences.filter(peer => peer.userId !== data.userId);
             admins = admins.filter(peer => peer.userId !== data.userId);
-            // io.sockets.emit('broadcast', {
-            //     audiences,
-            //     admins,
-            // });
             io.to(data.campfireId).emit('user-leave', {
                 userId: data.userId,
             });

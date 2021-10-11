@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef } from 'react';
 import io from 'socket.io-client';
 
 import { SocketHooksContext } from '.';
@@ -29,15 +29,13 @@ const SocketProvider = (props: any): React.ReactElement => {
     localUser,
   };
 
-  const SERVER = 'http://localhost:5000';
+  const SERVER = 'https://staging-campfire-api.azurewebsites.net';
 
   const socketInit = (): any => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     socket.current = io(SERVER);
     if (socket.current) {
-      socket.current.on('connection', () => {
-        console.log(socket.current.id, 'socket.current connected');
-      });
+      socket.current.on('connection', () => {});
 
       socket.current.on('receive-join-campfire-group', (data: any) => {
         connectToNewUser(data);
@@ -45,16 +43,6 @@ const SocketProvider = (props: any): React.ReactElement => {
 
       socket.current.on('broadcast-join', (data: any) => {
         connectToUsers(data);
-        // if (window.location.pathname.includes('active')) {
-        //   const filterAdmins = data.admins?.filter(
-        //     (val: JoinedParams) => val.socketId !== socket.current.id,
-        //   );
-        //   const filterAudiences = data.audiences?.filter(
-        //     (val: JoinedParams) => val.socketId !== socket.current.id,
-        //   );
-        //   setAdmins(filterAdmins);
-        //   setAudiences(filterAudiences);
-        // }
       });
 
       socket.current.on('user-leave', userLeft);

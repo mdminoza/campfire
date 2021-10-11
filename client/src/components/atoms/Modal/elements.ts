@@ -9,6 +9,6 @@ export const Container = styled.div`
     border-style: none;
     border-radius: inherit;
     display: ${(props: { isVisible?: boolean }): string =>
-    props.isVisible ? 'flex' : 'none'};
+      props.isVisible ? 'flex' : 'none'};
   }
 `;
