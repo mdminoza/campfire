@@ -22,10 +22,13 @@ import {
   CampfireParams,
 } from '../../../../common/domain/entities/campfire';
 import { MemberParams } from '../../../../common/domain/entities/member';
+// import { joinCampfire } from '../../../utils/socketConnection/socketConnection';
 
 import { useCampfireAction } from '../../../hooks/campfire';
 import { useUserState } from '../../../hooks/user';
+import { useMediaStreamAction } from '../../../hooks/mediaStream';
 import { useMemberAction } from '../../../hooks/member';
+import { useSocketAction } from '../../../hooks/socket';
 
 import {
   SponsoredContainer,
@@ -150,6 +153,15 @@ const MainTemplate = (): React.ReactElement => {
   } = useCampfireAction();
   const { addMember } = useMemberAction();
   const { currentUser, isLoading, setActiveCampfire } = useUserState();
+  const { useMediaStreamState } = useMediaStreamAction();
+  const { useSocketState } = useSocketAction();
+
+  const { setLocalUser } = useSocketState;
+  const {
+    setLocalStream,
+    setAdminStreams,
+    setAudienceStreams,
+  } = useMediaStreamState;
 
   const {
     refetch: refetchOwnedCampfires,
@@ -304,6 +316,15 @@ const MainTemplate = (): React.ReactElement => {
         onSuccess: (data) => {
           if (activeTab === 'publicCampfire') {
             setActiveCampfire(data?.campfire || null);
+            // joinCampfire({
+            //   campfireId: data?.campfire || '',
+            //   userId: currentUser?.id || '',
+            //   isAdmin: false,
+            //   isModerator: false,
+            //   isSpeaker: false,
+            //   userName: currentUser?.name || '',
+            //   profileUrl: currentUser?.profileUrl || '',
+            // });
             navigate(`/campfires/active/${data?.campfire}`);
           }
           if (activeTab === 'privateCampfire') {
@@ -368,6 +389,15 @@ const MainTemplate = (): React.ReactElement => {
       if (!isUpcomingCampfire) {
         if (isOwned || status === 'invited') {
           setActiveCampfire(campfireId);
+          // joinCampfire({
+          //   campfireId,
+          //   userId: currentUser?.id || '',
+          //   isAdmin: isOwned || false,
+          //   isModerator: isOwned || false,
+          //   isSpeaker: false,
+          //   userName: currentUser?.name || '',
+          //   profileUrl: currentUser?.profileUrl || '',
+          // });
           navigate(`/campfires/active/${campfireId}`);
         } else {
           handleAddMemberMutation({
@@ -448,6 +478,7 @@ const MainTemplate = (): React.ReactElement => {
     }
   };
 
+  // USE EffECTS
   useEffect(() => {
     document.addEventListener('mousedown', handleClick);
     return () => {
@@ -493,6 +524,14 @@ const MainTemplate = (): React.ReactElement => {
       }, 850);
     return () => clearTimeout(timeout);
   }, [searchValue]);
+
+  useEffect(() => {
+    setActiveCampfire(null);
+    setLocalStream(null);
+    setLocalUser(null);
+    setAdminStreams([]);
+    setAudienceStreams([]);
+  }, []);
 
   const campfiresMock: {
     publicCampfire: { data: Campfire[]; lastId: undefined };
@@ -835,10 +874,6 @@ const MainTemplate = (): React.ReactElement => {
     zIndex: 1000,
     backgroundColor: '#000000a6',
   };
-
-  useEffect(() => {
-    setActiveCampfire(null);
-  }, []);
 
   return (
     <StyledLayout campfiretoggled={isToggled ? 'true' : 'false'}>

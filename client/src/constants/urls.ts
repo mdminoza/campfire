@@ -31,4 +31,5 @@ export default {
     setStatus: 'member/set/status',
     setRole: 'member/set/role',
   },
+  turn: 'turn-credentials',
 };

@@ -7,15 +7,18 @@ import ErrorBoundary from '../../components/HOCs/ErrorBoundary';
 import { Loader } from '../../components/atoms/Loader';
 import { MainPage } from '../../components/pages/MainPage';
 import { ActivePage } from '../../components/pages/ActivePage';
+import { NewActivePage } from '../../components/pages/NewActivePage';
 import { LoginPage } from '../../components/pages/LoginPage';
 
 import { useUserState, useUserAction } from '../../hooks/user';
+import { useSocketAction } from '../../hooks/socket';
 import { UserInterface } from '../../hooks/user/combined/types';
+// import { socketInit } from '../../utils/socketConnection/socketConnection';
 
 const ProtectedRoutes = () => (
   <Routes>
     <Route path="/*" element={<Navigate to="/campfires" />} />
-    <Route path="/campfires/active/:id" element={<ActivePage />} />
+    <Route path="/campfires/active/:id" element={<NewActivePage />} />
     <Route path="/campfires" element={<MainPage />} />
   </Routes>
 );
@@ -36,13 +39,20 @@ const Navigator = () => {
     allUsers,
     setAllUsers,
   } = useUserState();
-  const { fetchCurrentUser, fetchAllUsers } = useUserAction();
+  const {
+    fetchCurrentUser,
+    fetchAllUsers,
+    fetchRandomTestUser,
+  } = useUserAction();
+
+  const { socketInit } = useSocketAction();
 
   // TODO: use this to manually logout for testing purposes
   // localStorage.removeItem('access-token');
   // setToken('');
 
   const token = localStorage.getItem('access-token') || stateToken;
+  // const token = 'testtoken';
 
   const { refetch: refetchCurrentUser, isLoading } = useQuery(
     'current-user',
@@ -85,6 +95,36 @@ const Navigator = () => {
     },
   );
 
+  // const { refetch: refetchRandomUser, isLoading: isLoadingRandom } = useQuery(
+  //   'current-user',
+  //   () => fetchRandomTestUser(),
+  //   {
+  //     enabled: false,
+  //     onSuccess: (response: {
+  //       profileUrl: string;
+  //       name: string;
+  //       id: string;
+  //       email: string;
+  //     }) => {
+  //       const { id, profileUrl, name, email } = response;
+  //       const user = {
+  //         id,
+  //         name,
+  //         email,
+  //         profileUrl,
+  //         role: '',
+  //         username: '',
+  //       };
+  //       setCurrentUser(user);
+  //     },
+  //     onError: () => {
+  //       setCurrentUser(undefined);
+  //       localStorage.removeItem('access-token');
+  //       setToken('');
+  //     },
+  //   },
+  // );
+
   const handleAllUsers = (arr: UserInterface[] | undefined) => {
     setAllUsers(arr || []);
   };
@@ -113,6 +153,10 @@ const Navigator = () => {
   useEffect(() => {
     setIsLoading(isLoading);
   }, [isLoading, setIsLoading]);
+
+  useEffect(() => {
+    socketInit();
+  }, []);
 
   return (
     <ErrorBoundary

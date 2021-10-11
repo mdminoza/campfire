@@ -20,4 +20,18 @@ export type CampfireParams = {
   members?: Object[];
 };
 
+export type JoinedParams = {
+  campfireId: string;
+  userId: string;
+  isAdmin: boolean;
+  isModerator: boolean;
+  isSpeaker: boolean;
+  userName: string;
+  profileUrl: string;
+  socketId?: string;
+  peerId?: string;
+  streamId?: string;
+  stream?: any;
+};
+
 export type Campfire = CampfireParams & BaseModel;

@@ -31,6 +31,7 @@ export type UserHooks = {
       role: any;
       username: string;
     }) => void;
+    getCurrentUser: () => any;
     token: string;
     setToken: (val: string) => void;
     auth: {

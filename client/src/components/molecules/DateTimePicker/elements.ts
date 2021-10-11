@@ -4,7 +4,7 @@ import { theme } from '../../../constants';
 export const Container = styled.div`
   &&& {
     width: ${(props: { isSmallScreen?: boolean }): string =>
-    props?.isSmallScreen ? '300px' : '330px'};
+      props?.isSmallScreen ? '300px' : '330px'};
     height: 430px;
     display: flex;
     justify-content: space-between;
@@ -75,9 +75,9 @@ export const TextWrapper = styled.div`
 export const TextStyle = styled.span`
   &&& {
     color: ${(props: { isSelected?: boolean }): string =>
-    props?.isSelected ? theme.colors.red.light : theme.colors.gray.gray989};
+      props?.isSelected ? theme.colors.red.light : theme.colors.gray.gray989};
     font-weight: ${(props: { isSelected?: boolean }): string =>
-    props?.isSelected ? '700' : '100'};
+      props?.isSelected ? '700' : '100'};
     font-family: ${theme.fonts.fontFamily};
     font-size: 1.1rem;
     ${TimeWrapper}:hover & {
@@ -97,7 +97,7 @@ export const TextStyle2 = styled.span`
   &&& {
     font-family: ${theme.fonts.fontFamily};
     color: ${(props: { isSelected?: boolean }): string =>
-    props?.isSelected ? theme.colors.red.light : theme.colors.mainBlack};
+      props?.isSelected ? theme.colors.red.light : theme.colors.mainBlack};
     font-size: 1.2rem;
     font-weight: 600;
     line-height: 35px;

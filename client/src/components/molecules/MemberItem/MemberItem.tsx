@@ -187,8 +187,8 @@ const UnLabel = styled.b`
 `;
 
 type Props = {
-  isActive: boolean;
-  isSpeaker: boolean;
+  isActive?: boolean;
+  isSpeaker?: boolean;
   isModerator?: boolean;
   isRaising?: boolean;
   isMuted?: boolean;
@@ -202,6 +202,7 @@ type Props = {
   isLoggedIn?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   peer?: any;
+  stream?: any;
 };
 
 const MemberItem = ({
@@ -219,17 +220,38 @@ const MemberItem = ({
   size,
   isLoggedIn = false,
   peer = null,
+  stream,
 }: Props): React.ReactElement => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const ref = useRef<any>();
+  // const ref = useRef<any>();
+  const videoRef = useRef<
+    | {
+        srcObject: null;
+        play: any;
+        onloadedmetadata: any;
+      }
+    | any
+  >();
+
+  // useEffect(() => {
+  //   if (peer && !isLoggedIn) {
+  //     peer.on('stream', (pstream: any) => {
+  //       ref.current.srcObject = pstream;
+  //     });
+  //   }
+  // }, [peer, isLoggedIn]);
 
   useEffect(() => {
-    if (peer && !isLoggedIn) {
-      peer.on('stream', (stream: any) => {
-        ref.current.srcObject = stream;
-      });
+    if (stream && stream.id) {
+      const remoteVideoStream = videoRef.current;
+      // eslint-disable-next-line dot-notation
+      remoteVideoStream.srcObject = stream;
+
+      remoteVideoStream.onloadedmetadata = () => {
+        remoteVideoStream.play();
+      };
     }
-  }, [peer, isLoggedIn]);
+  }, [stream]);
 
   const menu = (
     <StyledMenu
@@ -369,7 +391,8 @@ const MemberItem = ({
             size={size}
             playsInline
             autoPlay
-            ref={isLoggedIn ? peer : ref}
+            muted={!isModerator}
+            ref={videoRef}
           />
         </AvatarWrapper>
       }>

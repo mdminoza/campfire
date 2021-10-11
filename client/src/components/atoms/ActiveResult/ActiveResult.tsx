@@ -21,6 +21,7 @@ type Props = {
   onClickHome: () => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   error?: any;
+  streamError?: any;
 };
 
 const ActiveResult = ({
@@ -28,6 +29,7 @@ const ActiveResult = ({
   onClickRejoin,
   onClickHome,
   error,
+  streamError,
 }: Props): React.ReactElement => {
   const currentDate = new Date();
   let isStarted = false;
@@ -64,16 +66,20 @@ const ActiveResult = ({
     ? 'You have left the campfire'
     : 'Sorry, campfire is not available at the moment.';
 
+  const errorMessage = error
+    ? 'Sorry, campfire is not available at the moment or does not exist.'
+    : isStartedMsg;
+
+  const errStreamMsg = streamError
+    ? 'Please enable microphone access to join campfires.'
+    : errorMessage;
+
   return (
     <Container>
       <Result
         status="404"
         title="Oopss!"
-        subTitle={
-          error
-            ? 'Sorry, campfire is not available at the moment or does not exist.'
-            : isStartedMsg
-        }
+        subTitle={errStreamMsg}
         extra={renderButton()}
       />
     </Container>

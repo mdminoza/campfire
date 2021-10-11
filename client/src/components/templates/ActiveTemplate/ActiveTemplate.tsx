@@ -113,8 +113,8 @@ const ActiveTemplate = () => {
   const userVideo = useRef<any>();
   const peersRef = useRef<any>([]);
 
-  // const socket = io('http://localhost:5000', {
-  const socket = io('https://staging-campfire-api.azurewebsites.net', {
+  const socket = io('http://localhost:5000', {
+    // const socket = io('https://staging-campfire-api.azurewebsites.net', {
     // TODO: Need more research for the proper socket options
     // transports: ['websocket'],
   });

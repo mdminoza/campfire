@@ -1,7 +1,7 @@
 export interface MemberItemParams {
   uid: string;
-  isActive: boolean;
-  isSpeaker: boolean;
+  isActive?: boolean;
+  isSpeaker?: boolean;
   isModerator?: boolean;
   isRaising?: boolean;
   onClick: (id: string) => void;

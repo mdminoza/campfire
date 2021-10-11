@@ -99,7 +99,7 @@ const SpeakersArea = ({
       <SpeakersWrapper>
         {data && data.length > 0 ? (
           <Row gutter={[20, 16]} justify="center">
-            {data.map((value) => (
+            {data.map((value: any) => (
               <Col key={value.uid}>
                 <AnimatedEmoji
                   emoji={value.emoji || ''}
@@ -116,8 +116,8 @@ const SpeakersArea = ({
                   isActive={value.isActive}
                   selectedId={selectedId}
                   size={size || 140}
-                  peer={value?.peer}
                   isLoggedIn={value?.isLoggedIn}
+                  stream={value?.stream}
                 />
               </Col>
             ))}

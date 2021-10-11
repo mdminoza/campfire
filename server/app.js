@@ -7,6 +7,7 @@ import campfireRoutes from './routes/campfire.js';
 import memberRoutes from './routes/member.js';
 import userRoute from './routes/user.js';
 import baseRoute from './routes/base.js';
+import turnCredentialRoute from './routes/turnCredentials.js';
 import { errorHandler } from './controllers/error.js';
 import './dbConn.js';
 
@@ -29,6 +30,8 @@ app.use('/api', baseRoute);
 app.use('/api', campfireRoutes);
 app.use('/api', memberRoutes);
 app.use('/api', userRoute);
+app.use('/api', turnCredentialRoute);
+
 
 app.use((req, res, next) => {
 	const error = new Error('Not Found!');

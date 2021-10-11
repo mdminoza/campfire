@@ -9,7 +9,7 @@ export const fetchRandomUser = async (req, res, next) => {
     try {
         const user = await User.findOne(
             {
-                id: randomInt(81, 81),
+                id: randomInt(81, 85),
             }
         );
         if (user === null) throw new Error('User does not exist!');
@@ -26,31 +26,31 @@ export const addUsers = async (req, res, next) => {
             {
                 id: "81",
                 name: "Jane Doe",
-                profileUrl: "https://staging.godtribe.com/app/plugins/buddyboss-platform/bp-core/images/mystery-man.jpg",
+                profileUrl: "https://picsum.photos/id/500/200",
                 email: "jane@test.com",
             },
             {
                 id: "82",
                 name: "Deeb deeb",
-                profileUrl: "https://staging.godtribe.com/app/plugins/buddyboss-platform/bp-core/images/mystery-man.jpg",
+                profileUrl: "https://picsum.photos/id/123/200",
                 email: "deeb@deeb.com",
             },
             {
                 id: "83",
                 name: "Abel",
-                profileUrl: "https://staging.godtribe.com/app/plugins/buddyboss-platform/bp-core/images/mystery-man.jpg",
+                profileUrl: "https://picsum.photos/id/321/200",
                 email: "abel@test.com",
             },
             {
                 id: "84",
                 name: "Cain",
-                profileUrl: "https://staging.godtribe.com/app/plugins/buddyboss-platform/bp-core/images/mystery-man.jpg",
+                profileUrl: "https://picsum.photos/id/12/200",
                 email: "cain@test.com",
             },
             {
                 id: "85",
                 name: "Koro",
-                profileUrl: "https://staging.godtribe.com/app/plugins/buddyboss-platform/bp-core/images/mystery-man.jpg",
+                profileUrl: "https://picsum.photos/id/45/200",
                 email: "koro@test.com",
             },
         ]);
