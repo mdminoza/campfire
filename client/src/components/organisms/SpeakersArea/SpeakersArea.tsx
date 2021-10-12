@@ -118,6 +118,7 @@ const SpeakersArea = ({
                   size={size || 140}
                   isLoggedIn={value?.isLoggedIn}
                   stream={value?.stream}
+                  isLocal={value?.isLocal}
                 />
               </Col>
             ))}

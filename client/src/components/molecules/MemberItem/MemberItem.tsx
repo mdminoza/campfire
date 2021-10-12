@@ -200,6 +200,7 @@ type Props = {
   selectedId?: string;
   size?: number;
   isLoggedIn?: boolean;
+  isLocal?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   peer?: any;
   stream?: any;
@@ -208,7 +209,7 @@ type Props = {
 const MemberItem = ({
   isActive,
   isSpeaker,
-  isModerator,
+  isModerator = false,
   isMuted = false,
   isRaising,
   onClick,
@@ -220,6 +221,7 @@ const MemberItem = ({
   size,
   isLoggedIn = false,
   peer = null,
+  isLocal = false,
   stream,
 }: Props): React.ReactElement => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -391,7 +393,7 @@ const MemberItem = ({
             size={size}
             playsInline
             autoPlay
-            muted={!isModerator}
+            muted={isLocal ? true : !(isSpeaker || isModerator)}
             ref={videoRef}
           />
         </AvatarWrapper>
