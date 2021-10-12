@@ -488,6 +488,7 @@ const NewActiveTemplate = (): React.ReactElement => {
       emojiId: '',
       isMuted: false,
       stream: strm,
+      isLocal: false,
     };
   });
   const filteredAdmins = adminStreams?.map((item: any) => ({
@@ -505,6 +506,7 @@ const NewActiveTemplate = (): React.ReactElement => {
     emojiId: '',
     isMuted: false,
     stream: item.stream,
+    isLocal: false,
   }));
   const filterLocal =
     localUser && localUser.stream
@@ -523,6 +525,7 @@ const NewActiveTemplate = (): React.ReactElement => {
           emojiId: localUser.emojiId,
           isMuted: false,
           stream: localUser.stream,
+          isLocal: true,
         }
       : null;
   const audienceData =

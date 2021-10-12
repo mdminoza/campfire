@@ -46,6 +46,7 @@ const MembersList = ({
                 isMuted={_data?.isMuted}
                 // size={size}
                 stream={_data?.stream}
+                isLocal={_data?.isLocal}
               />
             </ItemWrapper>
           </ItemCol>
