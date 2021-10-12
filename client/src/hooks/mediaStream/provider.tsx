@@ -226,6 +226,37 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
     }
   };
 
+  const setRaisedHand = (data: any) => {
+    const user = getCurrentUser();
+    const newAudienceData = audienceStreamsRef.current.map((val: any) =>
+      val.userId === data.userId && val.campfireId === data.campfireId
+        ? {
+            ...val,
+            isRaising: data.raise,
+          }
+        : val,
+    );
+    if (user.id !== data.userId) {
+      audienceStreamsRef.current = newAudienceData;
+      setAudienceStreams(newAudienceData);
+    }
+  };
+
+  const setUser = (data: any) => {
+    console.log(data, 'data');
+    // const user = getCurrentUser();
+    // if (data.moderator || data.speaker) {
+    //   const newAdminData = adminStreamsRef.current.map((val: any) =>
+    //     val.userId === data.userId && val.campfireId === data.campfireId
+    //       ? {
+    //           ...val,
+    //           ...data.key,
+    //         }
+    //       : val,
+    //   );
+    // }
+  };
+
   const combinedValues = {
     useMediaStreamState,
     getLocalStream,
@@ -233,7 +264,9 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
     connectToNewUser,
     connectToUsers,
     leaveCampfire,
+    setRaisedHand,
     userLeft,
+    setUser,
   };
 
   useEffect(() => {

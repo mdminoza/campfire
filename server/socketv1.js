@@ -87,6 +87,42 @@ const socketInit = (server, app) => {
             }
         });
 
+        socket.on('raise-hand', (data) => {
+            audiences = audiences.map(item => {
+                return item.campfireId === data.campfireId && item.userId === data.userId ? {
+                    ...item,
+                    isRaising: data.raise,
+                } : item
+            });
+            io.to(data.campfireId).emit('raised-hand', {
+                userId: data.userId,
+                campfireId: data.campfireId,
+                raise: data.raise,
+            });
+        })
+
+        socket.on('set-user', (data) => {
+            const { userId,
+                campfireId,
+                key,
+                speaker,
+                moderator,
+            } = data;
+            // audiences = audiences.map(item => {
+            //     return item.campfireId === data.campfireId && item.userId === data.userId ? {
+            //         ...item,
+            //         isRaising: data.raise,
+            //     } : item
+            // });
+            io.to(data.campfireId).emit('received-set-user', {
+                userId,
+                campfireId,
+                key,
+                speaker,
+                moderator,
+            });
+        })
+
         socket.on('leave', (data) => {
             socket.leave(data.campfireId);
             audiences = audiences.filter(peer => peer.userId !== data.userId);

@@ -59,7 +59,13 @@ const NewActiveTemplate = (): React.ReactElement => {
   const [isEndedCampfire, setEndedCampfire] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
 
-  const { useSocketState, leaveCampfire, joinCampfire } = useSocketAction();
+  const {
+    useSocketState,
+    leaveCampfire,
+    joinCampfire,
+    raiseHand,
+    setUserMenu,
+  } = useSocketAction();
   const {
     getLocalStream,
     useMediaStreamState,
@@ -271,9 +277,17 @@ const NewActiveTemplate = (): React.ReactElement => {
 
   const handleOnClickMenu = (key: string) => {
     setSelectedId('');
+    console.log(selectedId, 'selectedId');
     console.log(key, 'key');
     if (key === 'addModerator') {
       // TODO:
+      setUserMenu(
+        selectedId,
+        campfireIdParam,
+        { isModerator: true, isSpeaker: true },
+        false,
+        true,
+      );
     }
     if (key === 'removeModerator' || key === 'addSpeaker') {
       // TODO:
@@ -348,6 +362,7 @@ const NewActiveTemplate = (): React.ReactElement => {
   );
 
   useEffect(() => {
+    raiseHand(currentUser?.id || '', campfireIdParam, isRaising);
     setLocalUser({
       ...localUser,
       isRaising,
@@ -409,7 +424,7 @@ const NewActiveTemplate = (): React.ReactElement => {
       isActive: false,
       uid: item.userId,
       // TODO:
-      isRaising: false,
+      isRaising: item.isRaising,
       emoji: '',
       emojiId: '',
       isMuted: false,

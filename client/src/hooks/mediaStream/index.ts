@@ -24,7 +24,9 @@ export type MediaStreamHooks = {
   connectToNewUser: (data: any) => any;
   connectToUsers: (data: any) => any;
   leaveCampfire: () => any;
+  setRaisedHand: (data: any) => any;
   userLeft: (data: any) => void;
+  setUser: (data: any) => void;
 };
 
 export const MediaStreamHooksContext = React.createContext<MediaStreamHooks | null>(

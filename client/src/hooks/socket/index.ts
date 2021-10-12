@@ -15,6 +15,14 @@ export type SocketHooks = {
   socketInit: () => any;
   joinCampfire: (user: JoinedParams) => any;
   leaveCampfire: (userId?: string, campfireId?: string) => any;
+  raiseHand: (userId: string, campfireId: string, raise: boolean) => any;
+  setUserMenu: (
+    userId: string,
+    campfireId: string,
+    key: any,
+    speaker: boolean,
+    moderator: boolean,
+  ) => any;
 };
 
 export const SocketHooksContext = React.createContext<SocketHooks | null>(null);

@@ -16,6 +16,8 @@ const SocketProvider = (props: any): React.ReactElement => {
     connectToUsers,
     leaveCampfire: leaveCampfireCall,
     userLeft,
+    setRaisedHand,
+    setUser,
   } = useMediaStreamAction();
 
   const socket = useRef<any>();
@@ -30,6 +32,7 @@ const SocketProvider = (props: any): React.ReactElement => {
   };
 
   const SERVER = 'https://staging-campfire-api.azurewebsites.net';
+  // const SERVER = 'http://localhost:5000';
 
   const socketInit = (): any => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -43,6 +46,14 @@ const SocketProvider = (props: any): React.ReactElement => {
 
       socket.current.on('broadcast-join', (data: any) => {
         connectToUsers(data);
+      });
+
+      socket.current.on('raised-hand', (data: any) => {
+        setRaisedHand(data);
+      });
+
+      socket.current.on('received-set-user', (data: any) => {
+        setUser(data);
       });
 
       socket.current.on('user-leave', userLeft);
@@ -70,11 +81,43 @@ const SocketProvider = (props: any): React.ReactElement => {
     }
   };
 
+  const raiseHand = (userId: string, campfireId: string, raise: boolean) => {
+    if (socket.current) {
+      socket.current.emit('raise-hand', {
+        userId,
+        campfireId,
+        socketId: socket.current.id,
+        raise,
+      });
+    }
+  };
+
+  const setUserMenu = (
+    userId: string,
+    campfireId: string,
+    key: any,
+    speaker: boolean,
+    moderator: boolean,
+  ) => {
+    if (socket.current) {
+      socket.current.emit('set-user', {
+        userId,
+        campfireId,
+        socketId: socket.current.id,
+        key,
+        speaker,
+        moderator,
+      });
+    }
+  };
+
   const combinedValues = {
     useSocketState,
     socketInit,
     joinCampfire,
     leaveCampfire,
+    raiseHand,
+    setUserMenu,
   };
 
   return <SocketHooksContext.Provider value={combinedValues} {...props} />;

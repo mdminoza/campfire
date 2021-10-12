@@ -257,6 +257,7 @@ const CampfireFooter1 = ({
     padding: 0,
     width: 45,
     height: '100%',
+    marginLeft: 12,
   };
 
   const raisedHandBtnStyle = {
@@ -385,29 +386,33 @@ const CampfireFooter1 = ({
             )}
           </AvatarWrapper>
         </Col>
-        <MicWrapper>
-          <IconLogo onClick={handleOnClickMic}>
-            {onMute ? (
-              <MuteMic width={45} height={45} />
-            ) : (
-              <Mic1 width={45} height={45} />
-            )}
-          </IconLogo>
-        </MicWrapper>
+        {isAdmin && (
+          <MicWrapper>
+            <IconLogo onClick={handleOnClickMic}>
+              {onMute ? (
+                <MuteMic width={45} height={45} />
+              ) : (
+                <Mic1 width={45} height={45} />
+              )}
+            </IconLogo>
+          </MicWrapper>
+        )}
         <Col flex="auto">
-          <Button
-            style={
-              isRaising && !isSpeaker ? raisedHandBtnStyle : raiseHandBtnStyle
-            }
-            onClick={() => onClickRaiseHand(id, isRaising)}>
-            {!isSpeaker && isRaising ? (
-              <RaiseHandLabel>MY HAND IS RAISED</RaiseHandLabel>
-            ) : (
-              <RaiseHandBtnContent>
-                <RaiseHand width={28} height={40} />
-              </RaiseHandBtnContent>
-            )}
-          </Button>
+          {!isAdmin && (
+            <Button
+              style={
+                isRaising && !isSpeaker ? raisedHandBtnStyle : raiseHandBtnStyle
+              }
+              onClick={() => onClickRaiseHand(id, isRaising)}>
+              {!isSpeaker && isRaising ? (
+                <RaiseHandLabel>MY HAND IS RAISED</RaiseHandLabel>
+              ) : (
+                <RaiseHandBtnContent>
+                  <RaiseHand width={28} height={40} />
+                </RaiseHandBtnContent>
+              )}
+            </Button>
+          )}
         </Col>
         <EmojiCol>
           <EmojiMainWrapper onClick={handleOnClickEmojisOpen}>
