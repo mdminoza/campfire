@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Layout, Grid, Modal, Button, Result } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { useQuery, useMutation } from 'react-query';
@@ -22,8 +22,6 @@ import { useMemberAction } from '../../../hooks/member';
 import { useUserState } from '../../../hooks/user';
 import { useTurnAction } from '../../../hooks/turn';
 import { MemberItemParams } from '../../molecules/MemberItem/types';
-
-const { useBreakpoint } = Grid;
 
 const ActiveSpeakersWrapper = styled.div`
   &&& {
@@ -55,8 +53,6 @@ const NewActiveTemplate = (): React.ReactElement => {
     { name: string; profileUrl: string; uid: string } | undefined
   >(undefined);
   const [selectedId, setSelectedId] = useState<string>('');
-  const [avatarSize, setAvatarSize] = useState<number>();
-  const [breakPoint, setBreakPoint] = useState<string>('');
   const [isRaising, setHandRaised] = useState(false);
   const [isEndCampfireModal, setEndCampfireModal] = useState(false);
   const [isKickAllModal, setKickAllModal] = useState(false);
@@ -90,7 +86,6 @@ const NewActiveTemplate = (): React.ReactElement => {
   } = useUserState();
   const navigate = useNavigate();
   const { id: campfireIdParam } = useParams();
-  const screens = useBreakpoint();
 
   // WEBRTCS & SOCKETS
   const { localUser, setLocalUser } = useSocketState;
@@ -336,75 +331,6 @@ const NewActiveTemplate = (): React.ReactElement => {
   }, [selectedId]);
 
   useEffect(() => {
-    const fooz = Object.entries(screens).filter((screen) => !!screen[1]);
-    try {
-      if (fooz && fooz.length > 0) {
-        setBreakPoint(fooz[fooz.length - 1][0]);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }, [screens]);
-
-  useEffect(() => {
-    // eslint-disable-next-line no-undef
-    // eslint-disable-next-line no-restricted-globals
-    const screenWidth = screen.width;
-    // const size =
-    //   members.length > speakers.length ? members.length : speakers.length;
-    const size =
-      audienceStreams.length > adminStreams.length
-        ? audienceStreams.length
-        : adminStreams.length;
-    switch (breakPoint) {
-      case 'xxl':
-      case 'xl':
-      case 'lg':
-        if (size <= 3) {
-          setAvatarSize(screenWidth * 0.2);
-        } else if (size >= 4 && size <= 8) {
-          setAvatarSize(screenWidth * 0.2);
-        } else if (size >= 9 && size <= 12) {
-          setAvatarSize(screenWidth * 0.14);
-        } else if (size >= 13 && size <= 28) {
-          setAvatarSize(screenWidth * 0.12);
-        } else if (size >= 29) {
-          setAvatarSize(screenWidth * 0.11);
-        }
-        break;
-      case 'md':
-        if (size <= 3) {
-          setAvatarSize(200);
-        } else if (size >= 4 && size <= 8) {
-          setAvatarSize(150);
-        } else if (size >= 9 && size >= 12) {
-          setAvatarSize(120);
-        } else if (size >= 13) {
-          setAvatarSize(110);
-        }
-        break;
-      case 'sm':
-        if (size <= 3) {
-          setAvatarSize(150);
-        } else if (size >= 4 && size <= 8) {
-          setAvatarSize(120);
-        } else if (size >= 9) {
-          setAvatarSize(110);
-        }
-        break;
-      case 'xs':
-        if (size <= 3) {
-          setAvatarSize(120);
-        } else if (size >= 4) {
-          setAvatarSize(110);
-        }
-        break;
-      default:
-        setAvatarSize(110);
-    }
-  }, [breakPoint, adminStreams, audienceStreams]);
-
-  useEffect(() => {
     refetchTurnCredentials();
 
     return () => {
@@ -629,7 +555,6 @@ const NewActiveTemplate = (): React.ReactElement => {
             onClick={handleClickMember}
             selectedId={selectedId}
             invites={[]}
-            size={avatarSize}
           />
         </ActiveSpeakersWrapper>
         <AudienceWrapper>
@@ -637,7 +562,6 @@ const NewActiveTemplate = (): React.ReactElement => {
             onClick={handleClickMember}
             selectedId={selectedId}
             data={audienceData as MemberItemParams[]}
-            size={avatarSize}
           />
         </AudienceWrapper>
         <CampfireFooter1
