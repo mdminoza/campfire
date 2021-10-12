@@ -1017,79 +1017,79 @@ const ActiveTemplate = () => {
     }
   };
 
-  useEffect(() => {
-    // eslint-disable-next-line no-undef
-    // eslint-disable-next-line no-restricted-globals
-    const screenWidth = screen.width;
-    const size =
-      members.length > speakers.length ? members.length : speakers.length;
-    switch (breakPoint) {
-      case 'xxl':
-      case 'xl':
-      case 'lg':
-        // if (size <= 1) {
-        //   setAvatarSize(screenWidth * 0.35);
-        // } else if (size <= 2) {
-        //   setAvatarSize(screenWidth * 0.3);
-        // } else
-        if (size <= 3) {
-          setAvatarSize(screenWidth * 0.2);
-        } else if (size >= 4 && size <= 8) {
-          setAvatarSize(screenWidth * 0.2);
-        } else if (size >= 9 && size <= 12) {
-          setAvatarSize(screenWidth * 0.14);
-        } else if (size >= 13 && size <= 28) {
-          setAvatarSize(screenWidth * 0.12);
-        } else if (size >= 29) {
-          setAvatarSize(screenWidth * 0.11);
-        }
-        break;
-      case 'md':
-        // if (size === 1) {
-        //   setAvatarSize(screenWidth * 0.25);
-        // } else if (size === 2) {
-        //   setAvatarSize(screenWidth * 0.2);
-        // } else
-        if (size <= 3) {
-          setAvatarSize(200);
-        } else if (size >= 4 && size <= 8) {
-          setAvatarSize(150);
-        } else if (size >= 9 && size >= 12) {
-          setAvatarSize(120);
-        } else if (size >= 13) {
-          setAvatarSize(110);
-        }
-        break;
-      case 'sm':
-        // if (size === 1) {
-        //   setAvatarSize(250);
-        // } else if (size === 2) {
-        //   setAvatarSize(200);
-        // } else
-        if (size <= 3) {
-          setAvatarSize(150);
-        } else if (size >= 4 && size <= 8) {
-          setAvatarSize(120);
-        } else if (size >= 9) {
-          setAvatarSize(110);
-        }
-        break;
-      case 'xs':
-        // if (size === 1) {
-        //   setAvatarSize(200);
-        // } else if (size <= 2) {
-        //   setAvatarSize(150);
-        // } else
-        if (size <= 3) {
-          setAvatarSize(120);
-        } else if (size >= 4) {
-          setAvatarSize(110);
-        }
-        break;
-      default:
-        setAvatarSize(110);
-    }
-  }, [speakers, members.length, speakers.length, breakPoint]);
+  // useEffect(() => {
+  //   // eslint-disable-next-line no-undef
+  //   // eslint-disable-next-line no-restricted-globals
+  //   const screenWidth = screen.width;
+  //   const size =
+  //     members.length > speakers.length ? members.length : speakers.length;
+  //   switch (breakPoint) {
+  //     case 'xxl':
+  //     case 'xl':
+  //     case 'lg':
+  //       // if (size <= 1) {
+  //       //   setAvatarSize(screenWidth * 0.35);
+  //       // } else if (size <= 2) {
+  //       //   setAvatarSize(screenWidth * 0.3);
+  //       // } else
+  //       if (size <= 3) {
+  //         setAvatarSize(screenWidth * 0.2);
+  //       } else if (size >= 4 && size <= 8) {
+  //         setAvatarSize(screenWidth * 0.2);
+  //       } else if (size >= 9 && size <= 12) {
+  //         setAvatarSize(screenWidth * 0.14);
+  //       } else if (size >= 13 && size <= 28) {
+  //         setAvatarSize(screenWidth * 0.12);
+  //       } else if (size >= 29) {
+  //         setAvatarSize(screenWidth * 0.11);
+  //       }
+  //       break;
+  //     case 'md':
+  //       // if (size === 1) {
+  //       //   setAvatarSize(screenWidth * 0.25);
+  //       // } else if (size === 2) {
+  //       //   setAvatarSize(screenWidth * 0.2);
+  //       // } else
+  //       if (size <= 3) {
+  //         setAvatarSize(200);
+  //       } else if (size >= 4 && size <= 8) {
+  //         setAvatarSize(150);
+  //       } else if (size >= 9 && size >= 12) {
+  //         setAvatarSize(120);
+  //       } else if (size >= 13) {
+  //         setAvatarSize(110);
+  //       }
+  //       break;
+  //     case 'sm':
+  //       // if (size === 1) {
+  //       //   setAvatarSize(250);
+  //       // } else if (size === 2) {
+  //       //   setAvatarSize(200);
+  //       // } else
+  //       if (size <= 3) {
+  //         setAvatarSize(150);
+  //       } else if (size >= 4 && size <= 8) {
+  //         setAvatarSize(120);
+  //       } else if (size >= 9) {
+  //         setAvatarSize(110);
+  //       }
+  //       break;
+  //     case 'xs':
+  //       // if (size === 1) {
+  //       //   setAvatarSize(200);
+  //       // } else if (size <= 2) {
+  //       //   setAvatarSize(150);
+  //       // } else
+  //       if (size <= 3) {
+  //         setAvatarSize(120);
+  //       } else if (size >= 4) {
+  //         setAvatarSize(110);
+  //       }
+  //       break;
+  //     default:
+  //       setAvatarSize(110);
+  //   }
+  // }, [speakers, members.length, speakers.length, breakPoint]);
 
   const handleOnClickProfileMenu = (key: string) => {
     if (key === 'leaveCampfire') {
@@ -1219,7 +1219,7 @@ const ActiveTemplate = () => {
             onClick={handleClickMember}
             selectedId={selectedId}
             invites={filterInvites}
-            size={avatarSize}
+            // size={avatarSize}
           />
         </ActiveSpeakersWrapper>
         {/* <StyledShadow /> */}
@@ -1228,7 +1228,7 @@ const ActiveTemplate = () => {
             onClick={handleClickMember}
             selectedId={selectedId}
             data={members}
-            size={avatarSize}
+            // size={avatarSize}
           />
         </AudienceWrapper>
         <CampfireFooter1

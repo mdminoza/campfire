@@ -44,7 +44,7 @@ const MembersList = ({
                 isRaising={_data?.isRaising}
                 isLoggedIn={_data?.isLoggedIn}
                 isMuted={_data?.isMuted}
-                size={size}
+                // size={size}
                 stream={_data?.stream}
               />
             </ItemWrapper>
