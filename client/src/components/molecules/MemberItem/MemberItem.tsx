@@ -262,18 +262,25 @@ const MemberItem = ({
         ADMIN MENU
       </Menu.Item>
       <Menu.Divider />
-      {isMuted ? (
-        <Menu.Item className="adminMenuList" key="unmute">
-          <MuteLabel>
-            <UnLabel>UN</UnLabel>MUTE
-          </MuteLabel>
-        </Menu.Item>
-      ) : (
-        <Menu.Item className="adminMenuList" key="mute">
-          MUTE
-        </Menu.Item>
-      )}
-      <Menu.Divider />
+      {(isSpeaker || isModerator) &&
+        (isMuted ? (
+          <>
+            <Menu.Item className="adminMenuList" key="unmute">
+              <MuteLabel>
+                <UnLabel>UN</UnLabel>MUTE
+              </MuteLabel>
+            </Menu.Item>
+            <Menu.Divider />
+          </>
+        ) : (
+          <>
+            <Menu.Item className="adminMenuList" key="mute">
+              MUTE
+            </Menu.Item>
+            <Menu.Divider />
+          </>
+        ))}
+
       <Menu.Item className="adminMenuList" key="kick">
         KICK
       </Menu.Item>
@@ -380,14 +387,16 @@ const MemberItem = ({
           {isModerator && <BlackCrown style={asterisksStyle} />}
 
           <Avatar src={profileUrl} size={size || 110} alt="Sample" />
-          {isSpeaker && <BorderActive isActive={isActive} size={size} />}
+          {isSpeaker && (
+            <BorderActive isActive={isSpeaker || isModerator} size={size} />
+          )}
           {!isSpeaker && isRaising && (
             <RaiseHandWrapper size={size}>
               <RaiseHand width={30} height={45} />
             </RaiseHandWrapper>
           )}
           {/* {isMuted && <MutedWrapper />} */}
-          {isActive && <ActiveWrapper size={size} />}
+          {(isSpeaker || isModerator) && <ActiveWrapper size={size} />}
           <HiddenContainer id="_memberCard" size={size} />
           <VideoWrapper
             size={size}
@@ -398,7 +407,7 @@ const MemberItem = ({
           />
         </AvatarWrapper>
       }>
-      <LabelName isActive={isActive && isSpeaker} isMuted={isMuted}>
+      <LabelName isActive={false} isMuted={isMuted}>
         {speaker}
       </LabelName>
     </StyledCard>

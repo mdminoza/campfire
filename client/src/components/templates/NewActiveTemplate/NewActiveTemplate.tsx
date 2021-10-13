@@ -202,10 +202,10 @@ const NewActiveTemplate = (): React.ReactElement => {
     if (
       (activeUser?.uid === campfire?.creator?.uid &&
         id !== campfire?.creator?.uid) ||
-      (campfireMember &&
-        campfireMember.role === 'moderator' &&
+      (localUser &&
+        localUser.isModerator &&
         id !== campfire?.creator?.uid &&
-        id !== campfireMember?.uid)
+        id !== localUser?.userId)
     ) {
       setSelectedId(id);
     }
@@ -238,7 +238,10 @@ const NewActiveTemplate = (): React.ReactElement => {
       emoji: type,
       emojiId: selectedUserId + Math.random().toString(36).substring(2),
     };
-    console.log(emojiDetails, 'emoji clicked');
+    setLocalUser({
+      ...localUser,
+      ...emojiDetails,
+    });
   };
 
   const onClickMic = () => {
@@ -280,20 +283,34 @@ const NewActiveTemplate = (): React.ReactElement => {
     console.log(selectedId, 'selectedId');
     console.log(key, 'key');
     if (key === 'addModerator') {
-      // TODO:
       setUserMenu(
         selectedId,
         campfireIdParam,
         { isModerator: true, isSpeaker: true },
         false,
         true,
+        key,
       );
     }
     if (key === 'removeModerator' || key === 'addSpeaker') {
-      // TODO:
+      setUserMenu(
+        selectedId,
+        campfireIdParam,
+        { isModerator: false, isSpeaker: true },
+        true,
+        false,
+        key,
+      );
     }
     if (key === 'removeSpeaker') {
-      // TODO:
+      setUserMenu(
+        selectedId,
+        campfireIdParam,
+        { isModerator: false, isSpeaker: false },
+        false,
+        false,
+        key,
+      );
     }
     if (key === 'kick') {
       // TODO:
@@ -307,6 +324,12 @@ const NewActiveTemplate = (): React.ReactElement => {
   };
 
   // USE EFFECTS
+  useEffect(() => {
+    if (!localUser?.isRaising) {
+      setHandRaised(false);
+    }
+  }, [localUser]);
+
   useEffect(() => {
     if (currentUser) {
       const userData = {
@@ -437,10 +460,10 @@ const NewActiveTemplate = (): React.ReactElement => {
     onClickMenu: (key: string) => handleOnClickMenu(key),
     speaker: item.userName,
     onClick: () => ({}),
-    isSpeaker: true,
+    isSpeaker: item.isSpeaker,
     isActive: true,
     uid: item.userId,
-    isModerator: true,
+    isModerator: item.isModerator,
     // TODO:
     isRaising: false,
     emoji: '',
@@ -457,9 +480,9 @@ const NewActiveTemplate = (): React.ReactElement => {
           speaker: localUser.userName,
           onClick: () => ({}),
           uid: localUser.userId,
-          isSpeaker: localUser.isAdmin,
+          isSpeaker: localUser.isSpeaker || localUser.isAdmin,
           isActive: localUser.isAdmin,
-          isModerator: localUser.isAdmin,
+          isModerator: localUser.isModerator || localUser.isAdmin,
           // TODO:
           isRaising: localUser.isRaising,
           emoji: localUser.emoji,
@@ -470,11 +493,11 @@ const NewActiveTemplate = (): React.ReactElement => {
         }
       : null;
   const audienceData =
-    localUser && !localUser.isAdmin
+    localUser && !(localUser.isModerator || localUser.isSpeaker)
       ? [filterLocal, ...filteredAudience]
       : filteredAudience;
   const adminData =
-    localUser && localUser.isAdmin
+    localUser && (localUser.isModerator || localUser.isSpeaker)
       ? [filterLocal, ...filteredAdmins]
       : filteredAdmins;
   // END DATA FILTER
@@ -583,7 +606,7 @@ const NewActiveTemplate = (): React.ReactElement => {
           id={activeUser?.uid || ''}
           profileUrl={activeUser?.profileUrl || ''}
           isRaising={isRaising}
-          isSpeaker={false}
+          isSpeaker={localUser?.isSpeaker}
           onClickRaiseHand={handleClickRaiseHand}
           // onClickMuteMe={() => {}}
           onClickEmoji={handleOnClickEmoji}

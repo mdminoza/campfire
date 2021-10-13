@@ -243,18 +243,67 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
   };
 
   const setUser = (data: any) => {
-    console.log(data, 'data');
     // const user = getCurrentUser();
-    // if (data.moderator || data.speaker) {
-    //   const newAdminData = adminStreamsRef.current.map((val: any) =>
-    //     val.userId === data.userId && val.campfireId === data.campfireId
-    //       ? {
-    //           ...val,
-    //           ...data.key,
-    //         }
-    //       : val,
-    //   );
-    // }
+    if (data.moderator || data.speaker) {
+      let newAdminData: any = [];
+      const audience = audienceStreamsRef.current.find(
+        (val: any) =>
+          val.userId === data.userId && val.campfireId === data.campfireId,
+      );
+
+      if (audience) {
+        newAdminData = [
+          ...adminStreamsRef.current,
+          {
+            ...audience,
+            ...data.key,
+            isRaising: false,
+          },
+        ];
+      } else {
+        newAdminData = adminStreamsRef.current.map((val: any) =>
+          val.userId === data.userId && val.campfireId === data.campfireId
+            ? {
+                ...val,
+                ...data.key,
+                isRaising: false,
+              }
+            : val,
+        );
+      }
+      adminStreamsRef.current = newAdminData;
+      setAdminStreams(newAdminData);
+
+      const newAudienceData = audienceStreamsRef.current.filter(
+        (val: any) =>
+          val.userId !== data.userId && val.campfireId === data.campfireId,
+      );
+      audienceStreamsRef.current = newAudienceData;
+      setAudienceStreams(newAudienceData);
+    } else if (data.menuKey === 'removeSpeaker') {
+      let newAudienceData: any = [];
+      const admin = adminStreamsRef.current.find(
+        (val: any) =>
+          val.userId === data.userId && val.campfireId === data.campfireId,
+      );
+      if (admin) {
+        newAudienceData = [
+          ...audienceStreamsRef.current,
+          {
+            ...admin,
+            ...data.key,
+          },
+        ];
+      }
+      audienceStreamsRef.current = newAudienceData;
+      setAudienceStreams(newAudienceData);
+      const newAdminData = adminStreamsRef.current.filter(
+        (val: any) =>
+          val.userId !== data.userId && val.campfireId === data.campfireId,
+      );
+      adminStreamsRef.current = newAdminData;
+      setAdminStreams(newAdminData);
+    }
   };
 
   const combinedValues = {

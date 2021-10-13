@@ -22,6 +22,7 @@ export type SocketHooks = {
     key: any,
     speaker: boolean,
     moderator: boolean,
+    menuKey: string,
   ) => any;
 };
 

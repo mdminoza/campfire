@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 
 import { SocketHooksContext } from '.';
@@ -10,6 +10,8 @@ const SocketProvider = (props: any): React.ReactElement => {
   const [admins, setAdmins] = useState([]);
   const [audiences, setAudiences] = useState([]);
   const [localUser, setLocalUser] = useState<any>(null);
+
+  const localUserRef = useRef<any>(null);
 
   const {
     connectToNewUser,
@@ -53,7 +55,20 @@ const SocketProvider = (props: any): React.ReactElement => {
       });
 
       socket.current.on('received-set-user', (data: any) => {
-        setUser(data);
+        if (
+          localUserRef.current &&
+          localUserRef.current.userId === data.userId
+        ) {
+          const unraised =
+            data.moderator || data.speaker ? { isRaising: false } : {};
+          setLocalUser({
+            ...localUserRef.current,
+            ...data.key,
+            ...unraised,
+          });
+        } else {
+          setUser(data);
+        }
       });
 
       socket.current.on('user-leave', userLeft);
@@ -98,6 +113,7 @@ const SocketProvider = (props: any): React.ReactElement => {
     key: any,
     speaker: boolean,
     moderator: boolean,
+    menuKey: string,
   ) => {
     if (socket.current) {
       socket.current.emit('set-user', {
@@ -107,6 +123,7 @@ const SocketProvider = (props: any): React.ReactElement => {
         key,
         speaker,
         moderator,
+        menuKey,
       });
     }
   };
@@ -119,6 +136,10 @@ const SocketProvider = (props: any): React.ReactElement => {
     raiseHand,
     setUserMenu,
   };
+
+  useEffect(() => {
+    localUserRef.current = localUser;
+  }, [localUser]);
 
   return <SocketHooksContext.Provider value={combinedValues} {...props} />;
 };

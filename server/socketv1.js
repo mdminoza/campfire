@@ -102,24 +102,68 @@ const socketInit = (server, app) => {
         })
 
         socket.on('set-user', (data) => {
-            const { userId,
+            const { 
+                userId,
                 campfireId,
                 key,
                 speaker,
                 moderator,
+                menuKey,
             } = data;
-            // audiences = audiences.map(item => {
-            //     return item.campfireId === data.campfireId && item.userId === data.userId ? {
-            //         ...item,
-            //         isRaising: data.raise,
-            //     } : item
-            // });
+
+            if (speaker || moderator) {
+                const audience = audiences.find(
+                    (val) => val.userId === userId && val.campfireId === campfireId,
+                );
+
+                if (audience) {
+                    admins = [
+                        ...admins,
+                        {
+                            ...audience,
+                            ...key,
+                            isRaising: false,
+                        },
+                    ];
+                } else {
+                    admins = admins.map((val) =>
+                        val.userId === userId && val.campfireId === campfireId
+                            ? {
+                                ...val,
+                                ...key,
+                                isRaising: false,
+                            } : val,
+                        );
+                }
+
+                audiences = audiences.filter(
+                    (val) => val.userId !== data.userId && val.campfireId === data.campfireId,
+                );
+
+            } else if (menuKey === 'removeSpeaker') {
+                const admin = admins.find(
+                    (val) => val.userId === userId && val.campfireId === campfireId,
+                );
+                if (admin) {
+                    audiences = [
+                        audiences,
+                        {
+                            ...admin,
+                            ...key,
+                        },
+                    ];
+                }
+                admins = admins.filter(
+                    (val) => val.userId !== userId && val.campfireId === campfireId,
+                );
+            }
             io.to(data.campfireId).emit('received-set-user', {
                 userId,
                 campfireId,
                 key,
                 speaker,
                 moderator,
+                menuKey,
             });
         })
 

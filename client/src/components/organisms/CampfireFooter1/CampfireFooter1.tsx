@@ -386,7 +386,7 @@ const CampfireFooter1 = ({
             )}
           </AvatarWrapper>
         </Col>
-        {isAdmin && (
+        {isSpeaker && (
           <MicWrapper>
             <IconLogo onClick={handleOnClickMic}>
               {onMute ? (
@@ -398,7 +398,7 @@ const CampfireFooter1 = ({
           </MicWrapper>
         )}
         <Col flex="auto">
-          {!isAdmin && (
+          {!isSpeaker && (
             <Button
               style={
                 isRaising && !isSpeaker ? raisedHandBtnStyle : raiseHandBtnStyle
