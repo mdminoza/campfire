@@ -258,6 +258,8 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
             ...audience,
             ...data.key,
             isRaising: false,
+            emoji: '',
+            emojiId: '',
           },
         ];
       } else {
@@ -292,6 +294,8 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
           {
             ...admin,
             ...data.key,
+            emoji: '',
+            emojiId: '',
           },
         ];
       }
@@ -300,6 +304,32 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
       const newAdminData = adminStreamsRef.current.filter(
         (val: any) =>
           val.userId !== data.userId && val.campfireId === data.campfireId,
+      );
+      adminStreamsRef.current = newAdminData;
+      setAdminStreams(newAdminData);
+    }
+  };
+
+  const setEmojiUser = (data: any) => {
+    if (data.isAudience) {
+      const newAudienceData = audienceStreamsRef.current.map((val: any) =>
+        val.userId === data.userId && val.campfireId === data.campfireId
+          ? {
+              ...val,
+              ...data.key,
+            }
+          : val,
+      );
+      audienceStreamsRef.current = newAudienceData;
+      setAudienceStreams(newAudienceData);
+    } else {
+      const newAdminData = adminStreamsRef.current.map((val: any) =>
+        val.userId === data.userId && val.campfireId === data.campfireId
+          ? {
+              ...val,
+              ...data.key,
+            }
+          : val,
       );
       adminStreamsRef.current = newAdminData;
       setAdminStreams(newAdminData);
@@ -316,6 +346,7 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
     setRaisedHand,
     userLeft,
     setUser,
+    setEmojiUser,
   };
 
   useEffect(() => {

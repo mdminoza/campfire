@@ -24,6 +24,12 @@ export type SocketHooks = {
     moderator: boolean,
     menuKey: string,
   ) => any;
+  setUserEmoji: (
+    userId: string,
+    campfireId: string,
+    key: any,
+    isAudience: boolean,
+  ) => any;
 };
 
 export const SocketHooksContext = React.createContext<SocketHooks | null>(null);

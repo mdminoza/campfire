@@ -167,6 +167,16 @@ const socketInit = (server, app) => {
             });
         })
 
+        socket.on('set-user-emoji', (data) => {
+            const { userId, campfireId, key, isAudience } = data;
+            io.to(campfireId).emit('received-set-user-emoji', {
+                userId,
+                campfireId,
+                key,
+                isAudience,
+            });
+        });
+
         socket.on('leave', (data) => {
             socket.leave(data.campfireId);
             audiences = audiences.filter(peer => peer.userId !== data.userId);

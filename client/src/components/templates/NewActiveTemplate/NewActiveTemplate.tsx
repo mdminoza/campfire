@@ -58,6 +58,7 @@ const NewActiveTemplate = (): React.ReactElement => {
   const [isKickAllModal, setKickAllModal] = useState(false);
   const [isEndedCampfire, setEndedCampfire] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [localActiveCampfire, setLocalActiveCampfire] = useState<any>(null);
 
   const {
     useSocketState,
@@ -65,6 +66,7 @@ const NewActiveTemplate = (): React.ReactElement => {
     joinCampfire,
     raiseHand,
     setUserMenu,
+    setUserEmoji,
   } = useSocketAction();
   const {
     getLocalStream,
@@ -84,12 +86,7 @@ const NewActiveTemplate = (): React.ReactElement => {
   } = useMemberAction();
   const { getTurnCredentials } = useTurnAction();
 
-  const {
-    activeCampfire,
-    setActiveCampfire,
-    currentUser,
-    isLoading: isLoadingCurrentUser,
-  } = useUserState();
+  const { currentUser, isLoading: isLoadingCurrentUser } = useUserState();
   const navigate = useNavigate();
   const { id: campfireIdParam } = useParams();
 
@@ -242,6 +239,12 @@ const NewActiveTemplate = (): React.ReactElement => {
       ...localUser,
       ...emojiDetails,
     });
+    setUserEmoji(
+      selectedUserId,
+      campfireIdParam,
+      emojiDetails,
+      !localUser.isSpeaker,
+    );
   };
 
   const onClickMic = () => {
@@ -325,6 +328,19 @@ const NewActiveTemplate = (): React.ReactElement => {
 
   // USE EFFECTS
   useEffect(() => {
+    setLocalActiveCampfire(localStorage.getItem('active-campfire'));
+    return () => {
+      localStorage.removeItem('active-campfire');
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!localStorage.getItem('active-campfire')) {
+      navigate('/campfires');
+    }
+  }, [navigate]);
+
+  useEffect(() => {
     if (!localUser?.isRaising) {
       setHandRaised(false);
     }
@@ -393,7 +409,13 @@ const NewActiveTemplate = (): React.ReactElement => {
   }, [isRaising]);
 
   useEffect(() => {
-    if (currentUser && localStream && myPeerId && activeCampfire && campfire) {
+    if (
+      currentUser &&
+      localStream &&
+      myPeerId &&
+      localActiveCampfire &&
+      campfire
+    ) {
       joinCampfire({
         campfireId: campfireIdParam || '',
         userId: currentUser?.id || '',
@@ -407,7 +429,7 @@ const NewActiveTemplate = (): React.ReactElement => {
         stream: localStream,
       });
     }
-  }, [currentUser, localStream, myPeerId, activeCampfire, campfire]);
+  }, [currentUser, localStream, myPeerId, localActiveCampfire, campfire]);
 
   useEffect(() => {
     // eslint-disable-next-line no-unused-expressions
@@ -448,8 +470,8 @@ const NewActiveTemplate = (): React.ReactElement => {
       uid: item.userId,
       // TODO:
       isRaising: item.isRaising,
-      emoji: '',
-      emojiId: '',
+      emoji: item.emoji,
+      emojiId: item.emojiId,
       isMuted: false,
       stream: strm,
       isLocal: false,
@@ -466,8 +488,8 @@ const NewActiveTemplate = (): React.ReactElement => {
     isModerator: item.isModerator,
     // TODO:
     isRaising: false,
-    emoji: '',
-    emojiId: '',
+    emoji: item.emoji,
+    emojiId: item.emojiId,
     isMuted: false,
     stream: item.stream,
     isLocal: false,
@@ -522,7 +544,7 @@ const NewActiveTemplate = (): React.ReactElement => {
   }
 
   if (
-    (!activeCampfire ||
+    (!localActiveCampfire ||
       fetchingCampfireError ||
       fetchingCampfireMemberError ||
       !campfireMember ||
@@ -545,19 +567,18 @@ const NewActiveTemplate = (): React.ReactElement => {
   }
 
   if (
-    activeCampfire === campfireIdParam &&
-    (isFetchingCampfireLoading ||
-      endCampfireLoading ||
-      isFetchingCampfireMemberLoading ||
-      isFetchingCampfireMembersLoading ||
-      isLoadingCurrentUser ||
-      !localStream ||
-      isFetchingTurnCredentialsLoading)
+    isFetchingCampfireLoading ||
+    endCampfireLoading ||
+    isFetchingCampfireMemberLoading ||
+    isFetchingCampfireMembersLoading ||
+    isLoadingCurrentUser ||
+    !localStream ||
+    isFetchingTurnCredentialsLoading
   ) {
     return <Loader style={mainLoader} />;
   }
 
-  if (isEndedCampfire && !activeCampfire) {
+  if (isEndedCampfire && !localActiveCampfire) {
     return (
       <NotSupportedContainer>
         <Result
@@ -576,7 +597,11 @@ const NewActiveTemplate = (): React.ReactElement => {
     );
   }
 
-  if (activeCampfire === campfireIdParam && campfireMember && localStream) {
+  if (
+    localActiveCampfire === campfireIdParam &&
+    campfireMember &&
+    localStream
+  ) {
     return (
       <Layout>
         <TitleContent

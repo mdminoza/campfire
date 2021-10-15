@@ -20,6 +20,7 @@ const SocketProvider = (props: any): React.ReactElement => {
     userLeft,
     setRaisedHand,
     setUser,
+    setEmojiUser,
   } = useMediaStreamAction();
 
   const socket = useRef<any>();
@@ -61,13 +62,25 @@ const SocketProvider = (props: any): React.ReactElement => {
         ) {
           const unraised =
             data.moderator || data.speaker ? { isRaising: false } : {};
+          const emojis =
+            localUserRef.current.isSpeaker !== data.key.isSpeaker
+              ? { emoji: '', emojiId: '' }
+              : {};
           setLocalUser({
             ...localUserRef.current,
             ...data.key,
             ...unraised,
+            ...emojis,
           });
         } else {
           setUser(data);
+        }
+      });
+
+      socket.current.on('received-set-user-emoji', (data: any) => {
+        if (localUserRef.current.userId !== data.userId) {
+          console.log(data, 'received emoji');
+          setEmojiUser(data);
         }
       });
 
@@ -128,6 +141,23 @@ const SocketProvider = (props: any): React.ReactElement => {
     }
   };
 
+  const setUserEmoji = (
+    userId: string,
+    campfireId: string,
+    key: any,
+    isAudience: boolean,
+  ) => {
+    if (socket.current) {
+      socket.current.emit('set-user-emoji', {
+        userId,
+        campfireId,
+        socketId: socket.current.id,
+        key,
+        isAudience,
+      });
+    }
+  };
+
   const combinedValues = {
     useSocketState,
     socketInit,
@@ -135,6 +165,7 @@ const SocketProvider = (props: any): React.ReactElement => {
     leaveCampfire,
     raiseHand,
     setUserMenu,
+    setUserEmoji,
   };
 
   useEffect(() => {

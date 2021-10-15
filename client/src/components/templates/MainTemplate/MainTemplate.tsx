@@ -152,7 +152,7 @@ const MainTemplate = (): React.ReactElement => {
     searchCampfires,
   } = useCampfireAction();
   const { addMember } = useMemberAction();
-  const { currentUser, isLoading, setActiveCampfire } = useUserState();
+  const { currentUser, isLoading } = useUserState();
   const { useMediaStreamState } = useMediaStreamAction();
   const { useSocketState } = useSocketAction();
 
@@ -315,16 +315,7 @@ const MainTemplate = (): React.ReactElement => {
       addMemberMutation(values, {
         onSuccess: (data) => {
           if (activeTab === 'publicCampfire') {
-            setActiveCampfire(data?.campfire || null);
-            // joinCampfire({
-            //   campfireId: data?.campfire || '',
-            //   userId: currentUser?.id || '',
-            //   isAdmin: false,
-            //   isModerator: false,
-            //   isSpeaker: false,
-            //   userName: currentUser?.name || '',
-            //   profileUrl: currentUser?.profileUrl || '',
-            // });
+            localStorage.setItem('active-campfire', data?.campfire || '');
             navigate(`/campfires/active/${data?.campfire}`);
           }
           if (activeTab === 'privateCampfire') {
@@ -388,16 +379,7 @@ const MainTemplate = (): React.ReactElement => {
         type === 'public' && status === 'uninvited' ? 'invited' : 'pending';
       if (!isUpcomingCampfire) {
         if (isOwned || status === 'invited') {
-          setActiveCampfire(campfireId);
-          // joinCampfire({
-          //   campfireId,
-          //   userId: currentUser?.id || '',
-          //   isAdmin: isOwned || false,
-          //   isModerator: isOwned || false,
-          //   isSpeaker: false,
-          //   userName: currentUser?.name || '',
-          //   profileUrl: currentUser?.profileUrl || '',
-          // });
+          localStorage.setItem('active-campfire', campfireId);
           navigate(`/campfires/active/${campfireId}`);
         } else {
           handleAddMemberMutation({
@@ -526,7 +508,7 @@ const MainTemplate = (): React.ReactElement => {
   }, [searchValue]);
 
   useEffect(() => {
-    setActiveCampfire(null);
+    localStorage.removeItem('active-campfire');
     setLocalStream(null);
     setLocalUser(null);
     setAdminStreams([]);
