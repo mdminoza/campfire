@@ -229,7 +229,7 @@ type Props = {
     id: string,
     emojiType: 'wink' | 'smile' | 'sweat' | 'cool',
   ) => void;
-  onClickMic?: () => void;
+  onClickMic?: (val: boolean) => void;
   isAdmin?: boolean;
   onClickProfileMenu?: (key: string) => void;
 };
@@ -320,7 +320,7 @@ const CampfireFooter1 = ({
 
   const handleOnClickMic = () => {
     setOnMute(!onMute);
-    onClickMic();
+    onClickMic(!onMute);
   };
 
   // const handleOnClickSettings = () => {

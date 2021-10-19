@@ -247,9 +247,9 @@ const NewActiveTemplate = (): React.ReactElement => {
     );
   };
 
-  const onClickMic = () => {
-    // setIsMuted(!isMuted);
-    console.log('clicked mic');
+  const onClickMic = (muted: boolean) => {
+    setIsMuted(!isMuted);
+    localStream.getAudioTracks()[0].enabled = !muted;
   };
 
   const handleOnClickProfileMenu = (key: string) => {

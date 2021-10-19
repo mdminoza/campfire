@@ -16,6 +16,7 @@ type TabProps = {
 type Props = {
   onChange: (key: string) => void;
   tabs: TabProps[];
+  activeKey?: string;
 };
 
 const StyledTabs = styled(Tabs)`
@@ -74,9 +75,13 @@ const TabTitle = ({ title, count }: { title: string; count: number }) => (
   </TabTitleWrapper>
 );
 
-const CampfireTab = ({ onChange, tabs }: Props): React.ReactElement => (
+const CampfireTab = ({
+  onChange,
+  tabs,
+  activeKey,
+}: Props): React.ReactElement => (
   <TabWrapper className="campfireTabs">
-    <StyledTabs defaultActiveKey="1" onChange={onChange}>
+    <StyledTabs activeKey={activeKey} onChange={onChange}>
       {tabs.map((tab) => (
         <TabPane
           tab={<TabTitle title={tab.title} count={tab.count} />}

@@ -300,6 +300,7 @@ const MainTemplate = (): React.ReactElement => {
               },
             });
             setCampfireToggled(false);
+            setActiveTab('ownedCampfire');
           }
         },
         onError: (err) => {
@@ -508,6 +509,10 @@ const MainTemplate = (): React.ReactElement => {
   }, [searchValue]);
 
   useEffect(() => {
+    refetchPublicCampfires();
+    refetchPrivateCampfires();
+    refetchOwnedCampfires();
+
     localStorage.removeItem('active-campfire');
     setLocalStream(null);
     setLocalUser(null);
@@ -882,7 +887,11 @@ const MainTemplate = (): React.ReactElement => {
             </Wrapper>
           </Cover>
           <TabWrapper campfiretoggled={isToggled}>
-            <CampfireTab tabs={tabs} onChange={onTabChange} />
+            <CampfireTab
+              activeKey={activeTab}
+              tabs={tabs}
+              onChange={onTabChange}
+            />
           </TabWrapper>
         </>
       )}
