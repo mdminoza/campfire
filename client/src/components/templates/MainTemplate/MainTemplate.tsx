@@ -509,16 +509,19 @@ const MainTemplate = (): React.ReactElement => {
   }, [searchValue]);
 
   useEffect(() => {
-    refetchPublicCampfires();
-    refetchPrivateCampfires();
-    refetchOwnedCampfires();
-
     localStorage.removeItem('active-campfire');
     setLocalStream(null);
     setLocalUser(null);
     setAdminStreams([]);
     setAudienceStreams([]);
   }, []);
+
+  useEffect(() => {
+    if (currentUser?.id) {
+      refetchPrivateCampfires();
+      refetchOwnedCampfires();
+    }
+  }, [currentUser]);
 
   const campfiresMock: {
     publicCampfire: { data: Campfire[]; lastId: undefined };
