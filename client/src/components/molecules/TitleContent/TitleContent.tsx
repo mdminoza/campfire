@@ -308,9 +308,12 @@ Props): React.ReactElement => {
   return (
     <Container className="titleName">
       <Overlay />
-      <IconWrapper>
-        <FireOutline {...iconDimension} />
-      </IconWrapper>
+
+      {!onActive && (
+        <IconWrapper>
+          <FireOutline {...iconDimension} />
+        </IconWrapper>
+      )}
       <Title padding="0 10px" lineHeight={!md ? '40px' : ''}>
         {title}
       </Title>
