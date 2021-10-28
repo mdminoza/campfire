@@ -573,7 +573,8 @@ const NewActiveTemplate = (): React.ReactElement => {
     isFetchingCampfireMembersLoading ||
     isLoadingCurrentUser ||
     !localStream ||
-    isFetchingTurnCredentialsLoading
+    isFetchingTurnCredentialsLoading ||
+    !myPeerId
   ) {
     return <Loader style={mainLoader} />;
   }
@@ -600,7 +601,8 @@ const NewActiveTemplate = (): React.ReactElement => {
   if (
     localActiveCampfire === campfireIdParam &&
     campfireMember &&
-    localStream
+    localStream &&
+    myPeerId
   ) {
     return (
       <Layout>

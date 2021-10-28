@@ -15,7 +15,7 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
   const [turnServers, setTurnServers] = useState<any>([]);
 
   // const [myPeerId, setMyPeerId] = useState<any>(null);
-  const peerConnection = useRef<any>(null);
+  // const peerConnection = useRef<any>(null);
   const myPeer = useRef<any>(null);
   const ownLocalStream = useRef<any>(null);
 
@@ -47,39 +47,79 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
     audio: true,
   };
 
-  const createPeerConnection = (peerStream: any) => {
-    const configuration = {
-      iceServers: [
-        ...turnServersRef.current,
-        {
-          url: 'stun:stun.1und1.de:3478',
-        },
-      ],
-      iceTransportPolicy: 'relay',
-    };
+  // const createPeerConnection = (peerStream: any) => {
+  //   const configuration = {
+  //     iceServers: [
+  //       ...turnServersRef.current,
+  //       {
+  //         url: 'stun:stun.1und1.de:3478',
+  //       },
+  //     ],
+  //     iceTransportPolicy: 'relay',
+  //   };
 
-    peerConnection.current = new RTCPeerConnection(configuration as any);
-    if (peerStream) {
-      // eslint-disable-next-line no-restricted-syntax
-      for (const track of peerStream.getTracks()) {
-        peerConnection.current.addTrack(track, peerStream);
-      }
-      peerConnection.current.ontrack = ({
-        streams: [stream],
-      }: {
-        streams: any;
-      }): void => {
-        console.log(stream, 'stream');
-      };
-      // peerConnection.current.onicecandidate = (event) => {};
+  // peerConnection.current = new RTCPeerConnection(configuration as any);
+  // if (peerStream) {
+  //   // eslint-disable-next-line no-restricted-syntax
+  //   for (const track of peerStream.getTracks()) {
+  //     peerConnection.current.addTrack(track, peerStream);
+  //   }
+  //   peerConnection.current.ontrack = ({
+  //     streams: [stream],
+  //   }: {
+  //     streams: any;
+  //   }): void => {
+  //     console.log(stream, 'stream');
+  //   };
+  //   // peerConnection.current.onicecandidate = (event) => {};
 
-      peerConnection.current.onconnectionstatechange = () => {
-        if (peerConnection.current.connectionState === 'connected') {
-          // console.log('succesfully connected with other peer');
-        }
-      };
-    }
-  };
+  //   peerConnection.current.onconnectionstatechange = () => {
+  //     if (peerConnection.current.connectionState === 'connected') {
+  //       // console.log('succesfully connected with other peer');
+  //     }
+  //   };
+  // }
+  // };
+
+  // const handlePeerDisconnect = () => {
+  //   // manually close the peer connections
+  //   if (myPeer.current) {
+  //     console.log(Object.entries(myPeer.current.connections), 'connections');
+  //     // eslint-disable-next-line no-restricted-syntax
+  //     for (const [key, value] of Object.entries(myPeer.current.connections)) {
+  //       console.log(`${key}: ${value}`);
+  //       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //       // @ts-ignore
+  //       value.forEach((conn, index, array) => {
+  //         console.log(
+  //           `closing ${conn.connectionId} peerConnection (${index + 1}/${
+  //             array.length
+  //           })`,
+  //           conn.peerConnection,
+  //         );
+  //         conn.peerConnection.close();
+
+  //         // close it using peerjs methods
+  //         if (conn.close) conn.close();
+  //       });
+  //     }
+
+  // for (const conns in myPeer.current.connections) {
+  //   myPeer.current.connections[conns].forEach((conn, index, array) => {
+  //     console.log(
+  //       `closing ${conn.connectionId} peerConnection (${index + 1}/${
+  //         array.length
+  //       })`,
+  //       conn.peerConnection,
+  //     );
+  //     conn.peerConnection.close();
+
+  //     // close it using peerjs methods
+  //     if (conn.close) conn.close();
+  //   });
+  // }
+  //   }
+  // };
 
   const connectWithMyPeer = () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -94,10 +134,19 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
           { url: 'stun:stun.1und1.de:3478' },
         ],
       },
+      debug: 3,
     });
     myPeer.current.on('open', (id: string) => {
+      console.log(id, 'my peer id');
       setMyPeerId(id);
     });
+    // myPeer.current.on('connection', (dataConnection: any) => {
+    //   console.log('outer conn event');
+    //   dataConnection.on('close', () => {
+    //     console.log('conn close event');
+    //     // handlePeerDisconnect();
+    //   });
+    // });
     myPeer.current.on('call', (call: any) => {
       if (ownLocalStream.current) {
         call.answer(ownLocalStream.current);
@@ -125,7 +174,26 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
         });
       }
     });
+    myPeer.current.on('error', (error: any) => {
+      console.log(error.type, 'peer error type');
+      console.log(error, 'peer error');
+    });
+    myPeer.current.on('close', () => {
+      console.log('peer is closed!');
+    });
+    myPeer.current.on('disconnected', () => {
+      // myPeer.current.reconnect();
+      console.log('peer is disconnected!');
+    });
   };
+
+  if (
+    myPeer.current &&
+    myPeer.current.disconnected &&
+    !myPeer.current.destroyed
+  ) {
+    myPeer.current.reconnect();
+  }
 
   const getLocalStream = (): any => {
     if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
@@ -138,7 +206,7 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
       .then((stream) => {
         setLocalStream(stream);
         setLocalStreamError('');
-        createPeerConnection(stream);
+        // createPeerConnection(stream);
         ownLocalStream.current = stream;
       })
       .catch((err) => {

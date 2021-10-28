@@ -44,7 +44,12 @@ const SocketProvider = (props: any): React.ReactElement => {
       socket.current.on('connection', () => {});
 
       socket.current.on('receive-join-campfire-group', (data: any) => {
-        connectToNewUser(data);
+        if (
+          localUserRef.current &&
+          localUserRef.current.userId !== data.userId
+        ) {
+          connectToNewUser(data);
+        }
       });
 
       socket.current.on('broadcast-join', (data: any) => {
