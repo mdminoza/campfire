@@ -257,7 +257,6 @@ const CampfireFooter1 = ({
     padding: 0,
     width: 45,
     height: '100%',
-    marginLeft: 12,
   };
 
   const raisedHandBtnStyle = {
@@ -292,9 +291,9 @@ const CampfireFooter1 = ({
           <UnLabel>UN</UnLabel>MUTE ALL
         </MuteLabel>
       </Menu.Item>
-      <Menu.Item className="adminMenuList" key="kickAll">
+      {/* <Menu.Item className="adminMenuList" key="kickAll">
         KICK ALL
-      </Menu.Item>
+      </Menu.Item> */}
       <Menu.Divider />
       <Menu.Item className="adminMenuList" key="leaveCampfire">
         LEAVE CAMPFIRE
@@ -386,7 +385,7 @@ const CampfireFooter1 = ({
             )}
           </AvatarWrapper>
         </Col>
-        {isSpeaker && (
+        {/* {isSpeaker && (
           <MicWrapper>
             <IconLogo onClick={handleOnClickMic}>
               {onMute ? (
@@ -396,7 +395,16 @@ const CampfireFooter1 = ({
               )}
             </IconLogo>
           </MicWrapper>
-        )}
+        )} */}
+        <MicWrapper>
+          <IconLogo onClick={handleOnClickMic}>
+            {onMute ? (
+              <MuteMic width={45} height={45} />
+            ) : (
+              <Mic1 width={45} height={45} />
+            )}
+          </IconLogo>
+        </MicWrapper>
         <Col flex="auto">
           {!isSpeaker && (
             <Button

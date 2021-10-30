@@ -402,7 +402,8 @@ const MemberItem = ({
             size={size}
             playsInline
             autoPlay
-            muted={isLocal ? true : !(isSpeaker || isModerator)}
+            // muted={isLocal ? true : !(isSpeaker || isModerator)}
+            muted={isLocal}
             ref={videoRef}
           />
         </AvatarWrapper>

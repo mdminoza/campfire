@@ -11,6 +11,8 @@ export type SocketHooks = {
     audiences: any[];
     setLocalUser: (user: any) => any;
     localUser: any;
+    isCampfireEnded: boolean;
+    setCampfireEnded: (value: boolean) => boolean;
   };
   socketInit: () => any;
   joinCampfire: (user: JoinedParams) => any;
@@ -30,6 +32,7 @@ export type SocketHooks = {
     key: any,
     isAudience: boolean,
   ) => any;
+  endCampfire: (campfireId: string) => any;
 };
 
 export const SocketHooksContext = React.createContext<SocketHooks | null>(null);

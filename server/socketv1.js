@@ -177,6 +177,15 @@ const socketInit = (server, app) => {
             });
         });
 
+        socket.on('ended', (data) => {
+            socket.leave(data.campfireId);
+            audiences = audiences.filter(peer => peer.campfireId !== data.campfireId);
+            admins = admins.filter(peer => peer.campfireId !== data.campfireId);
+            io.to(data.campfireId).emit('campfire-ended', {
+                campfireId: data.campfireId,
+            });
+        });
+
         socket.on('leave', (data) => {
             socket.leave(data.campfireId);
             audiences = audiences.filter(peer => peer.userId !== data.userId);

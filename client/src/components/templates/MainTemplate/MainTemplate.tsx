@@ -17,6 +17,7 @@ import { CreateCampfireForm } from '../../organisms/CreateCampfireForm';
 import { CampfireTab } from '../../organisms/CampfireTab';
 import { TopicCard } from '../../organisms/TopicCard';
 import { SponsoredTopicCard } from '../../organisms/SponsoredTopicCard';
+import { AntdMessage } from '../../HOCs/AntdMessage';
 import {
   Campfire,
   CampfireParams,
@@ -156,7 +157,7 @@ const MainTemplate = (): React.ReactElement => {
   const { useMediaStreamState } = useMediaStreamAction();
   const { useSocketState } = useSocketAction();
 
-  const { setLocalUser } = useSocketState;
+  const { setLocalUser, setCampfireEnded, isCampfireEnded } = useSocketState;
   const {
     setLocalStream,
     setAdminStreams,
@@ -317,6 +318,7 @@ const MainTemplate = (): React.ReactElement => {
         onSuccess: (data) => {
           if (activeTab === 'publicCampfire') {
             localStorage.setItem('active-campfire', data?.campfire || '');
+            setCampfireEnded(false);
             navigate(`/campfires/active/${data?.campfire}`);
           }
           if (activeTab === 'privateCampfire') {
@@ -381,6 +383,7 @@ const MainTemplate = (): React.ReactElement => {
       if (!isUpcomingCampfire) {
         if (isOwned || status === 'invited') {
           localStorage.setItem('active-campfire', campfireId);
+          setCampfireEnded(false);
           navigate(`/campfires/active/${campfireId}`);
         } else {
           handleAddMemberMutation({
@@ -522,6 +525,13 @@ const MainTemplate = (): React.ReactElement => {
       refetchOwnedCampfires();
     }
   }, [currentUser]);
+
+  useEffect(() => {
+    if (isCampfireEnded) {
+      AntdMessage('info', 'Campfire is ended by admin.');
+    }
+  }, [isCampfireEnded]);
+  // USE EFFECTS
 
   const campfiresMock: {
     publicCampfire: { data: Campfire[]; lastId: undefined };

@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Layout, Grid, Modal, Button, Result } from 'antd';
+import { Layout, Modal, Button, Result } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { useQuery, useMutation } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
+// import { isMobile } from 'react-device-detect';
 import styled from 'styled-components';
 
 import { TitleContent } from '../../molecules/TitleContent';
@@ -56,15 +57,14 @@ const NewActiveTemplate = (): React.ReactElement => {
   const [isRaising, setHandRaised] = useState(false);
   const [isEndCampfireModal, setEndCampfireModal] = useState(false);
   const [isKickAllModal, setKickAllModal] = useState(false);
-  const [isEndedCampfire, setEndedCampfire] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-  const [localActiveCampfire, setLocalActiveCampfire] = useState<any>(null);
 
   const {
     useSocketState,
     leaveCampfire,
     joinCampfire,
     raiseHand,
+    endCampfire,
     setUserMenu,
     setUserEmoji,
   } = useSocketAction();
@@ -80,7 +80,7 @@ const NewActiveTemplate = (): React.ReactElement => {
   } = useCampfireAction();
   const {
     fetchMember,
-    updateMemberStatus,
+    // updateMemberStatus,
     deleteMember,
     deleteMembers,
   } = useMemberAction();
@@ -91,7 +91,7 @@ const NewActiveTemplate = (): React.ReactElement => {
   const { id: campfireIdParam } = useParams();
 
   // WEBRTCS & SOCKETS
-  const { localUser, setLocalUser } = useSocketState;
+  const { localUser, setLocalUser, isCampfireEnded } = useSocketState;
   const {
     localStreamError,
     localStream,
@@ -127,21 +127,17 @@ const NewActiveTemplate = (): React.ReactElement => {
     refetch: refetchCampfireMember,
     data: campfireMember,
     isLoading: isFetchingCampfireMemberLoading,
-    error: fetchingCampfireMemberError,
   } = useQuery(
     ['campfire-member', campfireIdParam, activeUser?.uid],
     () => fetchMember({ uid: activeUser?.uid || '', id: campfireIdParam }),
     {
-      // onSuccess: (res) => {
-      //   console.log(res, 'refetch member');
-      // },
+      onSuccess: (res) => {
+        if (!res) {
+          navigate(`/campfires`);
+        }
+      },
       onError: () => {
-        ErrorModal(
-          'Sorry, campfire is not available at the moment or does not exist.',
-          () => {
-            navigate(`/campfires`);
-          },
-        );
+        navigate(`/campfires`);
       },
       enabled: false,
     },
@@ -149,7 +145,7 @@ const NewActiveTemplate = (): React.ReactElement => {
 
   const {
     refetch: refetchTurnCredentials,
-    data: turnCredentials,
+    // data: turnCredentials,
     isLoading: isFetchingTurnCredentialsLoading,
     error: fetchingTurnError,
   } = useQuery(['turn-credentials'], () => getTurnCredentials(), {
@@ -165,8 +161,8 @@ const NewActiveTemplate = (): React.ReactElement => {
   });
 
   const {
-    refetch: refetchCampfireMembers,
-    data: campfireMembers,
+    // refetch: refetchCampfireMembers,
+    // data: campfireMembers,
     isLoading: isFetchingCampfireMembersLoading,
   } = useQuery(
     ['campfire-members', campfireIdParam],
@@ -209,13 +205,13 @@ const NewActiveTemplate = (): React.ReactElement => {
   };
 
   const {
-    mutate: kickAllMembersMutation,
+    // mutate: kickAllMembersMutation,
     isLoading: kickAllMembersLoading,
-    isSuccess: kickAllMembersSuccess,
+    // isSuccess: kickAllMembersSuccess,
   } = useMutation(
     (params: { uids: String[]; id: string }) => deleteMembers(params),
     {
-      onSuccess: (res: any) => {
+      onSuccess: () => {
         setKickAllModal(false);
         AntdMessage('info', 'Succesfully kicked all audience.');
       },
@@ -268,12 +264,13 @@ const NewActiveTemplate = (): React.ReactElement => {
   const handleEndCampfire = useCallback(
     (id: string) => {
       endCampfireMutation(id, {
-        onSuccess: () => {
+        onSuccess: (res: any) => {
+          endCampfire(res.id);
           navigate('/campfires');
         },
       });
     },
-    [endCampfireMutation, navigate],
+    [endCampfire, endCampfireMutation, navigate],
   );
 
   const handleRejoin = () => {
@@ -327,19 +324,6 @@ const NewActiveTemplate = (): React.ReactElement => {
   };
 
   // USE EFFECTS
-  useEffect(() => {
-    setLocalActiveCampfire(localStorage.getItem('active-campfire'));
-    return () => {
-      localStorage.removeItem('active-campfire');
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!localStorage.getItem('active-campfire')) {
-      navigate('/campfires');
-    }
-  }, [navigate]);
-
   useEffect(() => {
     if (!localUser?.isRaising) {
       setHandRaised(false);
@@ -409,13 +393,7 @@ const NewActiveTemplate = (): React.ReactElement => {
   }, [isRaising]);
 
   useEffect(() => {
-    if (
-      currentUser &&
-      localStream &&
-      myPeerId &&
-      localActiveCampfire &&
-      campfire
-    ) {
+    if (currentUser && localStream && myPeerId && campfire) {
       joinCampfire({
         campfireId: campfireIdParam || '',
         userId: currentUser?.id || '',
@@ -429,12 +407,18 @@ const NewActiveTemplate = (): React.ReactElement => {
         stream: localStream,
       });
     }
-  }, [currentUser, localStream, myPeerId, localActiveCampfire, campfire]);
+  }, [currentUser, localStream, myPeerId, campfire]);
 
   useEffect(() => {
     // eslint-disable-next-line no-unused-expressions
     localStreamError && ToastMessage('error', 'Error', localStreamError, 10);
   }, [localStreamError]);
+
+  useEffect(() => {
+    if (isCampfireEnded) {
+      navigate('/campfires');
+    }
+  }, [isCampfireEnded, navigate]);
   // END USE EFFECTS
 
   // STYLES
@@ -544,12 +528,7 @@ const NewActiveTemplate = (): React.ReactElement => {
   }
 
   if (
-    (!localActiveCampfire ||
-      fetchingCampfireError ||
-      fetchingCampfireMemberError ||
-      !campfireMember ||
-      localStreamError ||
-      fetchingTurnError) &&
+    (fetchingCampfireError || localStreamError || fetchingTurnError) &&
     !isFetchingCampfireLoading &&
     !isFetchingCampfireMemberLoading &&
     !isLoadingCurrentUser &&
@@ -579,31 +558,7 @@ const NewActiveTemplate = (): React.ReactElement => {
     return <Loader style={mainLoader} />;
   }
 
-  if (isEndedCampfire && !localActiveCampfire) {
-    return (
-      <NotSupportedContainer>
-        <Result
-          status="warning"
-          title="Campfire is ended."
-          extra={
-            <Button
-              type="primary"
-              key="console"
-              onClick={() => navigate('/campfires')}>
-              Back to Home
-            </Button>
-          }
-        />
-      </NotSupportedContainer>
-    );
-  }
-
-  if (
-    localActiveCampfire === campfireIdParam &&
-    campfireMember &&
-    localStream &&
-    myPeerId
-  ) {
+  if (campfireIdParam && campfireMember && localStream && myPeerId) {
     return (
       <Layout>
         <TitleContent

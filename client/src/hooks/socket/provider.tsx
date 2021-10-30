@@ -10,6 +10,7 @@ const SocketProvider = (props: any): React.ReactElement => {
   const [admins, setAdmins] = useState([]);
   const [audiences, setAudiences] = useState([]);
   const [localUser, setLocalUser] = useState<any>(null);
+  const [isCampfireEnded, setCampfireEnded] = useState<boolean>(false);
 
   const localUserRef = useRef<any>(null);
 
@@ -32,6 +33,8 @@ const SocketProvider = (props: any): React.ReactElement => {
     audiences,
     setLocalUser,
     localUser,
+    isCampfireEnded,
+    setCampfireEnded,
   };
 
   const SERVER = 'https://staging-campfire-api.azurewebsites.net';
@@ -87,6 +90,11 @@ const SocketProvider = (props: any): React.ReactElement => {
           console.log(data, 'received emoji');
           setEmojiUser(data);
         }
+      });
+
+      socket.current.on('campfire-ended', () => {
+        setCampfireEnded(true);
+        leaveCampfireCall();
       });
 
       socket.current.on('user-leave', userLeft);
@@ -163,6 +171,15 @@ const SocketProvider = (props: any): React.ReactElement => {
     }
   };
 
+  const endCampfire = (campfireId: string) => {
+    if (socket.current) {
+      socket.current.emit('ended', {
+        campfireId,
+        socketId: socket.current.id,
+      });
+    }
+  };
+
   const combinedValues = {
     useSocketState,
     socketInit,
@@ -171,6 +188,7 @@ const SocketProvider = (props: any): React.ReactElement => {
     raiseHand,
     setUserMenu,
     setUserEmoji,
+    endCampfire,
   };
 
   useEffect(() => {

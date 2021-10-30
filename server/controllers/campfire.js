@@ -163,7 +163,7 @@ export const deleteCampfire = async (req, res, next) => {
     try {
         if (!mongoose.Types.ObjectId.isValid(_id)) throw new Error('Invalid id.');
         await Campfire.findByIdAndDelete(_id);
-        res.status(200).json({ message: 'Campfire deleted successfully!' });
+        res.status(200).json({ id: _id, message: 'Campfire deleted successfully!' });
     } catch (error) {
         next(error);
     }
