@@ -133,6 +133,7 @@ const MainTemplate = (): React.ReactElement => {
   const [searchValue, setSearchValue] = useState('');
   const [isToggled, setCampfireToggled] = useState<boolean>(false);
   const [showInvites, setShowInvites] = useState(false);
+  const [showLoading, setShowLoading] = useState(true);
   const [privateCampfires, setPrivateCampfires] = useState<{
     [_id: string]: Campfire;
   }>({});
@@ -175,6 +176,7 @@ const MainTemplate = (): React.ReactElement => {
       }
     },
     enabled: false,
+    refetchInterval: 1000,
   });
 
   const {
@@ -190,8 +192,8 @@ const MainTemplate = (): React.ReactElement => {
           setPublicCampfires(filtered as { [_id: string]: Campfire });
         }
       },
-      enabled: false,
       refetchOnMount: 'always',
+      refetchInterval: 1000,
     },
   );
 
@@ -260,6 +262,7 @@ const MainTemplate = (): React.ReactElement => {
         }
       },
       enabled: false,
+      refetchInterval: 1000,
     },
   );
 
@@ -465,6 +468,21 @@ const MainTemplate = (): React.ReactElement => {
   };
 
   // USE EffECTS
+
+  useEffect(() => {
+    if (!isPublicCampfiresLoading) {
+      setShowLoading(false);
+    }
+
+    if (isSearchPublicCampfiresLoading) {
+      setShowLoading(true);
+    }
+
+    if (!isSearchPublicCampfiresLoading) {
+      setShowLoading(false);
+    }
+  }, [isPublicCampfiresLoading, isSearchPublicCampfiresLoading]);
+
   useEffect(() => {
     document.addEventListener('mousedown', handleClick);
     return () => {
@@ -761,7 +779,8 @@ const MainTemplate = (): React.ReactElement => {
           </Col>
           <Col span={24}>
             <CardWrapper gutter={[16, 16]}>
-              {isPublicCampfiresLoading || isSearchPublicCampfiresLoading ? (
+              {(isPublicCampfiresLoading || isSearchPublicCampfiresLoading) &&
+              showLoading ? (
                 <Col span={24}>
                   <LoaderWrapper>
                     <Spin size="large" />
