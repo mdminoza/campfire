@@ -175,7 +175,7 @@ const MainTemplate = (): React.ReactElement => {
         setOwnedCampfires(filtered as { [_id: string]: Campfire });
       }
     },
-    enabled: false,
+    enabled: !searchValue,
     refetchInterval: 1000,
   });
 
@@ -192,6 +192,7 @@ const MainTemplate = (): React.ReactElement => {
           setPublicCampfires(filtered as { [_id: string]: Campfire });
         }
       },
+      enabled: !searchValue,
       refetchOnMount: 'always',
       refetchInterval: 1000,
     },
@@ -261,7 +262,7 @@ const MainTemplate = (): React.ReactElement => {
           setPrivateCampfires(filtered as { [_id: string]: Campfire });
         }
       },
-      enabled: false,
+      enabled: !searchValue,
       refetchInterval: 1000,
     },
   );
@@ -471,14 +472,6 @@ const MainTemplate = (): React.ReactElement => {
 
   useEffect(() => {
     if (!isPublicCampfiresLoading) {
-      setShowLoading(false);
-    }
-
-    if (isSearchPublicCampfiresLoading) {
-      setShowLoading(true);
-    }
-
-    if (!isSearchPublicCampfiresLoading) {
       setShowLoading(false);
     }
   }, [isPublicCampfiresLoading, isSearchPublicCampfiresLoading]);

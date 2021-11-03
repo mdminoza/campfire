@@ -71,7 +71,6 @@ export const useCampfireAction: CampfireHooks['useCampfireAction'] = () => {
             };
           }),
         );
-        console.log('fetchPublicCampfires!');
         return result;
       }
       return [];
@@ -104,7 +103,6 @@ export const useCampfireAction: CampfireHooks['useCampfireAction'] = () => {
             };
           }),
         );
-        console.log('fetchPrivateCampfires!');
         return result;
       }
       return [];
