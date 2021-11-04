@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 
-import { isSafari } from '../../utils/helpers/common';
+// import { isSafari } from '../../utils/helpers/common';
 import { MediaStreamHooksContext } from '.';
 import { useUserState } from '../user';
 
@@ -19,7 +19,6 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
   // const peerConnection = useRef<any>(null);
   const myPeer = useRef<any>(null);
   const ownLocalStream = useRef<any>(null);
-  const myPeerIdRef = useRef<any>(null);
 
   const adminStreamsRef = useRef<any>([]);
   const audienceStreamsRef = useRef<any>([]);
@@ -141,7 +140,6 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
     myPeer.current.on('open', (id: string) => {
       console.log(id, 'my peer id');
       setMyPeerId(id);
-      myPeerIdRef.current = id;
     });
     // myPeer.current.on('connection', (dataConnection: any) => {
     //   console.log('outer conn event');
@@ -229,7 +227,6 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
 
   const connectToNewUser = (data: any) => {
     if (ownLocalStream.current) {
-      console.log(data, 'connect to new user');
       const call = myPeer.current.call(data.peerId, ownLocalStream.current);
 
       if (data.isAdmin) {

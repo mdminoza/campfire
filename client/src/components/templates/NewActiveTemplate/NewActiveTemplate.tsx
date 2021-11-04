@@ -67,6 +67,7 @@ const NewActiveTemplate = (): React.ReactElement => {
     endCampfire,
     setUserMenu,
     setUserEmoji,
+    onMuteAll,
   } = useSocketAction();
   const {
     getLocalStream,
@@ -91,7 +92,13 @@ const NewActiveTemplate = (): React.ReactElement => {
   const { id: campfireIdParam } = useParams();
 
   // WEBRTCS & SOCKETS
-  const { localUser, setLocalUser, isCampfireEnded } = useSocketState;
+  const {
+    localUser,
+    setLocalUser,
+    isCampfireEnded,
+    muteAll,
+    setMuteAll,
+  } = useSocketState;
   const {
     localStreamError,
     localStream,
@@ -245,6 +252,7 @@ const NewActiveTemplate = (): React.ReactElement => {
 
   const onClickMic = (muted: boolean) => {
     setIsMuted(!isMuted);
+    setMuteAll(null);
     localStream.getAudioTracks()[0].enabled = !muted;
   };
 
@@ -257,6 +265,12 @@ const NewActiveTemplate = (): React.ReactElement => {
     }
     if (key === 'kickAll') {
       setKickAllModal(true);
+    }
+    if (key === 'muteAll') {
+      onMuteAll(activeUser?.uid || '', campfireIdParam, true);
+    }
+    if (key === 'unmuteAll') {
+      onMuteAll(activeUser?.uid || '', campfireIdParam, false);
     }
     console.log(key, 'key');
   };
@@ -426,6 +440,20 @@ const NewActiveTemplate = (): React.ReactElement => {
       console.log(tracks, 'tracks');
     }
   }, [localStream]);
+
+  useEffect(() => {
+    if (localStream) {
+      if (muteAll !== null && muteAll) {
+        setIsMuted(true);
+        localStream.getAudioTracks()[0].enabled = false;
+      }
+
+      if (muteAll !== null && muteAll === false) {
+        setIsMuted(false);
+        localStream.getAudioTracks()[0].enabled = true;
+      }
+    }
+  }, [localStream, muteAll]);
   // END USE EFFECTS
 
   // STYLES
@@ -612,6 +640,7 @@ const NewActiveTemplate = (): React.ReactElement => {
           onClickMic={onClickMic}
           isAdmin={activeUser?.uid === campfire?.creator?.uid}
           onClickProfileMenu={handleOnClickProfileMenu}
+          onMute={isMuted}
         />
         <Modal
           visible={isEndCampfireModal}

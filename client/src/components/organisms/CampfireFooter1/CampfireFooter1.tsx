@@ -221,6 +221,7 @@ type Props = {
   profileUrl: string;
   isSpeaker?: boolean;
   isRaising?: boolean;
+  onMute?: boolean;
   // isTalking?: boolean;
   // isMuted?: boolean;
   onClickRaiseHand: (id: string, isRaising: boolean) => void;
@@ -243,9 +244,10 @@ const CampfireFooter1 = ({
   onClickEmoji = () => {},
   onClickMic = () => {},
   isAdmin = false,
+  onMute = false,
   onClickProfileMenu = () => {},
 }: Props): React.ReactElement => {
-  const [onMute, setOnMute] = useState(false);
+  // const [onMute, setOnMute] = useState(false);
   const [onMenuProfile, setMenuProfile] = useState(false);
   const [isEmojisOpen, setEmojisOpen] = useState(false);
   // const [openSettings, setOpenSettings] = useState(false);
@@ -318,7 +320,7 @@ const CampfireFooter1 = ({
   );
 
   const handleOnClickMic = () => {
-    setOnMute(!onMute);
+    // setOnMute(!onMute);
     onClickMic(!onMute);
   };
 
