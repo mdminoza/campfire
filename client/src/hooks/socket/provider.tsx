@@ -37,8 +37,8 @@ const SocketProvider = (props: any): React.ReactElement => {
     setCampfireEnded,
   };
 
-  const SERVER = 'https://staging-campfire-api.azurewebsites.net';
-  // const SERVER = 'http://localhost:5000';
+  // const SERVER = 'https://staging-campfire-api.azurewebsites.net';
+  const SERVER = 'http://localhost:5000';
 
   const socketInit = (): any => {
     // eslint-disable-next-line react-hooks/rules-of-hooks

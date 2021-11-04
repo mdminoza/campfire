@@ -18,7 +18,7 @@ const allowedOrigins = ['http://localhost:3000', 'https://campfire.godtribe.com'
 const corsOptions = {
 	origin: allowedOrigins,
 	methods: ['GET', 'POST', 'PATCH', 'DELETE'],
-	allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
+	// allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
 	// credentials: true,
 };
 

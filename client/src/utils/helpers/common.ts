@@ -14,3 +14,9 @@ export const arrayToObject = (
 
     return accumulator;
   }, {});
+
+export const isSafari = (): boolean => {
+  const seemsChrome = navigator.userAgent.indexOf('Chrome') > -1;
+  const seemsSafari = navigator.userAgent.indexOf('Safari') > -1;
+  return seemsSafari && !seemsChrome;
+};
