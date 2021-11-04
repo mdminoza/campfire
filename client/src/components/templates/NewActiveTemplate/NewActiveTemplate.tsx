@@ -475,8 +475,6 @@ const NewActiveTemplate = (): React.ReactElement => {
   };
   // END STYLES
 
-  console.log(audienceStreams, 'audienceStreams');
-
   // DATA FILTER
   const filteredAudience = audienceStreams?.map((item: any) => {
     const strm = item.stream;
@@ -544,14 +542,6 @@ const NewActiveTemplate = (): React.ReactElement => {
       ? [filterLocal, ...filteredAdmins]
       : filteredAdmins;
   // END DATA FILTER
-
-  const checkSafari = () => {
-    const seemsChrome = navigator.userAgent.indexOf('Chrome') > -1;
-    const seemsSafari = navigator.userAgent.indexOf('Safari') > -1;
-    return seemsSafari && !seemsChrome;
-  };
-
-  console.log(checkSafari(), 'is safari');
 
   if (!isMediaSupported) {
     return (
