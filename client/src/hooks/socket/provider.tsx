@@ -11,6 +11,7 @@ const SocketProvider = (props: any): React.ReactElement => {
   const [audiences, setAudiences] = useState([]);
   const [localUser, setLocalUser] = useState<any>(null);
   const [isCampfireEnded, setCampfireEnded] = useState<boolean>(false);
+  const [muteAll, setMuteAll] = useState<any>(null);
 
   const localUserRef = useRef<any>(null);
 
@@ -35,6 +36,8 @@ const SocketProvider = (props: any): React.ReactElement => {
     localUser,
     isCampfireEnded,
     setCampfireEnded,
+    muteAll,
+    setMuteAll,
   };
 
   const SERVER = 'https://staging-campfire-api.azurewebsites.net';
@@ -95,6 +98,12 @@ const SocketProvider = (props: any): React.ReactElement => {
       socket.current.on('campfire-ended', () => {
         setCampfireEnded(true);
         leaveCampfireCall();
+      });
+
+      socket.current.on('mute-all-received', (data: any) => {
+        if (localUserRef.current.userId !== data.userId) {
+          setMuteAll(data.muted);
+        }
       });
 
       socket.current.on('user-leave', userLeft);
@@ -180,6 +189,17 @@ const SocketProvider = (props: any): React.ReactElement => {
     }
   };
 
+  const onMuteAll = (userId: string, campfireId: string, val: boolean) => {
+    if (socket.current) {
+      socket.current.emit('mute-all', {
+        campfireId,
+        socketId: socket.current.id,
+        muted: val,
+        userId,
+      });
+    }
+  };
+
   const combinedValues = {
     useSocketState,
     socketInit,
@@ -189,6 +209,7 @@ const SocketProvider = (props: any): React.ReactElement => {
     setUserMenu,
     setUserEmoji,
     endCampfire,
+    onMuteAll,
   };
 
   useEffect(() => {

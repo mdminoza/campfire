@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 
+// import { isSafari } from '../../utils/helpers/common';
 import { MediaStreamHooksContext } from '.';
 import { useUserState } from '../user';
 
@@ -142,9 +143,13 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
     });
     // myPeer.current.on('connection', (dataConnection: any) => {
     //   console.log('outer conn event');
-    //   dataConnection.on('close', () => {
-    //     console.log('conn close event');
-    //     // handlePeerDisconnect();
+    //   dataConnection.on('data', (data: any) => {
+    //     console.log(data, 'data connection received');
+    //   });
+
+    //   dataConnection.on('open', () => {
+    //     dataConnection.send({ stream: ownLocalStream });
+    //     console.log('connected');
     //   });
     // });
     myPeer.current.on('call', (call: any) => {
@@ -223,20 +228,61 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
   const connectToNewUser = (data: any) => {
     if (ownLocalStream.current) {
       const call = myPeer.current.call(data.peerId, ownLocalStream.current);
+
+      if (data.isAdmin) {
+        const filterStreams = adminStreamsRef.current.find(
+          (adminStream: any) => adminStream?.userId === data.userId,
+        );
+        if (!filterStreams) {
+          adminStreamsRef.current = [
+            ...adminStreamsRef.current,
+            {
+              ...data,
+            },
+          ];
+          setAdminStreams(adminStreamsRef.current);
+        }
+      } else {
+        const filterStreams = audienceStreamsRef.current.find(
+          (audienceStream: any) => audienceStream?.userId === data.userId,
+        );
+        if (!filterStreams) {
+          audienceStreamsRef.current = [
+            ...audienceStreamsRef.current,
+            {
+              ...data,
+            },
+          ];
+          setAudienceStreams(audienceStreamsRef.current);
+        }
+      }
+
       call.on('stream', (incomingStreamCall: any) => {
+        console.log(incomingStreamCall, 'connect to new user on');
         if (data.isAdmin) {
           const filterStreams = adminStreamsRef.current.find(
             (adminStream: any) =>
               adminStream?.stream?.id === incomingStreamCall.id,
           );
           if (!filterStreams) {
-            adminStreamsRef.current = [
-              ...adminStreamsRef.current,
-              {
-                ...data,
-                stream: incomingStreamCall,
-              },
-            ];
+            const newAdminStreams = adminStreamsRef.current.map((val: any) =>
+              val.userId === data.userId
+                ? {
+                    ...val,
+                    stream: incomingStreamCall,
+                  }
+                : {
+                    ...val,
+                  },
+            );
+            // adminStreamsRef.current = [
+            //   ...adminStreamsRef.current,
+            //   {
+            //     ...data,
+            //     stream: incomingStreamCall,
+            //   },
+            // ];
+            adminStreamsRef.current = newAdminStreams;
             setAdminStreams(adminStreamsRef.current);
           }
         } else {
@@ -245,13 +291,25 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
               audienceStream?.stream?.id === incomingStreamCall.id,
           );
           if (!filterStreams) {
-            audienceStreamsRef.current = [
-              ...audienceStreamsRef.current,
-              {
-                ...data,
-                stream: incomingStreamCall,
-              },
-            ];
+            const newAudienceStreams = audienceStreamsRef.current.map(
+              (val: any) =>
+                val.userId === data.userId
+                  ? {
+                      ...val,
+                      stream: incomingStreamCall,
+                    }
+                  : {
+                      ...val,
+                    },
+            );
+            // audienceStreamsRef.current = [
+            //   ...audienceStreamsRef.current,
+            //   {
+            //     ...data,
+            //     stream: incomingStreamCall,
+            //   },
+            // ];
+            audienceStreamsRef.current = newAudienceStreams;
             setAudienceStreams(audienceStreamsRef.current);
           }
         }
