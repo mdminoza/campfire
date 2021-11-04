@@ -419,6 +419,13 @@ const NewActiveTemplate = (): React.ReactElement => {
       navigate('/campfires');
     }
   }, [isCampfireEnded, navigate]);
+
+  useEffect(() => {
+    if (localStream) {
+      const tracks = localStream.getAudioTracks();
+      console.log(tracks, 'tracks');
+    }
+  }, [localStream]);
   // END USE EFFECTS
 
   // STYLES
