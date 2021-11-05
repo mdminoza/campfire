@@ -134,6 +134,8 @@ const MainTemplate = (): React.ReactElement => {
   const [isToggled, setCampfireToggled] = useState<boolean>(false);
   const [showInvites, setShowInvites] = useState(false);
   const [showLoading, setShowLoading] = useState(true);
+  const [showLoadingPrivate, setShowLoadingPrivate] = useState(true);
+  const [showLoadingOwned, setShowLoadingOwned] = useState(true);
   const [privateCampfires, setPrivateCampfires] = useState<{
     [_id: string]: Campfire;
   }>({});
@@ -474,7 +476,19 @@ const MainTemplate = (): React.ReactElement => {
     if (!isPublicCampfiresLoading) {
       setShowLoading(false);
     }
-  }, [isPublicCampfiresLoading, isSearchPublicCampfiresLoading]);
+  }, [isPublicCampfiresLoading]);
+
+  useEffect(() => {
+    if (!isPrivateCampfiresLoading) {
+      setShowLoadingPrivate(false);
+    }
+  }, [isPrivateCampfiresLoading]);
+
+  useEffect(() => {
+    if (!isOwnedCampfiresLoading) {
+      setShowLoadingOwned(false);
+    }
+  }, [isOwnedCampfiresLoading]);
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClick);
@@ -814,7 +828,8 @@ const MainTemplate = (): React.ReactElement => {
           </Col>
           <Col span={24}>
             <CardWrapper gutter={[16, 16]}>
-              {isPrivateCampfiresLoading || isSearchPrivateCampfiresLoading ? (
+              {(isPrivateCampfiresLoading || isSearchPrivateCampfiresLoading) &&
+              showLoadingPrivate ? (
                 <Col span={24}>
                   <LoaderWrapper>
                     <Spin size="large" />
@@ -855,7 +870,8 @@ const MainTemplate = (): React.ReactElement => {
           </Col>
           <Col span={24}>
             <CardWrapper gutter={[16, 16]}>
-              {isOwnedCampfiresLoading || isSearchOwnedCampfiresLoading ? (
+              {(isOwnedCampfiresLoading || isSearchOwnedCampfiresLoading) &&
+              showLoadingOwned ? (
                 <Col span={24}>
                   <LoaderWrapper>
                     <Spin size="large" />
