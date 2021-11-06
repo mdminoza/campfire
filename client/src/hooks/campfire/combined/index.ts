@@ -23,6 +23,7 @@ export const useCampfireAction: CampfireHooks['useCampfireAction'] = () => {
 
   const fetchOwnedCampfires = useCallback(async (cid: string) => {
     try {
+      if (!cid) return [];
       const res = await axios.get(`${urls.campfire.owned}?cid=${cid}`);
       if (res && res?.status === 200) {
         const result = res.data.map((value: Campfire) => {
@@ -48,6 +49,7 @@ export const useCampfireAction: CampfireHooks['useCampfireAction'] = () => {
 
   const fetchPublicCampfires = useCallback(async (cid: string) => {
     try {
+      if (!cid) return [];
       const res = await axios.get(`${urls.campfire.public}?cid=${cid}`);
       if (res && res?.status === 200) {
         const result: any = await Promise.all(
@@ -81,6 +83,7 @@ export const useCampfireAction: CampfireHooks['useCampfireAction'] = () => {
 
   const fetchPrivateCampfires = useCallback(async (cid: string) => {
     try {
+      if (!cid) return [];
       const res = await axios.get(`${urls.campfire.private}?cid=${cid}`);
       if (res && res?.status === 200) {
         const result: any = await Promise.all(
@@ -131,8 +134,8 @@ export const useCampfireAction: CampfireHooks['useCampfireAction'] = () => {
           type === 'owned'
             ? `${urls.campfire.owned}`
             : type === 'private'
-            ? `${urls.campfire.private}`
-            : `${urls.campfire.public}`;
+              ? `${urls.campfire.private}`
+              : `${urls.campfire.public}`;
 
         const res = await axios.get(`${url}?cid=${cid}&tpc=${tpc}`);
         if (res && res?.status === 200) {

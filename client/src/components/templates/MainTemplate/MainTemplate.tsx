@@ -133,6 +133,9 @@ const MainTemplate = (): React.ReactElement => {
   const [searchValue, setSearchValue] = useState('');
   const [isToggled, setCampfireToggled] = useState<boolean>(false);
   const [showInvites, setShowInvites] = useState(false);
+  const [showLoading, setShowLoading] = useState(true);
+  const [showLoadingPrivate, setShowLoadingPrivate] = useState(true);
+  const [showLoadingOwned, setShowLoadingOwned] = useState(true);
   const [privateCampfires, setPrivateCampfires] = useState<{
     [_id: string]: Campfire;
   }>({});
@@ -174,7 +177,8 @@ const MainTemplate = (): React.ReactElement => {
         setOwnedCampfires(filtered as { [_id: string]: Campfire });
       }
     },
-    enabled: false,
+    enabled: !searchValue,
+    refetchInterval: 1000,
   });
 
   const {
@@ -190,8 +194,9 @@ const MainTemplate = (): React.ReactElement => {
           setPublicCampfires(filtered as { [_id: string]: Campfire });
         }
       },
-      enabled: false,
+      enabled: !searchValue,
       refetchOnMount: 'always',
+      refetchInterval: 1000,
     },
   );
 
@@ -259,7 +264,8 @@ const MainTemplate = (): React.ReactElement => {
           setPrivateCampfires(filtered as { [_id: string]: Campfire });
         }
       },
-      enabled: false,
+      enabled: !searchValue,
+      refetchInterval: 1000,
     },
   );
 
@@ -465,6 +471,25 @@ const MainTemplate = (): React.ReactElement => {
   };
 
   // USE EffECTS
+
+  useEffect(() => {
+    if (!isPublicCampfiresLoading) {
+      setShowLoading(false);
+    }
+  }, [isPublicCampfiresLoading]);
+
+  useEffect(() => {
+    if (!isPrivateCampfiresLoading) {
+      setShowLoadingPrivate(false);
+    }
+  }, [isPrivateCampfiresLoading]);
+
+  useEffect(() => {
+    if (!isOwnedCampfiresLoading) {
+      setShowLoadingOwned(false);
+    }
+  }, [isOwnedCampfiresLoading]);
+
   useEffect(() => {
     document.addEventListener('mousedown', handleClick);
     return () => {
@@ -761,7 +786,8 @@ const MainTemplate = (): React.ReactElement => {
           </Col>
           <Col span={24}>
             <CardWrapper gutter={[16, 16]}>
-              {isPublicCampfiresLoading || isSearchPublicCampfiresLoading ? (
+              {(isPublicCampfiresLoading || isSearchPublicCampfiresLoading) &&
+              showLoading ? (
                 <Col span={24}>
                   <LoaderWrapper>
                     <Spin size="large" />
@@ -802,7 +828,8 @@ const MainTemplate = (): React.ReactElement => {
           </Col>
           <Col span={24}>
             <CardWrapper gutter={[16, 16]}>
-              {isPrivateCampfiresLoading || isSearchPrivateCampfiresLoading ? (
+              {(isPrivateCampfiresLoading || isSearchPrivateCampfiresLoading) &&
+              showLoadingPrivate ? (
                 <Col span={24}>
                   <LoaderWrapper>
                     <Spin size="large" />
@@ -843,7 +870,8 @@ const MainTemplate = (): React.ReactElement => {
           </Col>
           <Col span={24}>
             <CardWrapper gutter={[16, 16]}>
-              {isOwnedCampfiresLoading || isSearchOwnedCampfiresLoading ? (
+              {(isOwnedCampfiresLoading || isSearchOwnedCampfiresLoading) &&
+              showLoadingOwned ? (
                 <Col span={24}>
                   <LoaderWrapper>
                     <Spin size="large" />
