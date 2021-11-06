@@ -174,7 +174,7 @@ const socketInit = (server, app) => {
                 val.campfireId === data.campfireId ? {
                     ...val,
                     isMuted: data.muted,
-                } : item
+                } : val
             );
             io.to(data.campfireId).emit('mute-all-received', {
                 campfireId: data.campfireId,
@@ -202,7 +202,7 @@ const socketInit = (server, app) => {
                 val.userId === data.userId && val.campfireId === data.campfireId ? {
                         ...val,
                         isMuted: data.muted,
-                    } : item
+                    } : val
                 );
             } else {
                 admins = admins.map((val) =>
