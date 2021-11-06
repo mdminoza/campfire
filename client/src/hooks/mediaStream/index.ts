@@ -27,6 +27,8 @@ export type MediaStreamHooks = {
   setRaisedHand: (data: any) => any;
   userLeft: (data: any) => void;
   setUser: (data: any) => void;
+  setMute: (data: any) => void;
+  setMuteAllStream: (data: any) => void;
   setEmojiUser: (data: any) => void;
 };
 

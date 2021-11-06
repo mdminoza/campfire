@@ -69,22 +69,7 @@ const socketInit = (server, app) => {
         });
 
         socket.on('disconnect', (data) => {
-            let user = null;
-            const audience = audiences.find(item => item.socketId === socket.id);
-            const admin = admins.find(item => item.socketId === socket.id);
-            if (audience) {
-                user = audience;
-            }
-            if (admin) {
-                user = admin;
-            }
-            audiences = audiences.filter(peer => peer.socketId !== socket.id);
-            admins = admins.filter(peer => peer.socketId !== socket.id);
-            if (user) {
-                io.to(user.campfireId).emit('user-leave', {
-                    userId: user.userId,
-                });
-            }
+            console.log('disconnected');
         });
 
         socket.on('raise-hand', (data) => {
@@ -178,6 +163,19 @@ const socketInit = (server, app) => {
         });
 
         socket.on('mute-all', (data) => {
+            admins = admins.map((val) =>
+                val.campfireId === data.campfireId
+                    ? {
+                        ...val,
+                        isMuted: data.muted,
+                    } : val,
+            );
+            audiences = audiences.map((val) => 
+                val.campfireId === data.campfireId ? {
+                    ...val,
+                    isMuted: data.muted,
+                } : item
+            );
             io.to(data.campfireId).emit('mute-all-received', {
                 campfireId: data.campfireId,
                 muted: data.muted,
@@ -194,6 +192,34 @@ const socketInit = (server, app) => {
             });
         });
 
+        socket.on('mute-user', (data) => {
+            const audience = audiences.find(
+                (val) => val.userId === data.userId && val.campfireId === data.campfireId,
+            );
+
+            if (audience) {
+                audiences = audiences.map((val) => 
+                val.userId === data.userId && val.campfireId === data.campfireId ? {
+                        ...val,
+                        isMuted: data.muted,
+                    } : item
+                );
+            } else {
+                admins = admins.map((val) =>
+                val.userId === data.userId && val.campfireId === data.campfireId
+                        ? {
+                            ...val,
+                            isMuted: data.muted,
+                        } : val,
+                );
+            }
+            io.to(data.campfireId).emit('mute-received', {
+                userId: data.userId,
+                campfireId: data.campfireId,
+                muted: data.muted,
+            });
+        });
+
         socket.on('leave', (data) => {
             socket.leave(data.campfireId);
             audiences = audiences.filter(peer => peer.userId !== data.userId);
@@ -201,7 +227,26 @@ const socketInit = (server, app) => {
             io.to(data.campfireId).emit('user-leave', {
                 userId: data.userId,
             });
-        })
+        });
+
+        socket.on("disconnecting", () => {
+            let user = null;
+            const audience = audiences.find(item => item.socketId === socket.id);
+            const admin = admins.find(item => item.socketId === socket.id);
+            if (audience) {
+                user = audience;
+            }
+            if (admin) {
+                user = admin;
+            }
+            audiences = audiences.filter(peer => peer.socketId !== socket.id);
+            admins = admins.filter(peer => peer.socketId !== socket.id);
+            if (user) {
+                io.to(user.campfireId).emit('user-leave', {
+                    userId: user.userId,
+                });
+            }
+        });
     });
 }
 

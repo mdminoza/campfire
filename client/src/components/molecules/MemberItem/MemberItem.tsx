@@ -9,6 +9,7 @@ import {
   // SpeakerActiveStatus,
   // Asterisks,
   BlackCrown,
+  MuteMicMember,
 } from '../../atoms/Icons';
 
 import { theme } from '../../../constants';
@@ -332,6 +333,14 @@ const MemberItem = ({
     padding: 4,
   };
 
+  const muteMicIconStyle = {
+    position: 'absolute',
+    zIndex: 1,
+    bottom: 39,
+    right: 5,
+    padding: 1,
+  };
+
   // const mutedIconStyle = {
   //   ...iconStyle,
   //   left: 0,
@@ -351,6 +360,13 @@ const MemberItem = ({
     ...iconStyle,
     height: 20,
     width: 20,
+    right: 0,
+  };
+
+  const muteMicStyle = {
+    ...muteMicIconStyle,
+    height: 30,
+    width: 30,
     right: 0,
   };
 
@@ -385,6 +401,8 @@ const MemberItem = ({
           )} */}
 
           {isModerator && <BlackCrown style={asterisksStyle} />}
+
+          {isMuted && <MuteMicMember style={muteMicStyle} />}
 
           <Avatar src={profileUrl} size={size || 110} alt="Sample" />
           {isSpeaker && (

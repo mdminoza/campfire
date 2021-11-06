@@ -771,14 +771,14 @@ const MainTemplate = (): React.ReactElement => {
       count: publicCampfire.data.length,
       children: (
         <TabContentWrapper>
-          <Col xs={24} sm={24} md={16} lg={16} xl={16}>
+          <Col xs={24} sm={24} md={24} lg={24} xl={24}>
             <TextInput
               value={searchValue}
               onChange={handleSearchValue}
               placeholder="SEARCH CAMPFIRES ..."
               prefix={
                 <SearchIconWrapper>
-                  <Search width={22} height={22} />
+                  <Search height={22} />
                 </SearchIconWrapper>
               }
               size="middle"
@@ -813,14 +813,14 @@ const MainTemplate = (): React.ReactElement => {
       count: privateCampfire.data.length,
       children: (
         <TabContentWrapper>
-          <Col xs={24} sm={24} md={16} lg={16} xl={16}>
+          <Col xs={24} sm={24} md={24} lg={24} xl={24}>
             <TextInput
               value={searchValue}
               onChange={handleSearchValue}
               placeholder="SEARCH CAMPFIRES ..."
               prefix={
                 <SearchIconWrapper>
-                  <Search width={22} height={22} />
+                  <Search height={22} />
                 </SearchIconWrapper>
               }
               size="middle"
@@ -855,14 +855,14 @@ const MainTemplate = (): React.ReactElement => {
       count: ownedCampfire.data.length,
       children: (
         <TabContentWrapper>
-          <Col xs={24} sm={24} md={16} lg={16} xl={16}>
+          <Col xs={24} sm={24} md={24} lg={24} xl={24}>
             <TextInput
               value={searchValue}
               onChange={handleSearchValue}
               placeholder="SEARCH CAMPFIRES ..."
               prefix={
                 <SearchIconWrapper>
-                  <Search width={22} height={22} />
+                  <Search height={22} />
                 </SearchIconWrapper>
               }
               size="middle"

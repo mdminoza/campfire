@@ -13,6 +13,7 @@ import { LoginPage } from '../../components/pages/LoginPage';
 import { useUserState, useUserAction } from '../../hooks/user';
 import { useSocketAction } from '../../hooks/socket';
 import { UserInterface } from '../../hooks/user/combined/types';
+import { ErrorModal } from '../../components/HOCs/ErrorModal';
 // import { socketInit } from '../../utils/socketConnection/socketConnection';
 
 const ProtectedRoutes = () => (
@@ -45,7 +46,9 @@ const Navigator = () => {
     fetchRandomTestUser,
   } = useUserAction();
 
-  const { socketInit } = useSocketAction();
+  const { socketInit, useSocketState } = useSocketAction();
+
+  const { socketError, setSocketError } = useSocketState;
 
   // TODO: use this to manually logout for testing purposes
   // localStorage.removeItem('access-token');
@@ -157,6 +160,19 @@ const Navigator = () => {
   useEffect(() => {
     socketInit();
   }, []);
+
+  useEffect(() => {
+    if (socketError !== null) {
+      ErrorModal(
+        'Something went wrong. Please try again.',
+        () => {
+          setSocketError(null);
+          window.location.reload();
+        },
+        'Try Again',
+      );
+    }
+  }, [setSocketError, socketError]);
 
   return (
     <ErrorBoundary

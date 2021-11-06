@@ -134,8 +134,8 @@ export const useCampfireAction: CampfireHooks['useCampfireAction'] = () => {
           type === 'owned'
             ? `${urls.campfire.owned}`
             : type === 'private'
-              ? `${urls.campfire.private}`
-              : `${urls.campfire.public}`;
+            ? `${urls.campfire.private}`
+            : `${urls.campfire.public}`;
 
         const res = await axios.get(`${url}?cid=${cid}&tpc=${tpc}`);
         if (res && res?.status === 200) {

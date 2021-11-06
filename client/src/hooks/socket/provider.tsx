@@ -12,6 +12,7 @@ const SocketProvider = (props: any): React.ReactElement => {
   const [localUser, setLocalUser] = useState<any>(null);
   const [isCampfireEnded, setCampfireEnded] = useState<boolean>(false);
   const [muteAll, setMuteAll] = useState<any>(null);
+  const [socketError, setSocketError] = useState<any>(null);
 
   const localUserRef = useRef<any>(null);
 
@@ -23,6 +24,8 @@ const SocketProvider = (props: any): React.ReactElement => {
     setRaisedHand,
     setUser,
     setEmojiUser,
+    setMute,
+    setMuteAllStream,
   } = useMediaStreamAction();
 
   const socket = useRef<any>();
@@ -38,6 +41,8 @@ const SocketProvider = (props: any): React.ReactElement => {
     setCampfireEnded,
     muteAll,
     setMuteAll,
+    socketError,
+    setSocketError,
   };
 
   const SERVER = 'https://staging-campfire-api.azurewebsites.net';
@@ -107,6 +112,20 @@ const SocketProvider = (props: any): React.ReactElement => {
       });
 
       socket.current.on('user-leave', userLeft);
+
+      socket.current.on('connect_error', () => {
+        setSocketError('error connection on socket');
+      });
+
+      socket.current.on('disconnect', (reason: any) => {
+        setSocketError(reason);
+      });
+
+      socket.current.on('mute-received', (data: any) => {
+        if (localUserRef.current.userId !== data.userId) {
+          setMute(data);
+        }
+      });
     }
   };
 
@@ -197,6 +216,18 @@ const SocketProvider = (props: any): React.ReactElement => {
         muted: val,
         userId,
       });
+      setMuteAllStream({ userId, campfireId, muted: val });
+    }
+  };
+
+  const setOnMute = (userId: string, campfireId: string, muted: boolean) => {
+    if (socket.current) {
+      socket.current.emit('mute-user', {
+        userId,
+        campfireId,
+        socketId: socket.current.id,
+        muted,
+      });
     }
   };
 
@@ -210,6 +241,7 @@ const SocketProvider = (props: any): React.ReactElement => {
     setUserEmoji,
     endCampfire,
     onMuteAll,
+    setOnMute,
   };
 
   useEffect(() => {

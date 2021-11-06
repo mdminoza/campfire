@@ -15,6 +15,8 @@ export type SocketHooks = {
     setCampfireEnded: (value: boolean) => boolean;
     muteAll: any;
     setMuteAll: (value: any) => any;
+    socketError: any;
+    setSocketError: (value: any) => any;
   };
   socketInit: () => any;
   joinCampfire: (user: JoinedParams) => any;
@@ -36,6 +38,7 @@ export type SocketHooks = {
   ) => any;
   endCampfire: (campfireId: string) => any;
   onMuteAll: (userId: string, campfireId: string, val: boolean) => any;
+  setOnMute: (userId: string, campfireId: string, muted: boolean) => any;
 };
 
 export const SocketHooksContext = React.createContext<SocketHooks | null>(null);

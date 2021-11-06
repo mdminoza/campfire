@@ -131,12 +131,14 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
       // port: '5001',
       config: {
         iceServers: [
-          ...turnServersRef.current,
-          { url: 'stun:stun.1und1.de:3478' },
+          // ...turnServersRef.current,
+          turnServersRef.current?.[0] || { url: 'stun:stun.1und1.de:3478' },
+          // { url: 'stun:stun.1und1.de:3478' },
         ],
       },
       debug: 3,
     });
+
     myPeer.current.on('open', (id: string) => {
       console.log(id, 'my peer id');
       setMyPeerId(id);
@@ -352,6 +354,64 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
     }
   };
 
+  const setMute = (data: any) => {
+    const user = getCurrentUser();
+    const audience = audienceStreamsRef.current.find(
+      (val: any) =>
+        val.userId === data.userId && val.campfireId === data.campfireId,
+    );
+    if (audience) {
+      const newAudienceData = audienceStreamsRef.current.map((val: any) =>
+        val.userId === data.userId && val.campfireId === data.campfireId
+          ? {
+              ...val,
+              isMuted: data.muted,
+            }
+          : val,
+      );
+      if (user.id !== data.userId) {
+        audienceStreamsRef.current = newAudienceData;
+        setAudienceStreams(newAudienceData);
+      }
+    } else {
+      const newAdminData = adminStreamsRef.current.map((val: any) =>
+        val.userId === data.userId && val.campfireId === data.campfireId
+          ? {
+              ...val,
+              isMuted: data.muted,
+            }
+          : val,
+      );
+      if (user.id !== data.userId) {
+        adminStreamsRef.current = newAdminData;
+        setAdminStreams(newAdminData);
+      }
+    }
+  };
+
+  const setMuteAllStream = (data: any) => {
+    const newAudienceData = audienceStreamsRef.current.map((val: any) =>
+      val.campfireId === data.campfireId
+        ? {
+            ...val,
+            isMuted: data.muted,
+          }
+        : val,
+    );
+    const newAdminData = adminStreamsRef.current.map((val: any) =>
+      val.campfireId === data.campfireId
+        ? {
+            ...val,
+            isMuted: data.muted,
+          }
+        : val,
+    );
+    audienceStreamsRef.current = newAudienceData;
+    adminStreamsRef.current = newAdminData;
+    setAudienceStreams(newAudienceData);
+    setAdminStreams(newAdminData);
+  };
+
   const setRaisedHand = (data: any) => {
     const user = getCurrentUser();
     const newAudienceData = audienceStreamsRef.current.map((val: any) =>
@@ -473,6 +533,8 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
     userLeft,
     setUser,
     setEmojiUser,
+    setMute,
+    setMuteAllStream,
   };
 
   useEffect(() => {

@@ -23,6 +23,7 @@ import MuteMic from './MuteMic';
 import UnmuteMic from './UnmuteMic';
 import Mic1 from './Mic1';
 import Dots from './Dots';
+import MuteMicMember from './MuteMicMember';
 
 export {
   AppLogo,
@@ -50,4 +51,5 @@ export {
   UnmuteMic,
   Mic1,
   Dots,
+  MuteMicMember,
 };

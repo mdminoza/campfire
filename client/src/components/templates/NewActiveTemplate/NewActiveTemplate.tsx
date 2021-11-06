@@ -68,6 +68,7 @@ const NewActiveTemplate = (): React.ReactElement => {
     setUserMenu,
     setUserEmoji,
     onMuteAll,
+    setOnMute,
   } = useSocketAction();
   const {
     getLocalStream,
@@ -253,6 +254,7 @@ const NewActiveTemplate = (): React.ReactElement => {
   const onClickMic = (muted: boolean) => {
     setIsMuted(!isMuted);
     setMuteAll(null);
+    setOnMute(currentUser?.id || '', campfireIdParam, muted);
     localStream.getAudioTracks()[0].enabled = !muted;
   };
 
@@ -491,7 +493,7 @@ const NewActiveTemplate = (): React.ReactElement => {
       isRaising: item.isRaising,
       emoji: item.emoji,
       emojiId: item.emojiId,
-      isMuted: false,
+      isMuted: item.isMuted,
       stream: strm,
       isLocal: false,
     };
@@ -509,7 +511,7 @@ const NewActiveTemplate = (): React.ReactElement => {
     isRaising: false,
     emoji: item.emoji,
     emojiId: item.emojiId,
-    isMuted: false,
+    isMuted: item.isMuted,
     stream: item.stream,
     isLocal: false,
   }));
@@ -528,7 +530,7 @@ const NewActiveTemplate = (): React.ReactElement => {
           isRaising: localUser.isRaising,
           emoji: localUser.emoji,
           emojiId: localUser.emojiId,
-          isMuted: false,
+          isMuted,
           stream: localUser.stream,
           isLocal: true,
         }
