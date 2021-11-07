@@ -23,6 +23,7 @@ import { useMemberAction } from '../../../hooks/member';
 import { useUserState } from '../../../hooks/user';
 import { useTurnAction } from '../../../hooks/turn';
 import { MemberItemParams } from '../../molecules/MemberItem/types';
+import { sortByName } from '../../../utils/helpers/common';
 
 const ActiveSpeakersWrapper = styled.div`
   &&& {
@@ -69,6 +70,7 @@ const NewActiveTemplate = (): React.ReactElement => {
     setUserEmoji,
     onMuteAll,
     setOnMute,
+    getLatestStreams,
   } = useSocketAction();
   const {
     getLocalStream,
@@ -167,6 +169,18 @@ const NewActiveTemplate = (): React.ReactElement => {
     //   },
     enabled: false,
   });
+
+  const { data: latestStreams } = useQuery(
+    'latest-streams',
+    () => getLatestStreams(currentUser?.id || '', campfireIdParam),
+    {
+      onSuccess: () => {
+        console.log('latest streams');
+      },
+      enabled: true,
+      refetchInterval: 5000,
+    },
+  );
 
   const {
     // refetch: refetchCampfireMembers,
@@ -539,10 +553,14 @@ const NewActiveTemplate = (): React.ReactElement => {
     localUser && !(localUser.isModerator || localUser.isSpeaker)
       ? [filterLocal, ...filteredAudience]
       : filteredAudience;
+  const sortedAudienceData =
+    audienceData.length > 0 ? audienceData.sort(sortByName) : [];
   const adminData =
     localUser && (localUser.isModerator || localUser.isSpeaker)
       ? [filterLocal, ...filteredAdmins]
       : filteredAdmins;
+  const sortedAdminData =
+    adminData.length > 0 ? adminData.sort(sortByName) : [];
   // END DATA FILTER
 
   if (!isMediaSupported) {
@@ -608,7 +626,7 @@ const NewActiveTemplate = (): React.ReactElement => {
         />
         <ActiveSpeakersWrapper>
           <SpeakersArea
-            data={adminData as MemberItemParams[]}
+            data={sortedAdminData as MemberItemParams[]}
             onClick={handleClickMember}
             selectedId={selectedId}
             invites={[]}
@@ -618,7 +636,7 @@ const NewActiveTemplate = (): React.ReactElement => {
           <MembersList
             onClick={handleClickMember}
             selectedId={selectedId}
-            data={audienceData as MemberItemParams[]}
+            data={sortedAudienceData as MemberItemParams[]}
           />
         </AudienceWrapper>
         <CampfireFooter1

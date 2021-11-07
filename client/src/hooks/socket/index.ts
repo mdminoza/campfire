@@ -39,6 +39,7 @@ export type SocketHooks = {
   endCampfire: (campfireId: string) => any;
   onMuteAll: (userId: string, campfireId: string, val: boolean) => any;
   setOnMute: (userId: string, campfireId: string, muted: boolean) => any;
+  getLatestStreams: (userId: string, campfireId: string) => any;
 };
 
 export const SocketHooksContext = React.createContext<SocketHooks | null>(null);

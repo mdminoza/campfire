@@ -66,6 +66,7 @@ const Navigator = () => {
         avatar: string;
         firstName: string;
         lastName: string;
+        nickname: string;
         role: [];
         id: string;
         email: string;
@@ -80,9 +81,16 @@ const Navigator = () => {
           email,
           username,
         } = response;
+
+        const name = response.nickname
+          ? response.nickname
+          : !response.nickname && response.username
+          ? response.username
+          : `${firstName} ${lastName}`;
+
         const user = {
           id,
-          name: `${firstName} ${lastName}`,
+          name,
           email,
           profileUrl: avatar,
           role,

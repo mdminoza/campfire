@@ -20,3 +20,8 @@ export const isSafari = (): boolean => {
   const seemsSafari = navigator.userAgent.indexOf('Safari') > -1;
   return seemsSafari && !seemsChrome;
 };
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const sortByName = (a: any, b: any) =>
+  // eslint-disable-next-line no-nested-ternary
+  a.speaker < b.speaker ? -1 : a.speaker > b.speaker ? 1 : 0;

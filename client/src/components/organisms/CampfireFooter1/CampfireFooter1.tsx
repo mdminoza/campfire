@@ -73,7 +73,6 @@ const EmojisWrapper = styled.div`
     background-color: #424242;
     right: 50px;
     border-radius: 10px;
-    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
@@ -96,7 +95,7 @@ const EmojiButtonWrapper = styled.button`
   }
 `;
 
-const EmojiMainWrapper = styled.div`
+const EmojiMainWrapper = styled.button`
   &&& {
     width: 45px;
     height: 45px;
@@ -106,6 +105,7 @@ const EmojiMainWrapper = styled.div`
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    border: none;
   }
 `;
 

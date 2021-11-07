@@ -522,6 +522,16 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
     }
   };
 
+  const setLatestStreams = (data: any) => {
+    const user = getCurrentUser();
+    if (user.id !== data.userId) {
+      audienceStreamsRef.current = data.audiences;
+      adminStreamsRef.current = data.admins;
+      setAudienceStreams(data.audiences);
+      setAdminStreams(data.admins);
+    }
+  };
+
   const combinedValues = {
     useMediaStreamState,
     getLocalStream,
@@ -535,6 +545,7 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
     setEmojiUser,
     setMute,
     setMuteAllStream,
+    setLatestStreams,
   };
 
   useEffect(() => {

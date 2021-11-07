@@ -26,6 +26,7 @@ const SocketProvider = (props: any): React.ReactElement => {
     setEmojiUser,
     setMute,
     setMuteAllStream,
+    setLatestStreams,
   } = useMediaStreamAction();
 
   const socket = useRef<any>();
@@ -45,8 +46,8 @@ const SocketProvider = (props: any): React.ReactElement => {
     setSocketError,
   };
 
-  const SERVER = 'https://staging-campfire-api.azurewebsites.net';
-  // const SERVER = 'http://localhost:5000';
+  // const SERVER = 'https://staging-campfire-api.azurewebsites.net';
+  const SERVER = 'http://localhost:5000';
 
   const socketInit = (): any => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -130,6 +131,10 @@ const SocketProvider = (props: any): React.ReactElement => {
         if (localUserRef.current.userId !== data.userId) {
           setMute(data);
         }
+      });
+
+      socket.current.on('received-latest-streams', (data: any) => {
+        setLatestStreams(data);
       });
     }
   };
@@ -236,6 +241,16 @@ const SocketProvider = (props: any): React.ReactElement => {
     }
   };
 
+  const getLatestStreams = (userId: string, campfireId: string) => {
+    if (socket.current) {
+      socket.current.emit('send-latest-streams', {
+        userId,
+        campfireId,
+        socketId: socket.current.id,
+      });
+    }
+  };
+
   const combinedValues = {
     useSocketState,
     socketInit,
@@ -247,6 +262,7 @@ const SocketProvider = (props: any): React.ReactElement => {
     endCampfire,
     onMuteAll,
     setOnMute,
+    getLatestStreams,
   };
 
   useEffect(() => {
