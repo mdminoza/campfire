@@ -108,6 +108,11 @@ const SocketProvider = (props: any): React.ReactElement => {
       socket.current.on('mute-all-received', (data: any) => {
         if (localUserRef.current.userId !== data.userId) {
           setMuteAll(data.muted);
+          setMuteAllStream({
+            userId: data.userId,
+            campfireId: data.campfireId,
+            muted: data.muted,
+          });
         }
       });
 

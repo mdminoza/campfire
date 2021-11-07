@@ -391,7 +391,7 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
 
   const setMuteAllStream = (data: any) => {
     const newAudienceData = audienceStreamsRef.current.map((val: any) =>
-      val.campfireId === data.campfireId
+      val.campfireId === data.campfireId && data.userId !== val.userId
         ? {
             ...val,
             isMuted: data.muted,
@@ -399,7 +399,7 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
         : val,
     );
     const newAdminData = adminStreamsRef.current.map((val: any) =>
-      val.campfireId === data.campfireId
+      val.campfireId === data.campfireId && data.userId !== val.userId
         ? {
             ...val,
             isMuted: data.muted,
