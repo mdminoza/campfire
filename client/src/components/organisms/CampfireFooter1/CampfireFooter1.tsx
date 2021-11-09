@@ -95,7 +95,7 @@ const EmojiButtonWrapper = styled.button`
   }
 `;
 
-const EmojiMainWrapper = styled.button`
+const EmojiMainWrapper = styled.div`
   &&& {
     width: 45px !important;
     height: 45px !important;
