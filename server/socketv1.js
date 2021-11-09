@@ -230,8 +230,8 @@ const socketInit = (server, app) => {
         });
 
         socket.on('send-latest-streams', (data) => {
-            const filterAudiences = audiences.filter(item => item.userId !== data.userId && item.campfireId === data.campfireId);
-            const filterAdmins = admins.filter(item => item.userId !== data.userId && item.campfireId === data.campfireId);
+            const filterAudiences = audiences.filter(item => item.campfireId === data.campfireId);
+            const filterAdmins = admins.filter(item => item.campfireId === data.campfireId);
             io.to(data.socketId).emit('received-latest-streams', {
                 audiences: filterAudiences,
                 admins: filterAdmins,

@@ -24,4 +24,4 @@ export const isSafari = (): boolean => {
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const sortByName = (a: any, b: any) =>
   // eslint-disable-next-line no-nested-ternary
-  a.speaker < b.speaker ? -1 : a.speaker > b.speaker ? 1 : 0;
+  a?.speaker < b?.speaker ? -1 : a?.speaker > b?.speaker ? 1 : 0;

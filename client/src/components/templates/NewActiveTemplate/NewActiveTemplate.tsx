@@ -70,7 +70,7 @@ const NewActiveTemplate = (): React.ReactElement => {
     setUserEmoji,
     onMuteAll,
     setOnMute,
-    getLatestStreams,
+    // getLatestStreams,
   } = useSocketAction();
   const {
     getLocalStream,
@@ -170,17 +170,17 @@ const NewActiveTemplate = (): React.ReactElement => {
     enabled: false,
   });
 
-  const { data: latestStreams } = useQuery(
-    'latest-streams',
-    () => getLatestStreams(currentUser?.id || '', campfireIdParam),
-    {
-      onSuccess: () => {
-        console.log('latest streams');
-      },
-      enabled: true,
-      refetchInterval: 5000,
-    },
-  );
+  // const { data: latestStreams } = useQuery(
+  //   'latest-streams',
+  //   () => getLatestStreams(currentUser?.id || '', campfireIdParam),
+  //   {
+  //     onSuccess: () => {
+  //       console.log('latest streams');
+  //     },
+  //     enabled: true,
+  //     refetchInterval: 5000,
+  //   },
+  // );
 
   const {
     // refetch: refetchCampfireMembers,
