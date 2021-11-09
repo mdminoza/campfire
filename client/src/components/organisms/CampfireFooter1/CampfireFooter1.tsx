@@ -97,15 +97,15 @@ const EmojiButtonWrapper = styled.button`
 
 const EmojiMainWrapper = styled.button`
   &&& {
-    width: 45px;
-    height: 45px;
-    background-color: #424242;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border: none;
+    width: 45px !important;
+    height: 45px !important;
+    background-color: #424242 !important;
+    border-radius: 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    border: none !important;
   }
 `;
 
