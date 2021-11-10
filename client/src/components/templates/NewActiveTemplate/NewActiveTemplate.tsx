@@ -155,14 +155,12 @@ const NewActiveTemplate = (): React.ReactElement => {
 
   const {
     refetch: refetchTurnCredentials,
-    // data: turnCredentials,
+    data: turnCredentials,
     isLoading: isFetchingTurnCredentialsLoading,
     error: fetchingTurnError,
   } = useQuery(['turn-credentials'], () => getTurnCredentials(), {
     onSuccess: (res) => {
       setTurnServers(res.iceServers);
-      getLocalStream();
-      connectWithMyPeer();
     },
     //   onError: (err: any) => {
     //     console.log(err, 'err fetching campfire member');
@@ -470,6 +468,13 @@ const NewActiveTemplate = (): React.ReactElement => {
       }
     }
   }, [localStream, muteAll]);
+
+  useEffect(() => {
+    if (!isFetchingTurnCredentialsLoading && turnCredentials) {
+      getLocalStream();
+      connectWithMyPeer();
+    }
+  }, [isFetchingTurnCredentialsLoading, turnCredentials]);
   // END USE EFFECTS
 
   // STYLES
@@ -613,7 +618,13 @@ const NewActiveTemplate = (): React.ReactElement => {
     return <Loader style={mainLoader} />;
   }
 
-  if (campfireIdParam && campfireMember && localStream && myPeerId) {
+  if (
+    campfireIdParam &&
+    campfireMember &&
+    localStream &&
+    myPeerId &&
+    turnCredentials
+  ) {
     return (
       <Layout>
         <TitleContent
