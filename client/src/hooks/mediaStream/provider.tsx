@@ -123,23 +123,21 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
   // };
 
   const connectWithMyPeer = () => {
-    if (turnServers.length > 0) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      myPeer.current = new Peer(undefined, {
-        // path: '/peerjs',
-        // host: 'localhost',
-        // port: '5001',
-        config: {
-          iceServers: [
-            // ...turnServersRef.current,
-            turnServers?.[1],
-            // { url: 'stun:stun.1und1.de:3478' },
-          ],
-        },
-        debug: 3,
-      });
-    }
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    myPeer.current = new Peer(undefined, {
+      // path: '/peerjs',
+      // host: 'localhost',
+      // port: '5001',
+      config: {
+        iceServers: [
+          // ...turnServersRef.current,
+          turnServers?.[1],
+          // { url: 'stun:stun.1und1.de:3478' },
+        ],
+      },
+      debug: 3,
+    });
 
     myPeer.current.on('open', (id: string) => {
       console.log(id, 'my peer id');
