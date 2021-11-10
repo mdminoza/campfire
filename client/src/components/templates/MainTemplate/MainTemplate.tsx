@@ -102,6 +102,7 @@ const Wrapper = styled.div`
 
 const StyledLayout = styled(Layout)<{ campfiretoggled?: string }>`
   &&& {
+    min-height: 100vh;
     & .campfiretabs: {
       z-index: ${(props) => (props.campfiretoggled === 'true' ? '-1' : 'auto')};
     }

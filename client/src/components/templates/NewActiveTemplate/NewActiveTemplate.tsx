@@ -50,6 +50,12 @@ const NotSupportedContainer = styled.div`
   }
 `;
 
+const Container = styled(Layout)`
+  &&& {
+    min-height: 100vh;
+  }
+`;
+
 const NewActiveTemplate = (): React.ReactElement => {
   const [activeUser, setActiveUser] = useState<
     { name: string; profileUrl: string; uid: string } | undefined
@@ -626,7 +632,7 @@ const NewActiveTemplate = (): React.ReactElement => {
     turnCredentials
   ) {
     return (
-      <Layout>
+      <Container>
         <TitleContent
           title={campfire?.topic || ''}
           description={campfire?.description || ''}
@@ -698,7 +704,7 @@ const NewActiveTemplate = (): React.ReactElement => {
           ]}>
           <b>Are you sure you want to kick all audience for this campfire?</b>
         </Modal>
-      </Layout>
+      </Container>
     );
   }
 
