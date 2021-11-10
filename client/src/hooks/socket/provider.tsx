@@ -119,11 +119,12 @@ const SocketProvider = (props: any): React.ReactElement => {
 
       socket.current.on('user-leave', userLeft);
 
-      socket.current.on('connect_error', () => {
-        setSocketError('error connection on socket');
-      });
+      // socket.current.on('connect_error', () => {
+      //   setSocketError('error connection on socket');
+      // });
 
       socket.current.on('disconnect', (reason: any) => {
+        console.log('socket disconnected: ', reason);
         setSocketError(reason);
       });
 

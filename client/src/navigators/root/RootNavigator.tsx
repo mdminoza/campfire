@@ -169,18 +169,18 @@ const Navigator = () => {
     socketInit();
   }, []);
 
-  useEffect(() => {
-    if (socketError !== null) {
-      ErrorModal(
-        'Something went wrong. Please try again.',
-        () => {
-          setSocketError(null);
-          window.location.reload();
-        },
-        'Try Again',
-      );
-    }
-  }, [setSocketError, socketError]);
+  // useEffect(() => {
+  //   if (socketError !== null) {
+  //     ErrorModal(
+  //       'Something went wrong. Please try again.',
+  //       () => {
+  //         setSocketError(null);
+  //         window.location.reload();
+  //       },
+  //       'Try Again',
+  //     );
+  //   }
+  // }, [setSocketError, socketError]);
 
   return (
     <ErrorBoundary
