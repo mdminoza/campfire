@@ -11,6 +11,7 @@ const SocketProvider = (props: any): React.ReactElement => {
   const [audiences, setAudiences] = useState([]);
   const [localUser, setLocalUser] = useState<any>(null);
   const [isCampfireEnded, setCampfireEnded] = useState<boolean>(false);
+  const [isKicked, setKicked] = useState<boolean>(false);
   const [muteAll, setMuteAll] = useState<any>(null);
   const [socketError, setSocketError] = useState<any>(null);
 
@@ -27,6 +28,7 @@ const SocketProvider = (props: any): React.ReactElement => {
     setMute,
     setMuteAllStream,
     setLatestStreams,
+    setKickMember,
   } = useMediaStreamAction();
 
   const socket = useRef<any>();
@@ -40,6 +42,8 @@ const SocketProvider = (props: any): React.ReactElement => {
     localUser,
     isCampfireEnded,
     setCampfireEnded,
+    isKicked,
+    setKicked,
     muteAll,
     setMuteAll,
     socketError,
@@ -136,6 +140,13 @@ const SocketProvider = (props: any): React.ReactElement => {
 
       socket.current.on('received-latest-streams', (data: any) => {
         setLatestStreams(data);
+      });
+
+      socket.current.on('received-kick-member', (data: any) => {
+        if (localUserRef.current.userId === data.userId) {
+          setKicked(true);
+        }
+        setKickMember(data);
       });
     }
   };
@@ -252,6 +263,16 @@ const SocketProvider = (props: any): React.ReactElement => {
     }
   };
 
+  const kickMember = (userId: string, campfireId: string) => {
+    if (socket.current) {
+      socket.current.emit('send-kick-member', {
+        userId,
+        campfireId,
+        socketId: socket.current.id,
+      });
+    }
+  };
+
   const combinedValues = {
     useSocketState,
     socketInit,
@@ -264,6 +285,7 @@ const SocketProvider = (props: any): React.ReactElement => {
     onMuteAll,
     setOnMute,
     getLatestStreams,
+    kickMember,
   };
 
   useEffect(() => {

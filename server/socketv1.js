@@ -237,6 +237,14 @@ const socketInit = (server, app) => {
                 admins: filterAdmins,
                 userId: data.userId,
             });
+        });
+
+        socket.on('send-kick-member', (data) => {
+            audiences = audiences.filter(item => item.userId !== data.userId);
+            admins = admins.filter(item => item.userId !== data.userId);
+            io.to(data.campfireId).emit('received-kick-member', {
+                userId: data.userId,
+            });
         })
 
         socket.on("disconnecting", () => {

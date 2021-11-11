@@ -532,6 +532,29 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
     }
   };
 
+  const setKickMember = (data: any) => {
+    const user = getCurrentUser();
+    if (user.id === data.userId) {
+      if (myPeer.current) {
+        myPeer.current.destroy();
+        ownLocalStream.current = null;
+        audienceStreamsRef.current = [];
+        adminStreamsRef.current = [];
+      }
+    } else {
+      const newAudienceData = audienceStreamsRef.current.filter(
+        (val: any) => val.userId !== data.userId,
+      );
+      audienceStreamsRef.current = newAudienceData;
+      setAudienceStreams(newAudienceData);
+      const newAdminData = adminStreamsRef.current.filter(
+        (val: any) => val.userId !== data.userId,
+      );
+      adminStreamsRef.current = newAdminData;
+      setAdminStreams(newAdminData);
+    }
+  };
+
   const combinedValues = {
     useMediaStreamState,
     getLocalStream,
@@ -546,6 +569,7 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
     setMute,
     setMuteAllStream,
     setLatestStreams,
+    setKickMember,
   };
 
   useEffect(() => {

@@ -31,6 +31,7 @@ export type MediaStreamHooks = {
   setMuteAllStream: (data: any) => void;
   setEmojiUser: (data: any) => void;
   setLatestStreams: (data: any) => any;
+  setKickMember: (data: any) => any;
 };
 
 export const MediaStreamHooksContext = React.createContext<MediaStreamHooks | null>(

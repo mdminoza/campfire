@@ -161,7 +161,13 @@ const MainTemplate = (): React.ReactElement => {
   const { useMediaStreamState } = useMediaStreamAction();
   const { useSocketState } = useSocketAction();
 
-  const { setLocalUser, setCampfireEnded, isCampfireEnded } = useSocketState;
+  const {
+    setLocalUser,
+    setCampfireEnded,
+    isCampfireEnded,
+    setKicked,
+    isKicked,
+  } = useSocketState;
   const {
     setLocalStream,
     setAdminStreams,
@@ -326,6 +332,7 @@ const MainTemplate = (): React.ReactElement => {
           if (activeTab === 'publicCampfire') {
             localStorage.setItem('active-campfire', data?.campfire || '');
             setCampfireEnded(false);
+            setKicked(false);
             navigate(`/campfires/active/${data?.campfire}`);
           }
           if (activeTab === 'privateCampfire') {
@@ -391,6 +398,7 @@ const MainTemplate = (): React.ReactElement => {
         if (isOwned || status === 'invited') {
           localStorage.setItem('active-campfire', campfireId);
           setCampfireEnded(false);
+          setKicked(false);
           navigate(`/campfires/active/${campfireId}`);
         } else {
           handleAddMemberMutation({
@@ -557,6 +565,12 @@ const MainTemplate = (): React.ReactElement => {
       AntdMessage('info', 'Campfire is ended by admin.');
     }
   }, [isCampfireEnded]);
+
+  useEffect(() => {
+    if (isKicked) {
+      AntdMessage('info', 'You have been kicked from the campfire');
+    }
+  }, [isKicked]);
   // USE EFFECTS
 
   const campfiresMock: {

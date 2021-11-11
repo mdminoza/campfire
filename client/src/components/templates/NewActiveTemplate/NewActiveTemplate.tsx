@@ -76,6 +76,7 @@ const NewActiveTemplate = (): React.ReactElement => {
     setUserEmoji,
     onMuteAll,
     setOnMute,
+    kickMember,
     // getLatestStreams,
   } = useSocketAction();
   const {
@@ -105,6 +106,7 @@ const NewActiveTemplate = (): React.ReactElement => {
     localUser,
     setLocalUser,
     isCampfireEnded,
+    isKicked,
     muteAll,
     setMuteAll,
   } = useSocketState;
@@ -211,8 +213,8 @@ const NewActiveTemplate = (): React.ReactElement => {
 
   const {
     mutate: kickMemberMutation,
-    isLoading: kickMemberLoading,
-    isSuccess: kickMemberSuccess,
+    // isLoading: kickMemberLoading,
+    // isSuccess: kickMemberSuccess,
   } = useMutation((params: { uid: string; id: string }) =>
     deleteMember(params),
   );
@@ -347,7 +349,11 @@ const NewActiveTemplate = (): React.ReactElement => {
       );
     }
     if (key === 'kick') {
-      // TODO:
+      kickMember(selectedId, campfireIdParam);
+      kickMemberMutation({
+        uid: selectedId,
+        id: campfireIdParam,
+      });
     }
     if (key === 'mute') {
       // TODO:
@@ -449,10 +455,10 @@ const NewActiveTemplate = (): React.ReactElement => {
   }, [localStreamError]);
 
   useEffect(() => {
-    if (isCampfireEnded) {
+    if (isCampfireEnded || isKicked) {
       navigate('/campfires');
     }
-  }, [isCampfireEnded, navigate]);
+  }, [isCampfireEnded, isKicked, navigate]);
 
   useEffect(() => {
     if (localStream) {
