@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import { Layout, Row, Col, Dropdown, Menu } from 'antd';
+import { Layout, Row, Col, Dropdown, Menu, Grid } from 'antd';
 // import { Link } from 'react-router-dom';
 import { Button } from '../../atoms/Button';
 import { Avatar } from '../../atoms/Avatar';
@@ -23,7 +23,6 @@ import {
   // Settings,
 } from '../../atoms/Icons';
 import { theme } from '../../../constants';
-import useWindowDimensions from '../../../utils/helpers/useWindowDimensions';
 
 const { Footer } = Layout;
 
@@ -145,11 +144,11 @@ const RaiseHandLabel = styled.span`
     font-family: ${theme.fonts.fontFamily};
     font-style: normal;
     font-weight: bold;
-    font-size: 16px;
+    font-size: ${(props: { xs?: boolean }) => (props.xs ? 12 : 16)}px;
     line-height: 112.7%;
     letter-spacing: 0.02em;
     color: ${theme.colors.mainWhite};
-    margin-left: 16px;
+    margin-left: ${(props: { xs?: boolean }) => (props.xs ? 0 : 16)}px;
     overflow: hidden !important;
   }
 `;
@@ -228,11 +227,14 @@ const MicWrapper = styled(Col)`
   }
 `;
 
+const { useBreakpoint } = Grid;
+
 type Props = {
   id: string;
   profileUrl: string;
   isSpeaker?: boolean;
   isRaising?: boolean;
+  micEnabled?: boolean;
   onMute?: boolean;
   // isTalking?: boolean;
   // isMuted?: boolean;
@@ -252,6 +254,7 @@ const CampfireFooter1 = ({
   profileUrl,
   isSpeaker = false,
   isRaising = false,
+  micEnabled = true,
   onClickRaiseHand,
   onClickEmoji = () => {},
   onClickMic = () => {},
@@ -263,23 +266,24 @@ const CampfireFooter1 = ({
   const [onMenuProfile, setMenuProfile] = useState(false);
   const [isEmojisOpen, setEmojisOpen] = useState(false);
   // const [openSettings, setOpenSettings] = useState(false);
-  // const history = useHistory();
+  // const history = useHistory();`
   // const navigate = useNavigate();
-
-  const { height, width } = useWindowDimensions();
-  console.log("Window Width", width)
+  const screens = useBreakpoint();
+  const { xs } = screens;
 
   const raiseHandBtnStyle = {
     backgroundColor: theme.colors.gray.gray29,
     padding: 0,
     width: 45,
     height: '100%',
+    marginLeft: micEnabled ? 0 : 12,
   };
 
   const raisedHandBtnStyle = {
     backgroundColor: theme.colors.gray.gray29,
     textAlign: 'end',
-    paddingRight: 24,
+    paddingRight: xs ? 15 : 24,
+    paddingLeft: xs ? 0 : 15,
     height: '100%',
   };
 
@@ -413,15 +417,17 @@ const CampfireFooter1 = ({
             </IconLogo>
           </MicWrapper>
         )} */}
-        <MicWrapper>
-          <IconLogo onClick={handleOnClickMic}>
-            {onMute ? (
-              <MuteMic width={45} height={45} />
-            ) : (
-              <Mic1 width={45} height={45} />
-            )}
-          </IconLogo>
-        </MicWrapper>
+        {micEnabled && (
+          <MicWrapper>
+            <IconLogo onClick={handleOnClickMic}>
+              {onMute ? (
+                <MuteMic width={45} height={45} />
+              ) : (
+                <Mic1 width={45} height={45} />
+              )}
+            </IconLogo>
+          </MicWrapper>
+        )}
         <Col flex="auto">
           {!isSpeaker && (
             <Button
@@ -430,7 +436,9 @@ const CampfireFooter1 = ({
               }
               onClick={() => onClickRaiseHand(id, isRaising)}>
               {!isSpeaker && isRaising ? (
-                <RaiseHandLabel>{width > 400 ? 'MY HAND IS RAISED' : 'HAND IS RAISED'}</RaiseHandLabel>
+                <RaiseHandLabel xs={xs}>
+                  {xs ? 'HAND IS RAISED' : 'MY HAND IS RAISED'}
+                </RaiseHandLabel>
               ) : (
                 <RaiseHandBtnContent>
                   <RaiseHand width={28} height={40} />

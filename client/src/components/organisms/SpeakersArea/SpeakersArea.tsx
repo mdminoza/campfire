@@ -120,6 +120,7 @@ const SpeakersArea = ({
                   stream={value?.stream}
                   isLocal={value?.isLocal}
                   isMuted={value?.isMuted}
+                  micEnabled={value?.micEnabled}
                 />
               </Col>
             ))}

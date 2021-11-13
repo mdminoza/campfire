@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Tabs } from 'antd';
+import { Tabs, Grid } from 'antd';
 
 import { theme } from '../../../constants';
 
@@ -75,22 +75,31 @@ const TabTitle = ({ title, count }: { title: string; count: number }) => (
   </TabTitleWrapper>
 );
 
+const { useBreakpoint } = Grid;
+
 const CampfireTab = ({
   onChange,
   tabs,
   activeKey,
-}: Props): React.ReactElement => (
-  <TabWrapper className="campfireTabs">
-    <StyledTabs activeKey={activeKey} onChange={onChange}>
-      {tabs.map((tab) => (
-        <TabPane
-          tab={<TabTitle title={tab.title} count={tab.count} />}
-          key={tab.key}>
-          {tab.children}
-        </TabPane>
-      ))}
-    </StyledTabs>
-  </TabWrapper>
-);
+}: Props): React.ReactElement => {
+  const screens = useBreakpoint();
+  const { xs, sm, md } = screens;
+  return (
+    <TabWrapper
+      className={
+        !md && (xs || sm) ? 'campfireTabs _campfireTabs' : 'campfireTabs'
+      }>
+      <StyledTabs activeKey={activeKey} onChange={onChange}>
+        {tabs.map((tab) => (
+          <TabPane
+            tab={<TabTitle title={tab.title} count={tab.count} />}
+            key={tab.key}>
+            {tab.children}
+          </TabPane>
+        ))}
+      </StyledTabs>
+    </TabWrapper>
+  );
+};
 
 export default CampfireTab;

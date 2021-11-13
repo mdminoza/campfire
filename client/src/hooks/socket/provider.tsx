@@ -13,6 +13,7 @@ const SocketProvider = (props: any): React.ReactElement => {
   const [isCampfireEnded, setCampfireEnded] = useState<boolean>(false);
   const [isKicked, setKicked] = useState<boolean>(false);
   const [muteAll, setMuteAll] = useState<any>(null);
+  const [isMicDisabled, setMicDisabled] = useState<any>(null);
   const [socketError, setSocketError] = useState<any>(null);
 
   const localUserRef = useRef<any>(null);
@@ -29,6 +30,7 @@ const SocketProvider = (props: any): React.ReactElement => {
     setMuteAllStream,
     setLatestStreams,
     setKickMember,
+    setDisableMic,
   } = useMediaStreamAction();
 
   const socket = useRef<any>();
@@ -46,6 +48,8 @@ const SocketProvider = (props: any): React.ReactElement => {
     setKicked,
     muteAll,
     setMuteAll,
+    isMicDisabled,
+    setMicDisabled,
     socketError,
     setSocketError,
   };
@@ -82,7 +86,9 @@ const SocketProvider = (props: any): React.ReactElement => {
           localUserRef.current.userId === data.userId
         ) {
           const unraised =
-            data.moderator || data.speaker ? { isRaising: false } : {};
+            data.moderator || data.speaker
+              ? { isRaising: false, micEnabled: true }
+              : {};
           const emojis =
             localUserRef.current.isSpeaker !== data.key.isSpeaker
               ? { emoji: '', emojiId: '' }
@@ -111,7 +117,10 @@ const SocketProvider = (props: any): React.ReactElement => {
       });
 
       socket.current.on('mute-all-received', (data: any) => {
-        if (localUserRef.current.userId !== data.userId) {
+        if (
+          localUserRef.current.userId !== data.userId &&
+          localUserRef.current.micEnabled
+        ) {
           setMuteAll(data.muted);
           setMuteAllStream({
             userId: data.userId,
@@ -148,6 +157,18 @@ const SocketProvider = (props: any): React.ReactElement => {
         }
         setKickMember(data);
       });
+
+      socket.current.on('received-disable-mic', (data: any) => {
+        if (localUserRef.current.userId === data.userId) {
+          setLocalUser({
+            ...localUserRef.current,
+            micEnabled: !data.value,
+          });
+          setMuteAll(true);
+        } else {
+          setDisableMic(data);
+        }
+      });
     }
   };
 
@@ -161,6 +182,7 @@ const SocketProvider = (props: any): React.ReactElement => {
         ...user,
         isRaising: false,
         socketId: socket.current.id,
+        micEnabled: true,
       });
     }
   };
@@ -273,6 +295,17 @@ const SocketProvider = (props: any): React.ReactElement => {
     }
   };
 
+  const disableMic = (userId: string, campfireId: string, value: boolean) => {
+    if (socket.current) {
+      socket.current.emit('send-disable-mic', {
+        userId,
+        campfireId,
+        socketId: socket.current.id,
+        value,
+      });
+    }
+  };
+
   const combinedValues = {
     useSocketState,
     socketInit,
@@ -286,6 +319,7 @@ const SocketProvider = (props: any): React.ReactElement => {
     setOnMute,
     getLatestStreams,
     kickMember,
+    disableMic,
   };
 
   useEffect(() => {

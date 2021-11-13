@@ -12,6 +12,7 @@ export interface MemberItemParams {
   emojiId?: string;
   isLoggedIn?: boolean;
   isMuted?: boolean;
+  micEnabled?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   peer?: any;
 }

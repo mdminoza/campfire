@@ -15,6 +15,7 @@ import { Loader } from '../../atoms/Loader';
 import { TitleContent } from '../../molecules/TitleContent';
 import { CreateCampfireForm } from '../../organisms/CreateCampfireForm';
 import { CampfireTab } from '../../organisms/CampfireTab';
+import { CampfireTabMobile } from '../../organisms/CampfireTabMobile';
 import { TopicCard } from '../../organisms/TopicCard';
 import { SponsoredTopicCard } from '../../organisms/SponsoredTopicCard';
 import { AntdMessage } from '../../HOCs/AntdMessage';
@@ -106,6 +107,11 @@ const StyledLayout = styled(Layout)<{ campfiretoggled?: string }>`
     & .campfiretabs: {
       z-index: ${(props) => (props.campfiretoggled === 'true' ? '-1' : 'auto')};
     }
+    & ._campfireTabs {
+      & .ant-tabs-nav {
+        display: none;
+      }
+    }
     background: ${(props) =>
       props.campfiretoggled === 'true' ? 'rgb(0 0 0 / 45%)' : ''};
     z-index: 9;
@@ -131,6 +137,7 @@ const MainTemplate = (): React.ReactElement => {
   const [activeTab, setActiveTab] = useState<string>('publicCampfire');
   const CreateCampfireRef = useRef<any>();
   const screens = useBreakpoint();
+  const { md } = screens;
   const [searchValue, setSearchValue] = useState('');
   const [isToggled, setCampfireToggled] = useState<boolean>(false);
   const [showInvites, setShowInvites] = useState(false);
@@ -943,6 +950,14 @@ const MainTemplate = (): React.ReactElement => {
             </Wrapper>
           </Cover>
           <TabWrapper campfiretoggled={isToggled}>
+            {!md && (
+              <CampfireTabMobile
+                activeKey={activeTab}
+                tabs={tabs}
+                onClickTab={onTabChange}
+              />
+            )}
+
             <CampfireTab
               activeKey={activeTab}
               tabs={tabs}

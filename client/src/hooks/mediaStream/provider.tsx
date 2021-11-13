@@ -253,6 +253,7 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
             ...audienceStreamsRef.current,
             {
               ...data,
+              micEnabled: true,
             },
           ];
           setAudienceStreams(audienceStreamsRef.current);
@@ -366,6 +367,7 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
           ? {
               ...val,
               isMuted: data.muted,
+              micEnabled: true,
             }
           : val,
       );
@@ -391,7 +393,9 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
 
   const setMuteAllStream = (data: any) => {
     const newAudienceData = audienceStreamsRef.current.map((val: any) =>
-      val.campfireId === data.campfireId && data.userId !== val.userId
+      val.campfireId === data.campfireId &&
+      data.userId !== val.userId &&
+      val.micEnabled
         ? {
             ...val,
             isMuted: data.muted,
@@ -482,6 +486,7 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
             ...data.key,
             emoji: '',
             emojiId: '',
+            micEnabled: true,
           },
         ];
       }
@@ -555,6 +560,20 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
     }
   };
 
+  const setDisableMic = (data: any) => {
+    const newAudienceData = audienceStreamsRef.current.map((val: any) =>
+      val.userId === data.userId && val.campfireId === data.campfireId
+        ? {
+            ...val,
+            isMuted: true,
+            micEnabled: !data.value,
+          }
+        : val,
+    );
+    audienceStreamsRef.current = newAudienceData;
+    setAudienceStreams(newAudienceData);
+  };
+
   const combinedValues = {
     useMediaStreamState,
     getLocalStream,
@@ -570,6 +589,7 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
     setMuteAllStream,
     setLatestStreams,
     setKickMember,
+    setDisableMic,
   };
 
   useEffect(() => {

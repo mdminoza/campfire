@@ -21,6 +21,7 @@ const ProtectedRoutes = () => (
     <Route path="/*" element={<Navigate to="/campfires" />} />
     <Route path="/campfires/active/:id" element={<NewActivePage />} />
     <Route path="/campfires" element={<MainPage />} />
+    <Route path="/groups/:group/campfire" element={<MainPage />} />
   </Routes>
 );
 

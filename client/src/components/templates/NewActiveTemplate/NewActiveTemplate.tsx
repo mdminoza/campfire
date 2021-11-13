@@ -77,6 +77,7 @@ const NewActiveTemplate = (): React.ReactElement => {
     onMuteAll,
     setOnMute,
     kickMember,
+    disableMic,
     // getLatestStreams,
   } = useSocketAction();
   const {
@@ -361,6 +362,12 @@ const NewActiveTemplate = (): React.ReactElement => {
     if (key === 'unmute') {
       // TODO:
     }
+    if (key === 'silence') {
+      disableMic(selectedId, campfireIdParam, true);
+    }
+    if (key === 'unsilence') {
+      disableMic(selectedId, campfireIdParam, false);
+    }
   };
 
   // USE EFFECTS
@@ -525,6 +532,7 @@ const NewActiveTemplate = (): React.ReactElement => {
       emoji: item.emoji,
       emojiId: item.emojiId,
       isMuted: item.isMuted,
+      micEnabled: item.micEnabled,
       stream: strm,
       isLocal: false,
     };
@@ -564,6 +572,7 @@ const NewActiveTemplate = (): React.ReactElement => {
           isMuted,
           stream: localUser.stream,
           isLocal: true,
+          micEnabled: localUser.micEnabled,
         }
       : null;
   const audienceData =
@@ -674,6 +683,7 @@ const NewActiveTemplate = (): React.ReactElement => {
           isAdmin={activeUser?.uid === campfire?.creator?.uid}
           onClickProfileMenu={handleOnClickProfileMenu}
           onMute={isMuted}
+          micEnabled={localUser?.micEnabled}
         />
         <Modal
           visible={isEndCampfireModal}

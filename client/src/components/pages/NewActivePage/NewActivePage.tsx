@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { NewActiveTemplate } from '../../templates/NewActiveTemplate';
 
 const NewActivePage = (): React.ReactElement => (

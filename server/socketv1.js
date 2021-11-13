@@ -135,6 +135,7 @@ const socketInit = (server, app) => {
                         {
                             ...admin,
                             ...key,
+                            micEnabled: true,
                         },
                     ];
                 }
@@ -171,7 +172,7 @@ const socketInit = (server, app) => {
                     } : val,
             );
             audiences = audiences.map((val) => 
-                val.campfireId === data.campfireId ? {
+                val.campfireId === data.campfireId && val.micEnabled ? {
                     ...val,
                     isMuted: data.muted,
                 } : val
@@ -202,6 +203,7 @@ const socketInit = (server, app) => {
                 val.userId === data.userId && val.campfireId === data.campfireId ? {
                         ...val,
                         isMuted: data.muted,
+                        micEnabled: true,
                     } : val
                 );
             } else {
@@ -244,6 +246,21 @@ const socketInit = (server, app) => {
             admins = admins.filter(item => item.userId !== data.userId);
             io.to(data.campfireId).emit('received-kick-member', {
                 userId: data.userId,
+            });
+        });
+
+        socket.on('send-disable-mic', (data) => {
+            audiences = audiences.map((val) => 
+                val.userId === data.userId && val.campfireId === data.campfireId ? {
+                    ...val,
+                    micEnabled: data.value,
+                    isMuted: true,
+                } : val
+            );
+            io.to(data.campfireId).emit('received-disable-mic', {
+                userId: data.userId,
+                campfireId: data.campfireId,
+                value: data.value,
             });
         })
 

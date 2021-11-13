@@ -44,6 +44,7 @@ const MembersList = ({
                 isRaising={_data?.isRaising}
                 isLoggedIn={_data?.isLoggedIn}
                 isMuted={_data?.isMuted}
+                micEnabled={_data?.micEnabled}
                 // size={size}
                 stream={_data?.stream}
                 isLocal={_data?.isLocal}
