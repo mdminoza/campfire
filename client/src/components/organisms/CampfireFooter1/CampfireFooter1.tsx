@@ -23,6 +23,7 @@ import {
   // Settings,
 } from '../../atoms/Icons';
 import { theme } from '../../../constants';
+import useWindowDimensions from '../../../utils/helpers/useWindowDimensions';
 
 const { Footer } = Layout;
 
@@ -40,6 +41,7 @@ const StyledFooter = styled(Footer)`
 const StyledRow = styled(Row)`
   &&& {
     justify-content: center !important;
+    flex-flow: row nowrap !important;
   }
 `;
 
@@ -139,6 +141,7 @@ const RaiseHandLabel = styled.span`
     letter-spacing: 0.02em;
     color: ${theme.colors.mainWhite};
     margin-left: 16px;
+    overflow: hidden !important;
   }
 `;
 
@@ -253,6 +256,9 @@ const CampfireFooter1 = ({
   // const [openSettings, setOpenSettings] = useState(false);
   // const history = useHistory();
   // const navigate = useNavigate();
+
+  const { height, width } = useWindowDimensions();
+  console.log("Window Width", width)
 
   const raiseHandBtnStyle = {
     backgroundColor: theme.colors.gray.gray29,
@@ -415,7 +421,7 @@ const CampfireFooter1 = ({
               }
               onClick={() => onClickRaiseHand(id, isRaising)}>
               {!isSpeaker && isRaising ? (
-                <RaiseHandLabel>MY HAND IS RAISED</RaiseHandLabel>
+                <RaiseHandLabel>{width > 400 ? 'MY HAND IS RAISED' : 'HAND IS RAISED'}</RaiseHandLabel>
               ) : (
                 <RaiseHandBtnContent>
                   <RaiseHand width={28} height={40} />
