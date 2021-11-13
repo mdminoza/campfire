@@ -35,6 +35,9 @@ const StyledFooter = styled(Footer)`
     bottom: 0 !important;
     padding: 0 !important;
     background-color: ${theme.colors.gray.gray29} !important;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
   }
 `;
 
@@ -108,6 +111,9 @@ const EmojiMainWrapper = styled.div`
     justify-content: center !important;
     cursor: pointer !important;
     border: none !important;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
   }
 `;
 
@@ -115,6 +121,9 @@ const EmojiCol = styled(Col)`
   &&& {
     display: flex;
     align-items: center;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
   }
 `;
 
