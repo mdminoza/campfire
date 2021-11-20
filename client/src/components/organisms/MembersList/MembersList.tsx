@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row, Empty } from 'antd';
 
-import { MemberItem } from '../../molecules/MemberItem';
+import { MemberItem } from '../../molecules/NewMemberItem';
 import { AnimatedEmoji } from '../../molecules/AnimatedEmoji';
 import { MemberItemParams } from '../../molecules/MemberItem/types';
 

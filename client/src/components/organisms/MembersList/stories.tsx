@@ -26,7 +26,7 @@ const Component = () => {
       onClickMenu: handleClick,
       speaker: 'Bill Wallace',
       onClick: handleClick,
-      isSpeaker: false,
+      isSpeaker: true,
       isActive: true,
     },
     {
@@ -35,7 +35,7 @@ const Component = () => {
       onClickMenu: handleClick,
       speaker: 'Bill Wallace',
       onClick: handleClick,
-      isSpeaker: false,
+      isSpeaker: true,
       isActive: true,
     },
     // {
