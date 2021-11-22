@@ -10,5 +10,6 @@ storiesOf('molecule/TitleContent', module)
       onActive
       title="MONEY IN THE BIBLE"
       description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ultricies vulputate vestibulum, sed tempus. Justo "
+      scheduleToStart={new Date()}
     />
   ));

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Row, Col } from 'antd';
-import { MemberItem } from '../../molecules/MemberItem';
+import { MemberItem } from '../../molecules/NewMemberItem';
 import { InviteMemberItem } from '../../molecules/InviteMemberItem';
 import { AnimatedEmoji } from '../../molecules/AnimatedEmoji';
 import {
@@ -111,7 +111,7 @@ const SpeakersArea = ({
                   onClickMenu={value.onClickMenu}
                   speaker={value.speaker}
                   onClick={onClick}
-                  isSpeaker
+                  isSpeaker={value?.isSpeaker}
                   isModerator={value.isModerator}
                   isActive={value.isActive}
                   selectedId={selectedId}
@@ -120,7 +120,7 @@ const SpeakersArea = ({
                   stream={value?.stream}
                   isLocal={value?.isLocal}
                   isMuted={value?.isMuted}
-                  micEnabled={value?.micEnabled}
+                  // micEnabled={value?.micEnabled}
                 />
               </Col>
             ))}

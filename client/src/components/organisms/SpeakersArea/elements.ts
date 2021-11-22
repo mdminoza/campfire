@@ -116,6 +116,7 @@ export const Wrapper = styled.div`
     background: ${theme.colors.mainWhite};
 
     box-shadow: 0px 15px 10px -15px #111;
+    border-radius: 0 0 10px 10px;
   }
 `;
 

@@ -384,7 +384,7 @@ const MemberItem = ({
   const moderatorStyle = {
     position: 'absolute',
     zIndex: 1,
-    bottom: 26,
+    bottom: 30,
     right: 4,
     // eslint-disable-next-line no-nested-ternary
     background: isSpeaker
@@ -462,7 +462,7 @@ const MemberItem = ({
           />
         </AvatarWrapper>
       }>
-      <LabelName isActive={false} isMuted={isMuted}>
+      <LabelName isActive={false} isMuted={false}>
         {speaker}
       </LabelName>
     </StyledCard>
