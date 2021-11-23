@@ -231,34 +231,34 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
     if (ownLocalStream.current) {
       const call = myPeer.current.call(data.peerId, ownLocalStream.current);
 
-      if (data.isAdmin) {
-        const filterStreams = adminStreamsRef.current.find(
-          (adminStream: any) => adminStream?.userId === data.userId,
-        );
-        if (!filterStreams) {
-          adminStreamsRef.current = [
-            ...adminStreamsRef.current,
-            {
-              ...data,
-            },
-          ];
-          setAdminStreams(adminStreamsRef.current);
-        }
-      } else {
-        const filterStreams = audienceStreamsRef.current.find(
-          (audienceStream: any) => audienceStream?.userId === data.userId,
-        );
-        if (!filterStreams) {
-          audienceStreamsRef.current = [
-            ...audienceStreamsRef.current,
-            {
-              ...data,
-              micEnabled: true,
-            },
-          ];
-          setAudienceStreams(audienceStreamsRef.current);
-        }
-      }
+      // if (data.isAdmin) {
+      //   const filterStreams = adminStreamsRef.current.find(
+      //     (adminStream: any) => adminStream?.userId === data.userId,
+      //   );
+      //   if (!filterStreams) {
+      //     adminStreamsRef.current = [
+      //       ...adminStreamsRef.current,
+      //       {
+      //         ...data,
+      //       },
+      //     ];
+      //     setAdminStreams(adminStreamsRef.current);
+      //   }
+      // } else {
+      //   const filterStreams = audienceStreamsRef.current.find(
+      //     (audienceStream: any) => audienceStream?.userId === data.userId,
+      //   );
+      //   if (!filterStreams) {
+      //     audienceStreamsRef.current = [
+      //       ...audienceStreamsRef.current,
+      //       {
+      //         ...data,
+      //         micEnabled: true,
+      //       },
+      //     ];
+      //     setAudienceStreams(audienceStreamsRef.current);
+      //   }
+      // }
 
       call.on('stream', (incomingStreamCall: any) => {
         console.log(incomingStreamCall, 'connect to new user on');
