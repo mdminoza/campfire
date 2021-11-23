@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row, Empty } from 'antd';
 
-import { MemberItem } from '../../molecules/MemberItem';
+import { MemberItem } from '../../molecules/NewMemberItem';
 import { AnimatedEmoji } from '../../molecules/AnimatedEmoji';
 import { MemberItemParams } from '../../molecules/MemberItem/types';
 
@@ -44,8 +44,9 @@ const MembersList = ({
                 isRaising={_data?.isRaising}
                 isLoggedIn={_data?.isLoggedIn}
                 isMuted={_data?.isMuted}
-                micEnabled={_data?.micEnabled}
-                // size={size}
+                isModerator={_data?.isModerator}
+                // micEnabled={_data?.micEnabled}
+                size={size}
                 stream={_data?.stream}
                 isLocal={_data?.isLocal}
               />

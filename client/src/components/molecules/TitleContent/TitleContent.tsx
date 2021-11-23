@@ -26,21 +26,22 @@ type Props = {
   scheduleToStart?: Date | undefined;
 };
 
-const Container = styled.div`
+const Container = styled.div<{ onActive: boolean }>`
   &&& {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 390px;
+    height: ${(props) => (props.onActive ? '200px' : '390px')};
     flex-direction: column;
-    background: url(${campfireBackground});
+    background: ${(props) =>
+      props.onActive ? theme.colors.mainWhite : `url(${campfireBackground})`};
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
     text-align: center;
     position: relative;
     @media (max-width: 576px) {
-      height: 300px;
+      height: ${(props) => (props.onActive ? '190px' : '300px')};
     }
   }
 `;
@@ -52,11 +53,16 @@ export const Title = styled.span`
     font-weight: bold;
     font-size: ${(props: { fontSize?: string }) => props?.fontSize || '2rem'};
     letter-spacing: 0.32em;
-    color: ${theme.colors.mainWhite};
-    line-height: ${(props: { fontSize?: string; lineHeight?: string }) =>
-      props?.lineHeight || '45px'};
+    color: ${(props: { onActive?: boolean }) =>
+      props?.onActive ? theme.colors.mainBlack : theme.colors.mainWhite};
+    line-height: ${(props: {
+      fontSize?: string;
+      onActive?: boolean;
+      lineHeight?: string;
+    }) => props?.lineHeight || '45px'};
     padding: ${(props: {
       lineHeight?: string;
+      onActive?: boolean;
       fontSize?: string;
       padding?: string | number;
     }) => props?.padding || 0};
@@ -78,15 +84,23 @@ export const Description = styled.p`
     font-size: ${(props: { width?: string; fontSize?: string }) =>
       props?.fontSize || '1rem'};
     letter-spacing: 0.32em;
-    color: ${theme.colors.mainWhite};
+    color: ${(props: {
+      width?: string;
+      fontSize?: string;
+      onActive?: boolean;
+    }) => (props?.onActive ? theme.colors.mainBlack : theme.colors.mainWhite)};
     text-align: center;
-    width: ${(props: { width?: string; fontSize?: string }) =>
-      props?.width || '60%'};
+    width: ${(props: {
+      width?: string;
+      fontSize?: string;
+      onActive?: boolean;
+    }) => props?.width || '60%'};
     z-index: 1;
     padding: ${(props: {
       width?: string;
       fontSize?: string;
       padding?: string | number;
+      onActive?: boolean;
     }) => props?.padding || 0};
   }
 `;
@@ -94,14 +108,16 @@ export const Description = styled.p`
 const StartedTime = styled.span`
   &&& {
     font-family: ${theme.fonts.fontFamily};
+    font-weight: bold;
     font-style: normal;
     font-size: ${(props: { width?: string; fontSize?: string }) =>
       props?.fontSize || '1rem'};
     letter-spacing: 0.32em;
-    color: ${theme.colors.mainWhite};
+    color: ${theme.colors.gray.gray8E};
     text-align: center;
-    z-index: 1;
-    padding-top: 32px;
+    z-index: 2;
+    padding-top: 8px;
+    padding-bottom: 50px;
   }
 `;
 
@@ -206,7 +222,7 @@ Props): React.ReactElement => {
   useEffect(() => {
     if (scheduleToStart) {
       setElapseTime(
-        `STARTED ${moment(
+        `STARTED: ${moment(
           moment(scheduleToStart).format('YYYYMMDD HH:mm:ss'),
           'YYYYMMDD HH:mm:ss',
         )
@@ -306,15 +322,18 @@ Props): React.ReactElement => {
   // };
 
   return (
-    <Container className="titleName">
-      <Overlay />
+    <Container className="titleName" onActive={!!onActive}>
+      {!onActive && <Overlay />}
 
       {!onActive && (
         <IconWrapper>
           <FireOutline {...iconDimension} />
         </IconWrapper>
       )}
-      <Title padding="0 10px" lineHeight={!md ? '40px' : ''}>
+      <Title
+        padding="0 10px"
+        lineHeight={!md ? '40px' : ''}
+        onActive={onActive}>
         {title}
       </Title>
       {/* TODO: Might be use in the future */}
@@ -322,7 +341,8 @@ Props): React.ReactElement => {
       <Description
         padding="0 10px"
         width={!md ? 'auto' : ''}
-        fontSize={!md ? '0.8rem' : ''}>
+        fontSize={!md ? '0.8rem' : ''}
+        onActive={onActive}>
         {description}
       </Description>
 
