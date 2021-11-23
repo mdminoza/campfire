@@ -108,14 +108,16 @@ export const Description = styled.p`
 const StartedTime = styled.span`
   &&& {
     font-family: ${theme.fonts.fontFamily};
+    font-weight: bold;
     font-style: normal;
     font-size: ${(props: { width?: string; fontSize?: string }) =>
       props?.fontSize || '1rem'};
     letter-spacing: 0.32em;
     color: ${theme.colors.gray.gray8E};
     text-align: center;
-    z-index: 1;
-    padding-top: 32px;
+    z-index: 2;
+    padding-top: 8px;
+    padding-bottom: 50px;
   }
 `;
 
@@ -220,7 +222,7 @@ Props): React.ReactElement => {
   useEffect(() => {
     if (scheduleToStart) {
       setElapseTime(
-        `STARTED ${moment(
+        `STARTED: ${moment(
           moment(scheduleToStart).format('YYYYMMDD HH:mm:ss'),
           'YYYYMMDD HH:mm:ss',
         )

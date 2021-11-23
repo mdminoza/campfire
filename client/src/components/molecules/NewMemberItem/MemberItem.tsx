@@ -10,6 +10,7 @@ import {
   // Asterisks,
   BlackCrown,
   MuteMicMember,
+  NewMuteMic,
 } from '../../atoms/Icons';
 
 import { theme } from '../../../constants';
@@ -17,19 +18,20 @@ import { theme } from '../../../constants';
 const StyledCard = styled(Card)<{ isSpeaker: boolean; isMuted: boolean }>`
   &&& {
     border-radius: 20px 20px 10px 10px;
+    background-color: transparent;
     .ant-card-body {
       padding: 0;
       border-radius: 0 0 10px 10px;
-      text-align: center;
+      text-align: left;
       padding-bottom: 5px;
     }
     &:hover {
       background: ${(props) =>
         // eslint-disable-next-line no-nested-ternary
-        props.isSpeaker
-          ? theme.colors.orange1
-          : props.isMuted
+        props.isMuted
           ? theme.colors.gray.grayb8
+          : props.isSpeaker
+          ? theme.colors.orange1
           : theme.colors.mainWhite};
     }
     .ant-card-head {
@@ -46,6 +48,7 @@ const StyledCard = styled(Card)<{ isSpeaker: boolean; isMuted: boolean }>`
   }
 `;
 
+// margin-top: 14px;
 const LabelName = styled.span`
   &&& {
     font-family: ${theme.fonts.fontFamily};
@@ -55,8 +58,9 @@ const LabelName = styled.span`
       isModerator?: boolean;
       isMuted?: boolean;
     }) => (props.isActive ? 'bold' : 'normal')};
-    margin-top: 14px;
-    font-size: 14px;
+
+    font-size: 12px;
+    padding-left: 4px;
     line-height: 16px;
     letter-spacing: 0.02em;
     color: ${(props: {
@@ -106,10 +110,10 @@ const BorderActive = styled.div<{
     border-style: solid;
     border-color: ${(props) =>
       // eslint-disable-next-line no-nested-ternary
-      props.isSpeaker
-        ? theme.colors.orange1
-        : props.isMuted
+      props.isMuted
         ? theme.colors.gray.grayb8
+        : props.isSpeaker
+        ? theme.colors.orange1
         : theme.colors.mainWhite};
     top: 0;
     border-radius: 10px;
@@ -119,14 +123,17 @@ const BorderActive = styled.div<{
 const RaiseHandWrapper = styled.div`
   &&& {
     width: ${(props: { size?: number }) =>
-      props.size ? `${props.size}px` : `110px`};
+      props.size ? `${props.size}px` : `100px`};
     height: ${(props: { size?: number }) =>
-      props.size ? `${props.size}px` : `110px`};
+      props.size ? `${props.size}px` : `100px`};
     position: absolute;
-    top: 0;
+    top: 5px;
+    left: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: #30343a85;
+    border-radius: 5px;
   }
 `;
 
@@ -203,6 +210,12 @@ const UnLabel = styled.b`
   &&& {
     color: ${theme.colors.mainBlack};
   }
+`;
+
+const NameWrapper = styled.div`
+  display: flex;
+  margin-top: 5px;
+  padding-left: 2px;
 `;
 
 type Props = {
@@ -387,10 +400,10 @@ const MemberItem = ({
     bottom: 30,
     right: 4,
     // eslint-disable-next-line no-nested-ternary
-    background: isSpeaker
-      ? theme.colors.orange1
-      : isMuted
+    background: isMuted
       ? theme.colors.gray.grayb8
+      : isSpeaker
+      ? theme.colors.orange1
       : theme.colors.mainWhite,
     borderTopLeftRadius: 5,
     padding: 4,
@@ -446,7 +459,7 @@ const MemberItem = ({
           <BorderActive isSpeaker={isSpeaker} isMuted={isMuted} size={size} />
           {!isSpeaker && isRaising && (
             <RaiseHandWrapper size={size}>
-              <RaiseHand width={30} height={45} />
+              <RaiseHand width={45} height={60} />
             </RaiseHandWrapper>
           )}
           {/* {isMuted && <MutedWrapper />} */}
@@ -462,9 +475,12 @@ const MemberItem = ({
           />
         </AvatarWrapper>
       }>
-      <LabelName isActive={false} isMuted={false}>
-        {speaker}
-      </LabelName>
+      <NameWrapper>
+        {isMuted && <NewMuteMic width={12} height={15} />}
+        <LabelName isActive={false} isMuted={false}>
+          {speaker}
+        </LabelName>
+      </NameWrapper>
     </StyledCard>
   );
 };

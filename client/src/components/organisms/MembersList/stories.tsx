@@ -57,7 +57,7 @@ const Component = () => {
       isActive: true,
     },
     {
-      id: 'WuAd2Irx',
+      uid: 'WuAd2Irx',
       profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
       onClickMenu: handleClick,
       speaker: 'Bill Wallace',
@@ -67,7 +67,7 @@ const Component = () => {
       isMuted: true,
     },
     {
-      id: 'o4o0hEDjKrRKnMkJv5',
+      uid: 'o4o0hEDjKrRKnMkJv5',
       profileUrl: 'https://dummyimage.com/263x263/4a4a4a/ffffff',
       onClickMenu: handleClick,
       speaker: 'Bill Wallace',
