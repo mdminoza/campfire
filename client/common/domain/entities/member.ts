@@ -10,4 +10,7 @@ export type MemberParams = {
   campfire?: string;
   createdAt?: Date;
   updatedAt?: Date;
+  isActive?: boolean;
+  socketId?: string;
+  peerId?: string;
 };

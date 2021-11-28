@@ -8,6 +8,7 @@ import { Loader } from '../../components/atoms/Loader';
 import { MainPage } from '../../components/pages/MainPage';
 import { ActivePage } from '../../components/pages/ActivePage';
 import { NewActivePage } from '../../components/pages/NewActivePage';
+import { TestPage } from '../../components/pages/TestPage';
 import { LoginPage } from '../../components/pages/LoginPage';
 
 import { useUserState, useUserAction } from '../../hooks/user';

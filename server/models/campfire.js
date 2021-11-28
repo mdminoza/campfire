@@ -46,6 +46,18 @@ const campfireSchema = new Schema({
                 type: String,
                 required: true,
             },
+            isActive: {
+                type: Boolean,
+                default: false,
+            },
+            peerId: {
+                type: String,
+                default: ''
+            },
+            socketId: {
+                type: String,
+                default: ''
+            },
         },
         '_id': false,
         required: [true, 'Creator is required.'],
@@ -88,6 +100,18 @@ const campfireSchema = new Schema({
             campfire: {
                 type: String,
                 required: true,
+            },
+            isActive: {
+                type: Boolean,
+                default: false,
+            },
+            peerId: {
+                type: String,
+                default: ''
+            },
+            socketId: {
+                type: String,
+                default: ''
             },
             '_id': false,
         }

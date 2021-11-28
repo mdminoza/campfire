@@ -8,6 +8,7 @@ import {
     removeCampfireMembers,
     updateCampfireMemberStatus,
     updateCampfireMemberRole,
+    updateCampfireMemberActiveStatus,
 } from '../controllers/campfire.js';
 
 const router = express.Router();
@@ -18,5 +19,6 @@ router.patch('/member/pull', removeCampfireMember);
 router.patch('/members/pull', removeCampfireMembers);
 router.patch('/member/set/status', updateCampfireMemberStatus);
 router.patch('/member/set/role', updateCampfireMemberRole);
+router.patch('/member/set/activeStatus', updateCampfireMemberActiveStatus);
 
 export default router;

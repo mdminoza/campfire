@@ -140,17 +140,28 @@ export const createCampfire = async (req, res, next) => {
     }
 };
 
-export const updateCampfire = async (req, res, next) => {
-    const { id: _id } = req.params;
-    const campfire = req.body;
-
+export const updateCampfireHandler = async (_id, campfire) => {
     try {
-        if (!mongoose.Types.ObjectId.isValid(_id)) throw new Error('Invalid id.');
         const updatedCampfire = await Campfire.findByIdAndUpdate(
             _id,
             campfire,
             { new: true, projection: { members: 0 }},
         );
+        return updatedCampfire;
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
+export const updateCampfire = async (req, res, next) => {
+    const { id: _id } = req.params;
+    const campfire = req.body;
+
+    console.log(campfire, 'campfire update');
+
+    try {
+        if (!mongoose.Types.ObjectId.isValid(_id)) throw new Error('Invalid id.');
+        const updatedCampfire = await updateCampfireHandler(_id, campfire);
         if (updatedCampfire === null) throw new Error('Campfire does not exist.');
         res.status(200).json(updatedCampfire);
     } catch (error) {
@@ -242,7 +253,7 @@ export const fetchCampfireMember = async (req, res, next) => {
     }
 };
 
-const updateMember = async (id, uid, setObj) => {
+export const updateMember = async (id, uid, setObj) => {
     try {
         const updated = await Campfire.findOneAndUpdate(
             {
@@ -272,6 +283,29 @@ export const updateCampfireMemberStatus = async (req, res, next) => {
         if (updatedData === null) throw new Error('Campfire or user id does not exist.');
         res.status(200).json({
             uid,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const updateCampfireMemberActiveStatus = async (req, res, next) => {
+    try {
+        const { id, uid, peerId, socketId } = req.body;
+        if (!uid || !id) throw new Error('[uid, id, status] fields are required!'); 
+        const updatedData = await updateMember(
+            id,
+            uid,
+            {
+                'members.$.isActive': true,
+                'members.$.peerId': peerId,
+                'members.$.socketId': socketId,
+            }   
+        );
+        if (updatedData === null) throw new Error('Campfire or user id does not exist.');
+        res.status(200).json({
+            uid,
+            id,
         });
     } catch (error) {
         next(error);

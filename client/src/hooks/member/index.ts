@@ -25,6 +25,10 @@ export type MemberHooks = {
       uids: String[];
       id: string;
     }) => Promise<Object | undefined>;
+    updateMemberActiveStatus: (params: {
+      uid: string;
+      id: string;
+    }) => Promise<any | undefined>;
   };
 };
 

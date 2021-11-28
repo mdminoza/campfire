@@ -10,6 +10,12 @@ export type CampfireHooks = {
   useCampfireAction(): {
     fetchCampfires: () => Promise<[] | undefined>;
     addCampfire: (campfire: CampfireParams) => Promise<Campfire | undefined>;
+    updateOwnedCampfireActiveStatus: (values: {
+      cid: string;
+      active: boolean;
+      peerId: string;
+      socketId: string;
+    }) => Promise<Campfire | undefined>;
     fetchOwnedCampfires: (cid: string) => Promise<[] | undefined>;
     fetchPublicCampfires: (cid: string) => Promise<[] | undefined>;
     fetchPrivateCampfires: (cid: string) => Promise<[] | undefined>;

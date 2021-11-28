@@ -126,6 +126,30 @@ export const useCampfireAction: CampfireHooks['useCampfireAction'] = () => {
     }
   }, []);
 
+  const updateOwnedCampfireActiveStatus = useCallback(
+    async (values: {
+      cid: string;
+      active: boolean;
+      peerId: string;
+      socketId: string;
+    }) => {
+      try {
+        const res = await axios.patch(`${urls.campfire.main}${values.cid}`, {
+          'creator.isActive': values.active,
+          'creator.peerId': values.peerId,
+          'creator.socketId': values.socketId,
+        });
+        if (res && res?.status === 200) {
+          return res.data;
+        }
+        return null;
+      } catch (e: any) {
+        throw new Error(e);
+      }
+    },
+    [],
+  );
+
   const searchCampfires = useCallback(
     async (cid: string, tpc: string, type: 'public' | 'private' | 'owned') => {
       try {
@@ -216,6 +240,7 @@ export const useCampfireAction: CampfireHooks['useCampfireAction'] = () => {
     fetchPublicCampfires,
     fetchPrivateCampfires,
     addCampfire,
+    updateOwnedCampfireActiveStatus,
     searchCampfires,
     fetchCampfire,
     fetchCampfireMembers,

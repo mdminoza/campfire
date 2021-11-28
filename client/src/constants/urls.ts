@@ -29,6 +29,7 @@ export default {
     delete: 'member/pull',
     deleteMany: 'members/pull',
     setStatus: 'member/set/status',
+    setActiveStatus: 'member/set/activeStatus',
     setRole: 'member/set/role',
   },
   turn: 'turn-credentials',

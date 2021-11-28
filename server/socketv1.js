@@ -1,6 +1,22 @@
 import { Server } from 'socket.io';
 import { ExpressPeerServer } from 'peer';
+import { Map, List } from 'immutable';
+import { arrayToObject } from './helper/index.js'
 
+import {
+    fetchCampfires,
+    fetchOwnCampfires,
+    fetchPublicCampfires,
+    fetchPrivateCampfires,
+    fetchCampfireById,
+    createCampfire,
+    updateCampfire,
+    deleteCampfire,
+    fetchCampfireMembers,
+    updateMember,
+    updateCampfireHandler,
+} from './controllers/campfire.js';
+import Campfire from './models/campfire.js';
 import { createPeerServerListeners } from './groupCallHandler.js';
 
 const socketInit = (server, app) => {
@@ -8,6 +24,8 @@ const socketInit = (server, app) => {
     const rooms = [];
     let admins = [];
     let audiences = [];
+    let adminList = [];
+    let audienceList = [];
 
     // const peerServer = ExpressPeerServer(server, {
     //     debug: true,
@@ -20,7 +38,7 @@ const socketInit = (server, app) => {
     const io = new Server(server, {
         cors: {
             // TODO: will use the provided domain
-            origin: ['http://localhost:3000', 'https://campfire.godtribe.com', 'http://staging.godtribe.com'],
+            origin: ['http://localhost:3000', 'http://localhost:5000', 'https://campfire.godtribe.com', 'http://staging.godtribe.com'],
             // origin: '*',
             // origin: 'https://godtribe-8f80d.web.app',
             methods: ['GET', 'POST'],
@@ -45,31 +63,120 @@ const socketInit = (server, app) => {
             });
         });
 
-        socket.on('join-campfire-group', (data) => {
-            socket.join(data.campfireId);
-            io.to(data.campfireId).emit('receive-join-campfire-group', data);
-            if (data.isAdmin) {
-                const isExist = admins.find(item => item.campfireId === data.campfireId && item.userId === data.userId);
-                if (!isExist) {
-                    admins.push(data);
+        socket.on('join-campfire-group', async (data) => {
+            try {
+                socket.join(data.campfireId);
+
+                if (data.isOwned) {
+                    const ownedCampfireStatus = await updateCampfireHandler(
+                        data.campfireId,
+                        {
+                            'creator.isActive': true,
+                            'creator.peerId': data.peerId,
+                            'creator.socketId': socket.id,
+                        }   
+                    );
+                    console.log(ownedCampfireStatus, 'ownedcampfirestatus');
+                } else {
+                    const updatedData = await updateMember(
+                        data.campfireId,
+                        data.userId,
+                        {
+                            'members.$.isActive': true,
+                            'members.$.peerId': data.peerId,
+                            'members.$.socketId': socket.id,
+                        }   
+                    );
+                    console.log(updatedData, 'updatedData');
                 }
-            } else {
-                const isExist = audiences.find(item => item.campfireId === data.campfireId && item.userId === data.userId);
-                if (!isExist) {
-                    audiences.push(data);
+
+                io.to(data.campfireId).emit('receive-join-campfire-group', data);
+
+                const campfires = await Campfire.findOne(
+                    {
+                        _id: data.campfireId,
+                        createdAt: { 
+                            $lt: new Date(), 
+                            $gte: new Date(new Date().setDate(new Date().getDate()-1))
+                        },
+                    },
+                    { '_id': 1, members: 1, creator: 1 }
+                );
+
+                if (campfires) {
+                    const { creator, members, _id } = campfires;
+                    const creatorArr = [{
+                        userId: creator.uid,
+                        profileUrl: creator.profileUrl,
+                        name: creator.name,
+                        campfireId: data.campfireId,
+                        isActive: creator.isActive,
+                        peerId: creator.peerId,
+                        socketId: creator.socketId, 
+                    }];
+
+                    const membersArr = members.filter(res => res.isActive).map(val => {
+                        return {
+                            userId: val.uid,
+                            profileUrl: val.profileUrl,
+                            name: val.name,
+                            campfireId: val.campfire,
+                            isActive: val.isActive,
+                            peerId: val.peerId,
+                            socketId: val.socketId, 
+                        };
+                    });
+
+                    const filteredAdmin = admins.filter(val => val.campfireId === data.campfireId);
+                    const filteredAudience = audiences.filter(val => val.campfireId === data.campfireId);
+                    const filteredRemAdmin = admins.filter(val => val.campfireId !== data.campfireId);
+                    const filteredRemAudience = audiences.filter(val => val.campfireId !== data.campfireId);
+
+                    const arrObjectAdmin = Map(arrayToObject(filteredAdmin, 'userId'));
+                    const arrObjectAudience = Map(arrayToObject(filteredAudience, 'userId'));
+                    const arrObjectMembersArr = Map(arrayToObject(membersArr, 'userId'));
+                    const arrObjectCreatorArr = Map(arrayToObject(creatorArr, 'userId'));
+
+                    const newAdminList = arrObjectAdmin.mergeDeep(arrObjectCreatorArr);
+                    const newAudienceList = arrObjectAudience.mergeDeep(arrObjectMembersArr);
+
+                    admins = [
+                        ...filteredRemAdmin,
+                        ...Object.values(newAdminList.toJS()),
+                    ];
+                    audiences = [
+                        ...filteredRemAudience,
+                        ...Object.values(newAudienceList.toJS()),
+                    ];
+                    
+                    // if (data.isAdmin) {
+                    //     const isExist = admins.find(item => item.campfireId === data.campfireId && item.userId === data.userId);
+                    //     if (!isExist) {
+                    //         admins.push(data);
+                    //     }
+                    // } else {
+                    //     const isExist = audiences.find(item => item.campfireId === data.campfireId && item.userId === data.userId);
+                    //     if (!isExist) {
+                    //         audiences.push(data);
+                    //     }
+                    // }
+
+                    const filterAudiences = audiences.filter(item => item.userId !== data.userId && item.campfireId === data.campfireId);
+                    const filterAdmins = admins.filter(item => item.userId !== data.userId && item.campfireId === data.campfireId);
+
+                    io.to(data.campfireId).emit('broadcast-join', {
+                        audiences: filterAudiences,
+                        admins: filterAdmins,
+                        newUid: data.userId,
+                    });
                 }
+            } catch (err) {
+                console.log(err);
             }
-            const filterAudiences = audiences.filter(item => item.userId !== data.userId && item.campfireId === data.campfireId);
-            const filterAdmins = admins.filter(item => item.userId !== data.userId && item.campfireId === data.campfireId);
-            io.to(data.campfireId).emit('broadcast-join', {
-                audiences: filterAudiences,
-                admins: filterAdmins,
-                newUid: data.userId,
-            });
         });
 
-        socket.on('disconnect', (data) => {
-            console.log('disconnected');
+        socket.on('disconnect', async (data) => {
+            
         });
 
         socket.on('raise-hand', (data) => {
@@ -222,7 +329,30 @@ const socketInit = (server, app) => {
             });
         });
 
-        socket.on('leave', (data) => {
+        socket.on('leave', async (data) => {
+            try {
+                const updatedData = await updateMember(
+                    data.campfireId,
+                    data.userId,
+                    { 
+                        'members.$.isActive': false,
+                        'members.$.peerId': '',
+                        'members.$.socketId': '',
+                    }   
+                );
+                const ownedcampfirestatus = await updateCampfireHandler(
+                    data.campfireId,
+                    {
+                        'creator.isActive': false,
+                        'creator.peerId': '',
+                        'creator.socketId': '',
+                    }   
+                );
+                console.log(updatedData, 'updatedData on leave');
+                console.log(ownedcampfirestatus, 'ownedcampfirestatus on leave');
+            } catch (error) {
+                console.log(error, 'error');
+            }
             socket.leave(data.campfireId);
             audiences = audiences.filter(peer => peer.userId !== data.userId);
             admins = admins.filter(peer => peer.userId !== data.userId);
@@ -264,22 +394,150 @@ const socketInit = (server, app) => {
             });
         })
 
-        socket.on("disconnecting", () => {
+        socket.on("disconnecting", async () => {
+            console.log('disconnected');
+
             let user = null;
             const audience = audiences.find(item => item.socketId === socket.id);
             const admin = admins.find(item => item.socketId === socket.id);
             if (audience) {
+                await updateMember(
+                    audience.campfireId,
+                    audience.userId,
+                    {
+                        'members.$.isActive': false,
+                        'members.$.peerId': '',
+                        'members.$.socketId': '',
+                    }   
+                );
                 user = audience;
             }
             if (admin) {
+                await updateCampfireHandler(
+                    admin.campfireId,
+                    {
+                        'creator.isActive': false,
+                        'creator.peerId': '',
+                        'creator.socketId': '',
+                    }   
+                );
                 user = admin;
             }
             audiences = audiences.filter(peer => peer.socketId !== socket.id);
             admins = admins.filter(peer => peer.socketId !== socket.id);
             if (user) {
-                io.to(user.campfireId).emit('user-leave', {
-                    userId: user.userId,
-                });
+                try {
+                    io.to(user.campfireId).emit('user-leave', {
+                        userId: user.userId,
+                    });
+                } catch (error) {
+                    console.log(error, 'error');
+                }
+            } 
+        });
+
+
+        socket.on('test-join', async (data, callback) => {
+            try {
+                const { userId, campfireId, peerId, isOwned } = data;
+                socket.join(campfireId);
+                let responseData = null;
+                if (isOwned) {
+                    const ownedCampfireStatus = await updateCampfireHandler(
+                        campfireId,
+                        {
+                            'creator.isActive': true,
+                            'creator.peerId': peerId,
+                            'creator.socketId': socket.id,
+                        }   
+                    );
+                    responseData = ownedCampfireStatus;
+                    console.log(ownedCampfireStatus, 'ownedcampfirestatus');
+                } else {
+                    const updatedData = await updateMember(
+                        campfireId,
+                        userId,
+                        {
+                            'members.$.isActive': true,
+                            'members.$.peerId': peerId,
+                            'members.$.socketId': socket.id,
+                        }   
+                    );
+                    responseData = updatedData;
+                    console.log(updatedData, 'updatedData');
+                }
+
+                const campfires = await Campfire.findOne(
+                    {
+                        _id: campfireId,
+                        createdAt: { 
+                            $lt: new Date(), 
+                            $gte: new Date(new Date().setDate(new Date().getDate()-1))
+                        },
+                        'members.isActive': true,
+                    },
+                    { '_id': 1, members: 1, creator: 1 }
+                );
+
+                console.log(campfires, 'campfires');
+                if (campfires) {
+                    const { creator, members, _id } = campfires;
+                    const creatorArr = [{
+                        userId: creator.uid,
+                        profileUrl: creator.profileUrl,
+                        name: creator.name,
+                        campfireId: campfireId,
+                        isActive: creator.isActive,
+                        peerId: creator.peerId,
+                        socketId: creator.socketId, 
+                    }];
+
+                    const membersArr = members.map(val => {
+                        return {
+                            userId: val.uid,
+                            profileUrl: val.profileUrl,
+                            name: val.name,
+                            campfireId: val.campfire,
+                            isActive: val.isActive,
+                            peerId: val.peerId,
+                            socketId: val.socketId, 
+                        };
+                    });
+                    
+                    const filteredAdmin = adminList.filter(val => val.campfireId === data.campfireId);
+                    const filteredAudience = audienceList.filter(val => val.campfireId === data.campfireId);
+                    const filteredRemAdmin = adminList.filter(val => val.campfireId !== data.campfireId);
+                    const filteredRemAudience = audienceList.filter(val => val.campfireId !== data.campfireId);
+
+                    const arrObjectAdmin = Map(arrayToObject(filteredAdmin, 'userId'));
+                    const arrObjectAudience = Map(arrayToObject(filteredAudience, 'userId'));
+                    const arrObjectMembersArr = Map(arrayToObject(membersArr, 'userId'));
+                    const arrObjectCreatorArr = Map(arrayToObject(creatorArr, 'userId'));
+
+                    const newAdminList = arrObjectAdmin.mergeDeep(arrObjectCreatorArr);
+                    const newAudienceList = arrObjectAudience.mergeDeep(arrObjectMembersArr);
+
+                    adminList = [
+                        ...filteredRemAdmin,
+                        ...Object.values(newAdminList.toJS()),
+                    ];
+                    audienceList = [
+                        ...filteredRemAudience,
+                        ...Object.values(newAudienceList.toJS()),
+                    ];
+
+                    console.log({
+                        audiences: audienceList,
+                        admins: adminList,
+                    }, 'calback');
+
+                    callback({
+                        audiences: audienceList,
+                        admins: adminList,
+                    });
+                }
+            } catch (err) {
+                console.log(err, 'error');
             }
         });
     });

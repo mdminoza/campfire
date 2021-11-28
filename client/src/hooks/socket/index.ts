@@ -21,9 +21,11 @@ export type SocketHooks = {
     setKicked: (value: boolean) => boolean;
     isMicDisabled: any;
     setMicDisabled: (value: any) => any;
+    setSocketId: (value: string) => any;
+    socketId: string;
   };
   socketInit: () => any;
-  joinCampfire: (user: JoinedParams) => any;
+  joinCampfire: (user: JoinedParams, isOwned: boolean) => any;
   leaveCampfire: (userId?: string, campfireId?: string) => any;
   raiseHand: (userId: string, campfireId: string, raise: boolean) => any;
   setUserMenu: (
@@ -46,6 +48,12 @@ export type SocketHooks = {
   getLatestStreams: (userId: string, campfireId: string) => any;
   kickMember: (userId: string, campfireId: string) => any;
   disableMic: (userId: string, campfireId: string, value: boolean) => any;
+  testJoin: (
+    userId: string,
+    campfireId: string,
+    peerId: string,
+    isOwned: boolean,
+  ) => any;
 };
 
 export const SocketHooksContext = React.createContext<SocketHooks | null>(null);

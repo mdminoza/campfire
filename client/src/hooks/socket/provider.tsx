@@ -7,6 +7,7 @@ import { JoinedParams } from '../../../common/domain/entities/campfire';
 import { useMediaStreamAction } from '../mediaStream';
 
 const SocketProvider = (props: any): React.ReactElement => {
+  const [socketId, setSocketId] = useState<string>('');
   const [admins, setAdmins] = useState([]);
   const [audiences, setAudiences] = useState([]);
   const [localUser, setLocalUser] = useState<any>(null);
@@ -52,6 +53,8 @@ const SocketProvider = (props: any): React.ReactElement => {
     setMicDisabled,
     socketError,
     setSocketError,
+    socketId,
+    setSocketId,
   };
 
   const SERVER = 'https://staging-campfire-api.azurewebsites.net';
@@ -61,7 +64,9 @@ const SocketProvider = (props: any): React.ReactElement => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     socket.current = io(SERVER);
     if (socket.current) {
-      socket.current.on('connection', () => {});
+      socket.current.on('connection', () => {
+        setSocketId(socket.current.id);
+      });
 
       socket.current.on('receive-join-campfire-group', (data: any) => {
         if (
@@ -138,6 +143,7 @@ const SocketProvider = (props: any): React.ReactElement => {
 
       socket.current.on('disconnect', (reason: any) => {
         console.log('socket disconnected: ', reason);
+        setSocketId('');
         setSocketError(reason);
       });
 
@@ -172,11 +178,12 @@ const SocketProvider = (props: any): React.ReactElement => {
     }
   };
 
-  const joinCampfire = (user: JoinedParams): any => {
+  const joinCampfire = (user: JoinedParams, isOwned: boolean): any => {
     if (socket.current) {
       socket.current.emit('join-campfire-group', {
         ...user,
         socketId: socket.current.id,
+        isOwned,
       });
       setLocalUser({
         ...user,
@@ -306,6 +313,29 @@ const SocketProvider = (props: any): React.ReactElement => {
     }
   };
 
+  const testJoin = (
+    userId: string,
+    campfireId: string,
+    peerId: string,
+    isOwned: boolean,
+  ) => {
+    if (socket.current) {
+      socket.current.emit(
+        'test-join',
+        {
+          userId,
+          campfireId,
+          peerId,
+          socketId: socket.current.id,
+          isOwned,
+        },
+        (response: any) => {
+          console.log('callback called acknowledge', response);
+        },
+      );
+    }
+  };
+
   const combinedValues = {
     useSocketState,
     socketInit,
@@ -320,6 +350,7 @@ const SocketProvider = (props: any): React.ReactElement => {
     getLatestStreams,
     kickMember,
     disableMic,
+    testJoin,
   };
 
   useEffect(() => {

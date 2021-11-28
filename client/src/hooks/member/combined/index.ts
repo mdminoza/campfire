@@ -52,6 +52,21 @@ export const useMemberAction: MemberHooks['useMemberAction'] = () => {
     [],
   );
 
+  const updateMemberActiveStatus = useCallback(
+    async (params: { uid: string; id: string }) => {
+      try {
+        const res = await axios.patch(`${urls.member.setActiveStatus}`, params);
+        if (res && res?.status === 200) {
+          return res.data;
+        }
+        return null;
+      } catch (e: any) {
+        throw new Error(e);
+      }
+    },
+    [],
+  );
+
   const deleteMember = useCallback(
     async (params: { uid: string; id: string }) => {
       try {
@@ -86,6 +101,7 @@ export const useMemberAction: MemberHooks['useMemberAction'] = () => {
     addMember,
     fetchMember,
     updateMemberStatus,
+    updateMemberActiveStatus,
     deleteMember,
     deleteMembers,
   };

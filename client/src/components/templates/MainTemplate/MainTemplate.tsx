@@ -161,12 +161,13 @@ const MainTemplate = (): React.ReactElement => {
     fetchPublicCampfires,
     fetchPrivateCampfires,
     addCampfire,
+    updateOwnedCampfireActiveStatus,
     searchCampfires,
   } = useCampfireAction();
-  const { addMember } = useMemberAction();
+  const { addMember, updateMemberActiveStatus } = useMemberAction();
   const { currentUser, isLoading } = useUserState();
   const { useMediaStreamState } = useMediaStreamAction();
-  const { useSocketState } = useSocketAction();
+  const { useSocketState, testJoin } = useSocketAction();
 
   const {
     setLocalUser,
@@ -305,6 +306,26 @@ const MainTemplate = (): React.ReactElement => {
     addMember(values),
   );
 
+  const {
+    mutate: updateMemberActiveStatusMutation,
+    isLoading: loadingUpdateMemberActiveStatus,
+    // isSuccess: isMemberUpcomingAdded,
+  } = useMutation((values: { uid: string; id: string }) =>
+    updateMemberActiveStatus(values),
+  );
+
+  const handleUpdateMemberActiveStatusMutation = useCallback(
+    (values: { uid: string; id: string }) => {
+      updateMemberActiveStatusMutation(values, {
+        onSuccess: (data) => {
+          navigate(`/campfires/active/${data?.id}`);
+          console.log(data, 'data update member active status');
+        },
+      });
+    },
+    [],
+  );
+
   const handleToggle = useCallback(() => setCampfireToggled(!isToggled), [
     isToggled,
   ]);
@@ -406,6 +427,18 @@ const MainTemplate = (): React.ReactElement => {
           localStorage.setItem('active-campfire', campfireId);
           setCampfireEnded(false);
           setKicked(false);
+          // if (isOwned) {
+          //   handleUpdateCampfireActiveStatusMutation({
+          //     cid: campfireId,
+          //     active: true,
+          //   });
+          // } else {
+          //   handleUpdateMemberActiveStatusMutation({
+          //     uid: currentUser?.id || '',
+          //     id: campfireId,
+          //   });
+          // }
+          // testJoin(currentUser?.id || '', campfireId);
           navigate(`/campfires/active/${campfireId}`);
         } else {
           handleAddMemberMutation({
@@ -415,6 +448,7 @@ const MainTemplate = (): React.ReactElement => {
               uid: currentUser?.id || '',
               campfire: campfireId,
               status: memberStatus,
+              isActive: true,
             },
             id: campfireId,
           });
@@ -966,9 +1000,10 @@ const MainTemplate = (): React.ReactElement => {
           </TabWrapper>
         </>
       )}
-      {(isAddingMember || isAddingMemberUpcoming) && (
-        <Loader style={mainLoader} />
-      )}
+      {(isAddingMember ||
+        isAddingMemberUpcoming ||
+        // loadingUpdateCampfireActiveStatus ||
+        loadingUpdateMemberActiveStatus) && <Loader style={mainLoader} />}
     </StyledLayout>
   );
 };

@@ -130,6 +130,44 @@ const NewActiveTemplate = (): React.ReactElement => {
     ['campfire', campfireIdParam],
     () => fetchCampfire(campfireIdParam),
     {
+      onSuccess: (res) => {
+        if (res && currentUser) {
+          if (currentUser?.id === res?.creator?.uid) {
+            joinCampfire(
+              {
+                campfireId: campfireIdParam || '',
+                userId: currentUser?.id || '',
+                isAdmin: currentUser?.id === campfire?.creator?.uid,
+                isModerator: currentUser?.id === campfire?.creator?.uid,
+                isSpeaker: currentUser?.id === campfire?.creator?.uid,
+                userName: currentUser?.name || '',
+                profileUrl: currentUser?.profileUrl || '',
+                peerId: myPeerId,
+                streamId: localStream.id,
+                stream: localStream,
+              },
+              true,
+            );
+          } else {
+            joinCampfire(
+              {
+                campfireId: campfireIdParam || '',
+                userId: currentUser?.id || '',
+                isAdmin: currentUser?.id === campfire?.creator?.uid,
+                isModerator: currentUser?.id === campfire?.creator?.uid,
+                isSpeaker: currentUser?.id === campfire?.creator?.uid,
+                userName: currentUser?.name || '',
+                profileUrl: currentUser?.profileUrl || '',
+                peerId: myPeerId,
+                streamId: localStream.id,
+                stream: localStream,
+              },
+              false,
+            );
+          }
+        }
+        console.log(res, 'res campfire');
+      },
       onError: () => {
         ErrorModal(
           'Sorry, campfire is not available at the moment or does not exist.',
@@ -395,10 +433,23 @@ const NewActiveTemplate = (): React.ReactElement => {
   }, [activeUser, campfireIdParam, refetchCampfireMember]);
 
   useEffect(() => {
-    if (campfireIdParam && campfireMember !== null) {
+    if (
+      currentUser &&
+      localStream &&
+      myPeerId &&
+      campfireIdParam &&
+      campfireMember !== null
+    ) {
       refetchCampfire();
     }
-  }, [campfireIdParam, refetchCampfire, campfireMember]);
+  }, [
+    currentUser,
+    localStream,
+    myPeerId,
+    campfireIdParam,
+    refetchCampfire,
+    campfireMember,
+  ]);
 
   useEffect(() => {
     const onClickEvent = (e: any) => {
@@ -439,22 +490,22 @@ const NewActiveTemplate = (): React.ReactElement => {
     });
   }, [isRaising]);
 
-  useEffect(() => {
-    if (currentUser && localStream && myPeerId && campfire) {
-      joinCampfire({
-        campfireId: campfireIdParam || '',
-        userId: currentUser?.id || '',
-        isAdmin: currentUser?.id === campfire?.creator?.uid,
-        isModerator: currentUser?.id === campfire?.creator?.uid,
-        isSpeaker: currentUser?.id === campfire?.creator?.uid,
-        userName: currentUser?.name || '',
-        profileUrl: currentUser?.profileUrl || '',
-        peerId: myPeerId,
-        streamId: localStream.id,
-        stream: localStream,
-      });
-    }
-  }, [currentUser, localStream, myPeerId, campfire]);
+  // useEffect(() => {
+  //   if (currentUser && localStream && myPeerId && campfire) {
+  //     joinCampfire({
+  //       campfireId: campfireIdParam || '',
+  //       userId: currentUser?.id || '',
+  //       isAdmin: currentUser?.id === campfire?.creator?.uid,
+  //       isModerator: currentUser?.id === campfire?.creator?.uid,
+  //       isSpeaker: currentUser?.id === campfire?.creator?.uid,
+  //       userName: currentUser?.name || '',
+  //       profileUrl: currentUser?.profileUrl || '',
+  //       peerId: myPeerId,
+  //       streamId: localStream.id,
+  //       stream: localStream,
+  //     });
+  //   }
+  // }, [currentUser, localStream, myPeerId, campfire]);
 
   useEffect(() => {
     // eslint-disable-next-line no-unused-expressions

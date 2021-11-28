@@ -15,6 +15,9 @@ export type CampfireParams = {
     uid: string;
     profileUrl: string;
     name: string;
+    isActive?: boolean;
+    socketId?: string;
+    peerId?: string;
   };
   totalMembers?: number;
   members?: Object[];
