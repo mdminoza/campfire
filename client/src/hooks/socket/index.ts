@@ -25,7 +25,7 @@ export type SocketHooks = {
     socketId: string;
   };
   socketInit: () => any;
-  joinCampfire: (user: JoinedParams, isOwned: boolean) => any;
+  joinCampfire: (user: JoinedParams, isOwned?: boolean) => any;
   leaveCampfire: (userId?: string, campfireId?: string) => any;
   raiseHand: (userId: string, campfireId: string, raise: boolean) => any;
   setUserMenu: (

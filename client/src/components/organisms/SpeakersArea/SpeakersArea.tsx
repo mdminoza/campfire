@@ -111,7 +111,7 @@ const SpeakersArea = ({
                   onClickMenu={value.onClickMenu}
                   speaker={value.speaker}
                   onClick={onClick}
-                  isSpeaker={value?.isSpeaker}
+                  isSpeaker
                   isModerator={value.isModerator}
                   isActive={value.isActive}
                   selectedId={selectedId}
@@ -120,7 +120,7 @@ const SpeakersArea = ({
                   stream={value?.stream}
                   isLocal={value?.isLocal}
                   isMuted={value?.isMuted}
-                  // micEnabled={value?.micEnabled}
+                  micEnabled={value?.micEnabled}
                 />
               </Col>
             ))}

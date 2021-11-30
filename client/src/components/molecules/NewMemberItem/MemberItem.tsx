@@ -224,6 +224,7 @@ type Props = {
   isModerator?: boolean;
   isRaising?: boolean;
   isMuted?: boolean;
+  micEnabled?: boolean;
   onClick: (id: string) => void;
   onClickMenu: (key: string) => void;
   speaker: string;
@@ -243,6 +244,7 @@ const MemberItem = ({
   isSpeaker,
   isModerator = false,
   isMuted = false,
+  micEnabled = false,
   isRaising,
   onClick,
   speaker,
@@ -294,7 +296,7 @@ const MemberItem = ({
         ADMIN MENU
       </Menu.Item>
       <Menu.Divider />
-      {(isSpeaker || isModerator) &&
+      {/* {(isSpeaker || isModerator) &&
         (isMuted ? (
           <>
             <Menu.Item className="adminMenuList" key="unmute">
@@ -308,6 +310,23 @@ const MemberItem = ({
           <>
             <Menu.Item className="adminMenuList" key="mute">
               MUTE
+            </Menu.Item>
+            <Menu.Divider />
+          </>
+        ))} */}
+      {!isSpeaker &&
+        !isModerator &&
+        (!micEnabled ? (
+          <>
+            <Menu.Item className="adminMenuList" key="unsilence">
+              UNSILENCE
+            </Menu.Item>
+            <Menu.Divider />
+          </>
+        ) : (
+          <>
+            <Menu.Item className="adminMenuList" key="silence">
+              SILENCE
             </Menu.Item>
             <Menu.Divider />
           </>

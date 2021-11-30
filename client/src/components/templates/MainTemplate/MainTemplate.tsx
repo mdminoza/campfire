@@ -1000,10 +1000,9 @@ const MainTemplate = (): React.ReactElement => {
           </TabWrapper>
         </>
       )}
-      {(isAddingMember ||
-        isAddingMemberUpcoming ||
-        // loadingUpdateCampfireActiveStatus ||
-        loadingUpdateMemberActiveStatus) && <Loader style={mainLoader} />}
+      {(isAddingMember || isAddingMemberUpcoming) && (
+        <Loader style={mainLoader} />
+      )}
     </StyledLayout>
   );
 };

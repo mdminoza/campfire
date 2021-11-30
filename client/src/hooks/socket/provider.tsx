@@ -178,7 +178,7 @@ const SocketProvider = (props: any): React.ReactElement => {
     }
   };
 
-  const joinCampfire = (user: JoinedParams, isOwned: boolean): any => {
+  const joinCampfire = (user: JoinedParams, isOwned?: boolean): any => {
     if (socket.current) {
       socket.current.emit('join-campfire-group', {
         ...user,
