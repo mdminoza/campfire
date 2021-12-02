@@ -561,15 +561,28 @@ const MediaStreamProvider = (props: any): React.ReactElement => {
   };
 
   const setDisableMic = (data: any) => {
-    const newAudienceData = audienceStreamsRef.current.map((val: any) =>
-      val.userId === data.userId && val.campfireId === data.campfireId
-        ? {
-            ...val,
-            isMuted: true,
-            micEnabled: !data.value,
-          }
-        : val,
-    );
+    let newAudienceData = [];
+    if (data.allAudience) {
+      newAudienceData = audienceStreamsRef.current.map((val: any) =>
+        val.campfireId === data.campfireId
+          ? {
+              ...val,
+              isMuted: true,
+              micEnabled: !data.value,
+            }
+          : val,
+      );
+    } else {
+      newAudienceData = audienceStreamsRef.current.map((val: any) =>
+        val.userId === data.userId && val.campfireId === data.campfireId
+          ? {
+              ...val,
+              isMuted: true,
+              micEnabled: !data.value,
+            }
+          : val,
+      );
+    }
     audienceStreamsRef.current = newAudienceData;
     setAudienceStreams(newAudienceData);
   };

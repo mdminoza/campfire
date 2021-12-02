@@ -47,7 +47,12 @@ export type SocketHooks = {
   setOnMute: (userId: string, campfireId: string, muted: boolean) => any;
   getLatestStreams: (userId: string, campfireId: string) => any;
   kickMember: (userId: string, campfireId: string) => any;
-  disableMic: (userId: string, campfireId: string, value: boolean) => any;
+  disableMic: (
+    userId: string,
+    campfireId: string,
+    value: boolean,
+    allAudience?: boolean,
+  ) => any;
   testJoin: (
     userId: string,
     campfireId: string,

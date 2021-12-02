@@ -119,6 +119,7 @@ const NewActiveTemplate = (): React.ReactElement => {
     audienceStreams,
     isMediaSupported,
     setTurnServers,
+    turnServers,
   } = useMediaStreamState;
 
   const {
@@ -333,6 +334,12 @@ const NewActiveTemplate = (): React.ReactElement => {
     if (key === 'unmuteAll') {
       onMuteAll(activeUser?.uid || '', campfireIdParam, false);
     }
+    if (key === 'silenceAll') {
+      disableMic(activeUser?.uid || '', campfireIdParam, true, true);
+    }
+    if (key === 'unsilenceAll') {
+      disableMic(activeUser?.uid || '', campfireIdParam, false, true);
+    }
     console.log(key, 'key');
   };
 
@@ -546,11 +553,16 @@ const NewActiveTemplate = (): React.ReactElement => {
   }, [localStream, muteAll]);
 
   useEffect(() => {
-    if (!isFetchingTurnCredentialsLoading && turnCredentials) {
+    if (
+      !isFetchingTurnCredentialsLoading &&
+      turnCredentials &&
+      turnServers &&
+      turnServers?.[1]
+    ) {
       getLocalStream();
       connectWithMyPeer();
     }
-  }, [isFetchingTurnCredentialsLoading, turnCredentials]);
+  }, [isFetchingTurnCredentialsLoading, turnCredentials, turnServers]);
   // END USE EFFECTS
 
   // STYLES

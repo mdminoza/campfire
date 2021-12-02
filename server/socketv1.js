@@ -44,6 +44,8 @@ const socketInit = (server, app) => {
             methods: ['GET', 'POST'],
             // credentials: true,
         },
+        pingInterval: 10000,
+        pingTimeout: 30000,
     });
 
     io.on('connection', (socket) => {
@@ -381,47 +383,58 @@ const socketInit = (server, app) => {
         });
 
         socket.on('send-disable-mic', (data) => {
-            audiences = audiences.map((val) => 
-                val.userId === data.userId && val.campfireId === data.campfireId ? {
-                    ...val,
-                    micEnabled: data.value,
-                    isMuted: true,
-                } : val
-            );
+            if (data.allAudience) {
+                audiences = audiences.map((val) => 
+                    val.campfireId === data.campfireId ? {
+                        ...val,
+                        micEnabled: data.value,
+                        isMuted: true,
+                    } : val
+                );
+            } else {
+                audiences = audiences.map((val) => 
+                    val.userId === data.userId && val.campfireId === data.campfireId ? {
+                        ...val,
+                        micEnabled: data.value,
+                        isMuted: true,
+                    } : val
+                );
+            }
+            
             io.to(data.campfireId).emit('received-disable-mic', {
                 userId: data.userId,
                 campfireId: data.campfireId,
                 value: data.value,
+                allAudience: data.allAudience,
             });
         })
 
         socket.on("disconnecting", async () => {
             console.log('disconnected');
-
             let user = null;
             const audience = audiences.find(item => item.socketId === socket.id);
             const admin = admins.find(item => item.socketId === socket.id);
             if (audience) {
-                await updateMember(
-                    audience.campfireId,
-                    audience.userId,
-                    {
-                        'members.$.isActive': false,
-                        'members.$.peerId': '',
-                        'members.$.socketId': '',
-                    }   
-                );
+                // await updateMember(
+                //     audience.campfireId,
+                //     audience.userId,
+                //     {
+                //         'members.$.isActive': false,
+                //         'members.$.peerId': '',
+                //         'members.$.socketId': '',
+                //     }   
+                // );
                 user = audience;
             }
             if (admin) {
-                await updateCampfireHandler(
-                    admin.campfireId,
-                    {
-                        'creator.isActive': false,
-                        'creator.peerId': '',
-                        'creator.socketId': '',
-                    }   
-                );
+                // await updateCampfireHandler(
+                //     admin.campfireId,
+                //     {
+                //         'creator.isActive': false,
+                //         'creator.peerId': '',
+                //         'creator.socketId': '',
+                //     }   
+                // );
                 user = admin;
             }
             audiences = audiences.filter(peer => peer.socketId !== socket.id);

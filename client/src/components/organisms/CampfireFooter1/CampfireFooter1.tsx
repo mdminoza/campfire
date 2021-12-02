@@ -304,6 +304,15 @@ const CampfireFooter1 = ({
         ADMIN MENU
       </Menu.Item>
       <Menu.Divider />
+      <Menu.Item className="adminMenuList" key="silenceAll">
+        SILENCE ALL
+      </Menu.Item>
+      <Menu.Item className="adminMenuList" key="unsilenceAll">
+        <MuteLabel>
+          <UnLabel>UN</UnLabel>SILENCE ALL
+        </MuteLabel>
+      </Menu.Item>
+      <Menu.Divider />
       <Menu.Item className="adminMenuList" key="muteAll">
         MUTE ALL
       </Menu.Item>
