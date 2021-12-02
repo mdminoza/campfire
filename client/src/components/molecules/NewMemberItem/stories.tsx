@@ -80,6 +80,8 @@ const Component = () => {
           profileUrl="https://dummyimage.com/263x263/4a4a4a/ffffff"
           onClickMenu={(menu) => console.log(menu, 'selected')}
           speaker="potato"
+          // eslint-disable-next-line jsx-a11y/aria-role
+          role="PP"
           onClick={handleClick}
           isSpeaker={false}
           isActive={false}
