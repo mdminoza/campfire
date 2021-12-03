@@ -15,4 +15,5 @@ export interface MemberItemParams {
   micEnabled?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   peer?: any;
+  role?: 'founding father' | 'founder' | 'pioneer' | 'basic';
 }

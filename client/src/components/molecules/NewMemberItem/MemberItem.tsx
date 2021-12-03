@@ -231,6 +231,7 @@ const BadgeStyle = styled.div`
   border-radius: 0px 3px 3px 3px;
   color: white;
   font-size: 15px;
+  text-align: center;
 `;
 
 type Props = {
@@ -252,7 +253,7 @@ type Props = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   peer?: any;
   stream?: any;
-  role?: string;
+  role?: 'founding father' | 'founder' | 'pioneer' | 'basic';
 };
 
 const MemberItem = ({
@@ -455,6 +456,21 @@ const MemberItem = ({
     right: 0,
   };
 
+  const badgeLetter = (): string => {
+    switch (role) {
+      case 'founding father':
+        return 'FF';
+      case 'founder':
+        return 'F';
+      case 'pioneer':
+        return 'P';
+      case 'basic':
+        return 'B';
+      default:
+        return '';
+    }
+  };
+
   return (
     <StyledCard
       onClick={handleClick}
@@ -487,7 +503,7 @@ const MemberItem = ({
           {/* <SpeakerStatus width={20} height={20} style={mutedIconStyle} /> */}
           {/* )} */}
 
-          {role && <BadgeStyle>{role}</BadgeStyle>}
+          {role && <BadgeStyle>{badgeLetter()}</BadgeStyle>}
 
           {isModerator && <BlackCrown style={moderatorStyle} />}
 
