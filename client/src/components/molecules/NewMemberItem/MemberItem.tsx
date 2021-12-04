@@ -5,7 +5,7 @@ import { Card, Menu, Dropdown } from 'antd';
 import { Avatar } from '../../atoms/Avatar';
 import {
   RaiseHand,
-  // SpeakerStatus,
+  SpeakerStatus,
   // SpeakerActiveStatus,
   // Asterisks,
   BlackCrown,
@@ -218,6 +218,22 @@ const NameWrapper = styled.div`
   padding-left: 2px;
 `;
 
+const BadgeStyle = styled.div`
+  position: absolute;
+  z-index: 1;
+  bottom: 33px;
+  left: 7px;
+  background: #ff00e5;
+  padding: 4px;
+  height: 25px;
+  width: 25px;
+  line-height: 16px;
+  border-radius: 0px 3px 3px 3px;
+  color: white;
+  font-size: 15px;
+  text-align: center;
+`;
+
 type Props = {
   isActive?: boolean;
   isSpeaker?: boolean;
@@ -237,6 +253,7 @@ type Props = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   peer?: any;
   stream?: any;
+  role?: 'founding father' | 'founder' | 'pioneer' | 'basic';
 };
 
 const MemberItem = ({
@@ -257,6 +274,7 @@ const MemberItem = ({
   peer = null,
   isLocal = false,
   stream,
+  role,
 }: Props): React.ReactElement => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   // const ref = useRef<any>();
@@ -391,10 +409,10 @@ const MemberItem = ({
     padding: 1,
   };
 
-  // const mutedIconStyle = {
-  //   ...iconStyle,
-  //   left: 0,
-  // };
+  const mutedIconStyle = {
+    ...iconStyle,
+    left: 0,
+  };
 
   const cardStyle = {
     width: size || 110,
@@ -438,6 +456,21 @@ const MemberItem = ({
     right: 0,
   };
 
+  const badgeLetter = (): string => {
+    switch (role) {
+      case 'founding father':
+        return 'FF';
+      case 'founder':
+        return 'F';
+      case 'pioneer':
+        return 'P';
+      case 'basic':
+        return 'B';
+      default:
+        return '';
+    }
+  };
+
   return (
     <StyledCard
       onClick={handleClick}
@@ -466,9 +499,11 @@ const MemberItem = ({
             <BlackCrown width={20} height={20} style={iconStyle} />
           )} */}
 
-          {/* {isMuted && (
-            <SpeakerStatus width={20} height={20} style={mutedIconStyle} />
-          )} */}
+          {/* {isMuted && ( */}
+          {/* <SpeakerStatus width={20} height={20} style={mutedIconStyle} /> */}
+          {/* )} */}
+
+          {role && <BadgeStyle>{badgeLetter()}</BadgeStyle>}
 
           {isModerator && <BlackCrown style={moderatorStyle} />}
 

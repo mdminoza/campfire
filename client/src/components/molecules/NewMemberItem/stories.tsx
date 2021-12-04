@@ -71,6 +71,8 @@ const Component = () => {
           isSpeaker={false}
           isActive={false}
           isModerator
+          // eslint-disable-next-line jsx-a11y/aria-role
+          role="pioneer"
         />
       </Col>
       <Col>
@@ -80,6 +82,8 @@ const Component = () => {
           profileUrl="https://dummyimage.com/263x263/4a4a4a/ffffff"
           onClickMenu={(menu) => console.log(menu, 'selected')}
           speaker="potato"
+          // eslint-disable-next-line jsx-a11y/aria-role
+          role="founding father"
           onClick={handleClick}
           isSpeaker={false}
           isActive={false}
