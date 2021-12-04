@@ -107,8 +107,13 @@ const Wrapper = styled.div`
   }
 `;
 
-const StyledLayout = styled(Layout)<{ campfiretoggled?: string }>`
+const StyledLayout = styled.section<{ campfiretoggled?: string }>`
   &&& {
+    margin-top: 70px;
+    display: flex;
+    flex: auto;
+    flex-direction: column;
+    background: #f0f2f5;
     min-height: 100vh;
     & .campfiretabs1: {
       z-index: ${(props) => (props.campfiretoggled === 'true' ? '-1' : 'auto')};

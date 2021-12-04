@@ -9,6 +9,7 @@ const { useBreakpoint } = Grid;
 
 const Container = styled.div`
   &&& {
+    margin-top: 50px;
     display: flex;
     align-items: center;
     flex-direction: column;
