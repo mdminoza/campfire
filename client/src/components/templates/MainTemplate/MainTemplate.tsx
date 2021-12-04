@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-nested-ternary */
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Layout, Row, Col, Spin, Empty, Divider, Grid } from 'antd';
+import { Row, Col, Spin, Empty, Divider, Grid } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useQuery, useMutation } from 'react-query';
@@ -107,7 +107,7 @@ const Wrapper = styled.div`
   }
 `;
 
-const StyledLayout = styled.section<{ campfiretoggled?: string }>`
+const Container = styled.section<{ campfiretoggled?: string }>`
   &&& {
     margin-top: 70px;
     display: flex;
@@ -971,7 +971,9 @@ const MainTemplate = (): React.ReactElement => {
   };
 
   return (
-    <StyledLayout campfiretoggled={isToggled ? 'true' : 'false'}>
+    <Container
+      className="main-container"
+      campfiretoggled={isToggled ? 'true' : 'false'}>
       {isLoading && !!currentUser?.id ? (
         <Loader />
       ) : (
@@ -1014,7 +1016,7 @@ const MainTemplate = (): React.ReactElement => {
       {(isAddingMember || isAddingMemberUpcoming) && (
         <Loader style={mainLoader} />
       )}
-    </StyledLayout>
+    </Container>
   );
 };
 
