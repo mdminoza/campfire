@@ -109,6 +109,7 @@ const Wrapper = styled.div`
 
 const Container = styled.section<{ campfiretoggled?: string }>`
   &&& {
+    max-width: none !important;
     margin-top: 70px;
     display: flex;
     flex: auto;
