@@ -17,12 +17,12 @@ type Props = {
   title?: string;
   description?: string;
   onActive?: boolean;
-  isDurationLoading?: boolean;
-  duration?: string;
-  onClickStartDuration?: (campfireId: string) => void;
-  campfireId?: string;
-  durationStartDate?: Date | undefined;
-  isCreator?: boolean;
+  // isDurationLoading?: boolean;
+  // duration?: string;
+  // onClickStartDuration?: (campfireId: string) => void;
+  // campfireId?: string;
+  // durationStartDate?: Date | undefined;
+  // isCreator?: boolean;
   scheduleToStart?: Date | undefined;
 };
 
@@ -30,8 +30,7 @@ const Container = styled.div<{ onActive: boolean }>`
   &&& {
     display: flex;
     align-items: center;
-    justify-content: center;
-    height: ${(props) => (props.onActive ? '200px' : '390px')};
+    height: ${(props) => (props.onActive ? '200px' : '300px')};
     flex-direction: column;
     background: ${(props) =>
       props.onActive ? theme.colors.mainWhite : `url(${campfireBackground})`};
@@ -40,8 +39,8 @@ const Container = styled.div<{ onActive: boolean }>`
     background-repeat: no-repeat;
     text-align: center;
     position: relative;
-    @media (max-width: 576px) {
-      height: ${(props) => (props.onActive ? '190px' : '300px')};
+    @media (max-width: 768px) {
+      height: ${(props) => (props.onActive ? '190px' : '220px')};
     }
   }
 `;
@@ -68,8 +67,10 @@ export const Title = styled.span`
     }) => props?.padding || 0};
     z-index: 1;
     text-align: center;
+    margin-top: 75px;
     @media (max-width: 768px) {
       font-size: 1.5rem;
+      margin-top: 45px;
     }
     @media (max-width: 576px) {
       font-size: 1.2rem;
@@ -136,9 +137,9 @@ const Overlay = styled.div`
     right: 0;
     background-color: ${theme.colors.mainBlack};
     opacity: 0.6;
-    height: 390px;
-    @media (max-width: 576px) {
-      height: 300px;
+    height: 300px;
+    @media (max-width: 768px) {
+      height: 220px;
     }
   }
 `;
@@ -325,11 +326,11 @@ Props): React.ReactElement => {
     <Container className="titleName" onActive={!!onActive}>
       {!onActive && <Overlay />}
 
-      {!onActive && (
+      {/* {!onActive && (
         <IconWrapper>
           <FireOutline {...iconDimension} />
         </IconWrapper>
-      )}
+      )} */}
       <Title
         padding="0 10px"
         lineHeight={!md ? '40px' : ''}

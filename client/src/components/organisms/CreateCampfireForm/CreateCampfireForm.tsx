@@ -1,6 +1,5 @@
 import React, { useRef, useEffect } from 'react';
 import { Formik } from 'formik';
-import { v4 } from 'uuid';
 
 import { CreateCampfire } from '../../molecules/CreateCampfire';
 

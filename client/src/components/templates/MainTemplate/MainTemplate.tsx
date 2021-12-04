@@ -42,6 +42,12 @@ const { useBreakpoint } = Grid;
 
 const TabWrapper = styled.div<{ campfiretoggled: boolean }>`
   &&& {
+    @media (min-width: 1200px) {
+      margin: 0 120px;
+    }
+    @media (min-width: 1300px) {
+      margin: 0 190px;
+    }
     margin: 0 40px;
     z-index: ${(props) => (props.campfiretoggled ? '-1;' : 'auto')};
   }
@@ -104,7 +110,7 @@ const Wrapper = styled.div`
 const StyledLayout = styled(Layout)<{ campfiretoggled?: string }>`
   &&& {
     min-height: 100vh;
-    & .campfiretabs: {
+    & .campfiretabs1: {
       z-index: ${(props) => (props.campfiretoggled === 'true' ? '-1' : 'auto')};
     }
     & ._campfireTabs {

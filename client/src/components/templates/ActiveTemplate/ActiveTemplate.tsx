@@ -1209,8 +1209,8 @@ const ActiveTemplate = () => {
           title={campfire?.topic || ''}
           description={campfire?.description || ''}
           onActive
-          onClickStartDuration={() => {}}
-          campfireId={campfireIdParam || ''}
+          // onClickStartDuration={() => {}}
+          // campfireId={campfireIdParam || ''}
           scheduleToStart={campfire?.scheduleToStart}
         />
         <ActiveSpeakersWrapper>

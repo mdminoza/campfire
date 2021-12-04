@@ -6,7 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 // import { isMobile } from 'react-device-detect';
 import styled from 'styled-components';
 
-import { TitleContent } from '../../molecules/TitleContent';
+import { ActiveTitleContent } from '../../molecules/ActiveTitleContent';
 import { SpeakersArea } from '../../organisms/SpeakersArea';
 import { CampfireFooter1 } from '../../organisms/CampfireFooter1';
 import { MembersList } from '../../organisms/MembersList';
@@ -27,7 +27,7 @@ import { sortByName } from '../../../utils/helpers/common';
 
 const ActiveSpeakersWrapper = styled.div`
   &&& {
-    margin: -70px 0 24px;
+    margin: 0 0 24px;
     z-index: 1;
   }
 `;
@@ -717,12 +717,9 @@ const NewActiveTemplate = (): React.ReactElement => {
   ) {
     return (
       <Container>
-        <TitleContent
+        <ActiveTitleContent
           title={campfire?.topic || ''}
           description={campfire?.description || ''}
-          onActive
-          onClickStartDuration={() => {}}
-          campfireId={campfireIdParam || ''}
           scheduleToStart={campfire?.scheduleToStart}
         />
         <ActiveSpeakersWrapper>

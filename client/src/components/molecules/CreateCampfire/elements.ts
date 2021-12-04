@@ -12,6 +12,12 @@ export const Container = styled.div`
 
 export const Wrapper = styled.div`
   &&& {
+    @media (min-width: 1200px) {
+      padding: 30px 120px 15px 120px;
+    }
+    @media (min-width: 1300px) {
+      padding: 30px 190px 15px 190px;
+    }
     padding: 30px 30px 15px 30px;
   }
 `;

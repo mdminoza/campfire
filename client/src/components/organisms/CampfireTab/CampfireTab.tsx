@@ -87,7 +87,7 @@ const CampfireTab = ({
   return (
     <TabWrapper
       className={
-        !md && (xs || sm) ? 'campfireTabs _campfireTabs' : 'campfireTabs'
+        !md && (xs || sm) ? 'campfireTabs1 _campfireTabs' : 'campfireTabs1'
       }>
       <StyledTabs activeKey={activeKey} onChange={onChange}>
         {tabs.map((tab) => (
