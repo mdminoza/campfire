@@ -281,10 +281,11 @@ const CampfireFooter1 = ({
 
   const raisedHandBtnStyle = {
     backgroundColor: theme.colors.gray.gray29,
-    textAlign: 'end',
+    textAlign: 'start',
     paddingRight: xs ? 15 : 24,
     paddingLeft: xs ? 0 : 15,
     height: '100%',
+    width: '100% !important',
   };
 
   const emojiWinkStyle = { marginTop: 10 };
