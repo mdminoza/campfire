@@ -10,6 +10,9 @@ const { useBreakpoint } = Grid;
 const Container = styled.div`
   &&& {
     margin-top: 60px;
+    @media (max-width: 576px) {
+      margin-top: 0;
+    }
     display: flex;
     align-items: center;
     flex-direction: column;
