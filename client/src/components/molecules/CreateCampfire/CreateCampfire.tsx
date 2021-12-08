@@ -265,7 +265,7 @@ const CreateCampfire = ({
         <LineSpace />
         <Row>
           <Col xs={24} sm={14} md={15}>
-            {/* <CheckBoxWrapper>
+            <CheckBoxWrapper>
               <CheckboxContainer>
                 <Checkbox checked={checked} onChange={onChangeCheckbox} />
               </CheckboxContainer>
@@ -274,7 +274,7 @@ const CreateCampfire = ({
               <InfoSubtitle>
                 will not show up in public list / invite only
               </InfoSubtitle>
-            </CheckBoxWrapper> */}
+            </CheckBoxWrapper>
           </Col>
           <Col xs={24} sm={24} md={9}>
             <BtnWrapper toggled={!toggled}>
@@ -319,7 +319,7 @@ const CreateCampfire = ({
             </SchedulePickerWrapper>
           </StyledCol>
         </StyledRow>
-        {/* <StyledRow gutter={[32, 0]}>
+        <StyledRow gutter={[32, 0]}>
           <StyledCol span={12} right="true">
             <StyledText>Open To:</StyledText>
           </StyledCol>
@@ -341,7 +341,7 @@ const CreateCampfire = ({
               />
             </InvitePickerWrapper>
           </StyledCol>
-        </StyledRow> */}
+        </StyledRow>
         <StyledRow gutter={[32, 0]}>
           <StyledCol span={12} right="true">
             <StyledText>Duration:</StyledText>

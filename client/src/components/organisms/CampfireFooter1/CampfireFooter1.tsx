@@ -40,12 +40,33 @@ const StyledFooter = styled(Footer)`
   }
 `;
 
+// const StyledFooter1 = styled(Footer)`
+//   &&& {
+//     position: fixed !important;
+//     z-index: 2;
+//     width: 100% !important;
+//     bottom: 58px !important;
+//     padding: 0 !important;
+//     background-color: ${theme.colors.gray.gray29} !important;
+//     -webkit-appearance: none;
+//     -moz-appearance: none;
+//     appearance: none;
+//   }
+// `;
+
 const StyledRow = styled(Row)`
   &&& {
     justify-content: center !important;
     flex-flow: row nowrap !important;
   }
 `;
+
+// const StyledRow1 = styled(Row)`
+//   &&& {
+//     justify-content: end !important;
+//     flex-flow: row nowrap !important;
+//   }
+// `;
 
 const OptionContainer = styled.div`
   &&& {
@@ -89,7 +110,7 @@ const EmojiButtonWrapper = styled.button`
   &&& {
     padding: 0;
     border: none;
-    background-color: #424242;
+    background-color: transparent;
     cursor: pointer;
     border-radius: 10px;
     &:focus {
@@ -98,6 +119,20 @@ const EmojiButtonWrapper = styled.button`
     }
   }
 `;
+
+// const EmojiButtonWrapper1 = styled.button`
+//   &&& {
+//     padding: 0;
+//     border: none;
+//     background-color: transparent;
+//     cursor: pointer;
+//     border-radius: 10px;
+//     &:focus {
+//       outline: none;
+//       box-shadow: none;
+//     }
+//   }
+// `;
 
 const EmojiMainWrapper = styled.div`
   &&& {
@@ -125,6 +160,16 @@ const EmojiCol = styled(Col)`
     appearance: none;
   }
 `;
+
+// const EmojiCol1 = styled(Col)`
+//   &&& {
+//     display: flex;
+//     align-items: center;
+//     -webkit-appearance: none;
+//     -moz-appearance: none;
+//     appearance: none;
+//   }
+// `;
 
 const RaiseHandBtnContent = styled.div`
   &&& {
@@ -404,102 +449,132 @@ const CampfireFooter1 = ({
   }, [handleNavigation]);
 
   return (
-    <StyledFooter>
-      <StyledRow>
-        <Col flex="59px">
-          <AvatarWrapper>
-            <Avatar size={59} src={profileUrl} alt="Campfire" />
-            {!isSpeaker && isRaising && (
-              <RaiseHandWrapper>
-                <RaiseHand width={28} height={40} />
-              </RaiseHandWrapper>
-            )}
-          </AvatarWrapper>
-        </Col>
-        {/* {isSpeaker && (
-          <MicWrapper>
-            <IconLogo onClick={handleOnClickMic}>
-              {onMute ? (
-                <MuteMic width={45} height={45} />
-              ) : (
-                <Mic1 width={45} height={45} />
-              )}
-            </IconLogo>
-          </MicWrapper>
-        )} */}
-        {micEnabled && (
-          <MicWrapper>
-            <IconLogo onClick={handleOnClickMic}>
-              {onMute ? (
-                <MuteMic width={45} height={45} />
-              ) : (
-                <Mic1 width={45} height={45} />
-              )}
-            </IconLogo>
-          </MicWrapper>
-        )}
-        <Col flex="auto">
-          {!isSpeaker && (
-            <Button
-              style={
-                isRaising && !isSpeaker ? raisedHandBtnStyle : raiseHandBtnStyle
-              }
-              onClick={() => onClickRaiseHand(id, isRaising)}>
-              {!isSpeaker && isRaising ? (
-                <RaiseHandLabel xs={xs}>
-                  {xs ? 'HAND IS RAISED' : 'MY HAND IS RAISED'}
-                </RaiseHandLabel>
-              ) : (
-                <RaiseHandBtnContent>
-                  <RaiseHand width={28} height={40} />
-                </RaiseHandBtnContent>
-              )}
-            </Button>
-          )}
-        </Col>
-        <EmojiCol>
-          <EmojiMainWrapper onClick={handleOnClickEmojisOpen}>
-            <EmojiSmiley width={38} height={35} />
-          </EmojiMainWrapper>
-          <EmojisWrapper isOpen={isEmojisOpen}>
-            <EmojiButtonWrapper
+    <>
+      {/* <StyledFooter1>
+        <StyledRow1>
+          <EmojiCol1>
+            <EmojiButtonWrapper1
               id="_emojimains"
               onClick={() => onClickEmoji(id, 'wink')}>
               <EmojiWink style={emojiWinkStyle} width={38} height={36} />
-            </EmojiButtonWrapper>
-            <EmojiButtonWrapper
+            </EmojiButtonWrapper1>
+            <EmojiButtonWrapper1
               id="_emojimains"
               onClick={() => onClickEmoji(id, 'cool')}>
               <EmojiCool width={38} height={35} />
-            </EmojiButtonWrapper>
-            <EmojiButtonWrapper
+            </EmojiButtonWrapper1>
+            <EmojiButtonWrapper1
               id="_emojimains"
               onClick={() => onClickEmoji(id, 'sweat')}>
               <EmojiSweat style={emojiSweatStyle} width={35} height={45} />
-            </EmojiButtonWrapper>
-            <EmojiButtonWrapper
+            </EmojiButtonWrapper1>
+            <EmojiButtonWrapper1
               id="_emojimains"
               onClick={() => onClickEmoji(id, 'smile')}>
               <EmojiSmiley style={emojiSmileyStyle} width={38} height={35} />
-            </EmojiButtonWrapper>
-          </EmojisWrapper>
-        </EmojiCol>
-        <OptionContainer onClick={handleOnClickProfile}>
-          <Dropdown
-            placement="topCenter"
-            overlayClassName="adminMenuDropdown"
-            overlay={isAdmin ? adminMenu : menu}
-            overlayStyle={overlayStyle}
-            visible={onMenuProfile}>
-            <HiddenDropDownContainer />
-          </Dropdown>
-          <HiddenContainer id="_profileMenu" />
-          <IconLogo style={{ width: 50 }}>
-            <Dots />
-          </IconLogo>
-        </OptionContainer>
-      </StyledRow>
-    </StyledFooter>
+            </EmojiButtonWrapper1>
+          </EmojiCol1>
+        </StyledRow1>
+      </StyledFooter1> */}
+      <StyledFooter>
+        <StyledRow>
+          <Col flex="59px">
+            <AvatarWrapper>
+              <Avatar size={59} src={profileUrl} alt="Campfire" />
+              {!isSpeaker && isRaising && (
+                <RaiseHandWrapper>
+                  <RaiseHand width={28} height={40} />
+                </RaiseHandWrapper>
+              )}
+            </AvatarWrapper>
+          </Col>
+          {/* {isSpeaker && (
+            <MicWrapper>
+              <IconLogo onClick={handleOnClickMic}>
+                {onMute ? (
+                  <MuteMic width={45} height={45} />
+                ) : (
+                  <Mic1 width={45} height={45} />
+                )}
+              </IconLogo>
+            </MicWrapper>
+          )} */}
+          {micEnabled && (
+            <MicWrapper>
+              <IconLogo onClick={handleOnClickMic}>
+                {onMute ? (
+                  <MuteMic width={45} height={45} />
+                ) : (
+                  <Mic1 width={45} height={45} />
+                )}
+              </IconLogo>
+            </MicWrapper>
+          )}
+          <Col flex="auto">
+            {!isSpeaker && (
+              <Button
+                style={
+                  isRaising && !isSpeaker
+                    ? raisedHandBtnStyle
+                    : raiseHandBtnStyle
+                }
+                onClick={() => onClickRaiseHand(id, isRaising)}>
+                {!isSpeaker && isRaising ? (
+                  <RaiseHandLabel xs={xs}>
+                    {xs ? 'HAND IS RAISED' : 'MY HAND IS RAISED'}
+                  </RaiseHandLabel>
+                ) : (
+                  <RaiseHandBtnContent>
+                    <RaiseHand width={28} height={40} />
+                  </RaiseHandBtnContent>
+                )}
+              </Button>
+            )}
+          </Col>
+          <EmojiCol>
+            <EmojiMainWrapper onClick={handleOnClickEmojisOpen}>
+              <EmojiSmiley width={38} height={35} />
+            </EmojiMainWrapper>
+            <EmojisWrapper isOpen={isEmojisOpen}>
+              <EmojiButtonWrapper
+                id="_emojimains"
+                onClick={() => onClickEmoji(id, 'wink')}>
+                <EmojiWink style={emojiWinkStyle} width={38} height={36} />
+              </EmojiButtonWrapper>
+              <EmojiButtonWrapper
+                id="_emojimains"
+                onClick={() => onClickEmoji(id, 'cool')}>
+                <EmojiCool width={38} height={35} />
+              </EmojiButtonWrapper>
+              <EmojiButtonWrapper
+                id="_emojimains"
+                onClick={() => onClickEmoji(id, 'sweat')}>
+                <EmojiSweat style={emojiSweatStyle} width={35} height={45} />
+              </EmojiButtonWrapper>
+              <EmojiButtonWrapper
+                id="_emojimains"
+                onClick={() => onClickEmoji(id, 'smile')}>
+                <EmojiSmiley style={emojiSmileyStyle} width={38} height={35} />
+              </EmojiButtonWrapper>
+            </EmojisWrapper>
+          </EmojiCol>
+          <OptionContainer onClick={handleOnClickProfile}>
+            <Dropdown
+              placement="topCenter"
+              overlayClassName="adminMenuDropdown"
+              overlay={isAdmin ? adminMenu : menu}
+              overlayStyle={overlayStyle}
+              visible={onMenuProfile}>
+              <HiddenDropDownContainer />
+            </Dropdown>
+            <HiddenContainer id="_profileMenu" />
+            <IconLogo style={{ width: 50 }}>
+              <Dots />
+            </IconLogo>
+          </OptionContainer>
+        </StyledRow>
+      </StyledFooter>
+    </>
   );
 };
 

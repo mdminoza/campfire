@@ -875,51 +875,51 @@ const MainTemplate = (): React.ReactElement => {
         </TabContentWrapper>
       ),
     },
-    // {
-    //   key: 'privateCampfire',
-    //   title: 'Private Group Campfires',
-    //   count: privateCampfire.data.length,
-    //   children: (
-    //     <TabContentWrapper>
-    //       <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-    //         <TextInput
-    //           value={searchValue}
-    //           onChange={handleSearchValue}
-    //           placeholder="SEARCH CAMPFIRES ..."
-    //           prefix={
-    //             <SearchIconWrapper>
-    //               <Search height={22} />
-    //             </SearchIconWrapper>
-    //           }
-    //           size="middle"
-    //         />
-    //       </Col>
-    //       <Col span={24}>
-    //         <CardWrapper gutter={[16, 16]}>
-    //           {(isPrivateCampfiresLoading || isSearchPrivateCampfiresLoading) &&
-    //           showLoadingPrivate ? (
-    //             <Col span={24}>
-    //               <LoaderWrapper>
-    //                 <Spin size="large" />
-    //               </LoaderWrapper>
-    //             </Col>
-    //           ) : privateCampfire.data.length > 0 ? (
-    //             renderTopicCards(privateCampfire.data, 'private', false)
-    //           ) : (
-    //             <Col span={24}>
-    //               <LoaderWrapper>
-    //                 <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-    //               </LoaderWrapper>
-    //             </Col>
-    //           )}
-    //         </CardWrapper>
-    //       </Col>
-    //     </TabContentWrapper>
-    //   ),
-    // },
+    {
+      key: 'privateCampfire',
+      title: 'Invite Only Campfires',
+      count: privateCampfire.data.length,
+      children: (
+        <TabContentWrapper>
+          <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+            <TextInput
+              value={searchValue}
+              onChange={handleSearchValue}
+              placeholder="SEARCH CAMPFIRES ..."
+              prefix={
+                <SearchIconWrapper>
+                  <Search height={22} />
+                </SearchIconWrapper>
+              }
+              size="middle"
+            />
+          </Col>
+          <Col span={24}>
+            <CardWrapper gutter={[16, 16]}>
+              {(isPrivateCampfiresLoading || isSearchPrivateCampfiresLoading) &&
+              showLoadingPrivate ? (
+                <Col span={24}>
+                  <LoaderWrapper>
+                    <Spin size="large" />
+                  </LoaderWrapper>
+                </Col>
+              ) : privateCampfire.data.length > 0 ? (
+                renderTopicCards(privateCampfire.data, 'private', false)
+              ) : (
+                <Col span={24}>
+                  <LoaderWrapper>
+                    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                  </LoaderWrapper>
+                </Col>
+              )}
+            </CardWrapper>
+          </Col>
+        </TabContentWrapper>
+      ),
+    },
     {
       key: 'ownedCampfire',
-      title: 'My Own Campfires',
+      title: 'My Campfires',
       count: ownedCampfire.data.length,
       children: (
         <TabContentWrapper>
