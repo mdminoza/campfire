@@ -5,6 +5,7 @@ import { Layout, Row, Col, Dropdown, Menu, Grid } from 'antd';
 // import { Link } from 'react-router-dom';
 import { Button } from '../../atoms/Button';
 import { Avatar } from '../../atoms/Avatar';
+import { coolEmoji, sweatEmoji, smileyEmoji, winkEmoji } from '../../../assets';
 // import { AudioMeter } from '../../atoms/AudioMeter';
 // import { RoomControls } from '../../atoms/RoomControls';
 import {
@@ -426,7 +427,7 @@ const CampfireFooter1 = ({
       if (
         e.target &&
         // e.target.id !== '_emojis' &&
-        e.target.className?.baseVal !== 'emoji-icon'
+        e.target.className !== 'emoji-icon'
       ) {
         setEmojisOpen(false);
       }
@@ -532,29 +533,65 @@ const CampfireFooter1 = ({
             )}
           </Col>
           <EmojiCol>
-            <EmojiMainWrapper onClick={handleOnClickEmojisOpen}>
-              <EmojiSmiley width={38} height={35} />
+            <EmojiMainWrapper
+              className="emoji-icon"
+              onClick={handleOnClickEmojisOpen}>
+              {/* <EmojiSmiley width={38} height={35} /> */}
+              <img
+                className="emoji-icon"
+                src={smileyEmoji}
+                alt=""
+                style={{ width: 35, height: 35 }}
+              />
             </EmojiMainWrapper>
             <EmojisWrapper isOpen={isEmojisOpen}>
               <EmojiButtonWrapper
                 id="_emojimains"
+                className="emoji-icon"
                 onClick={() => onClickEmoji(id, 'wink')}>
-                <EmojiWink style={emojiWinkStyle} width={38} height={36} />
+                <img
+                  className="emoji-icon"
+                  src={winkEmoji}
+                  alt=""
+                  style={{ width: 35, height: 35 }}
+                />
+                {/* <EmojiWink style={emojiWinkStyle} width={38} height={36} /> */}
               </EmojiButtonWrapper>
               <EmojiButtonWrapper
                 id="_emojimains"
+                className="emoji-icon"
                 onClick={() => onClickEmoji(id, 'cool')}>
-                <EmojiCool width={38} height={35} />
+                <img
+                  className="emoji-icon"
+                  src={coolEmoji}
+                  alt=""
+                  style={{ width: 35, height: 35 }}
+                />
+                {/* <EmojiCool width={38} height={35} /> */}
               </EmojiButtonWrapper>
               <EmojiButtonWrapper
                 id="_emojimains"
+                className="emoji-icon"
                 onClick={() => onClickEmoji(id, 'sweat')}>
-                <EmojiSweat style={emojiSweatStyle} width={35} height={45} />
+                <img
+                  className="emoji-icon"
+                  src={sweatEmoji}
+                  alt=""
+                  style={{ width: 35, height: 35 }}
+                />
+                {/* <EmojiSweat style={emojiSweatStyle} width={35} height={45} /> */}
               </EmojiButtonWrapper>
               <EmojiButtonWrapper
                 id="_emojimains"
+                className="emoji-icon"
                 onClick={() => onClickEmoji(id, 'smile')}>
-                <EmojiSmiley style={emojiSmileyStyle} width={38} height={35} />
+                <img
+                  className="emoji-icon"
+                  src={smileyEmoji}
+                  alt=""
+                  style={{ width: 35, height: 35 }}
+                />
+                {/* <EmojiSmiley style={emojiSmileyStyle} width={38} height={35} /> */}
               </EmojiButtonWrapper>
             </EmojisWrapper>
           </EmojiCol>
