@@ -25,9 +25,7 @@ export const useMemberAction: MemberHooks['useMemberAction'] = () => {
       try {
         const res = await axios.post(`${urls.member.get}`, params);
         if (res && res?.status === 200) {
-          return res.data?.message === 'Campfire or user id does not exist.'
-            ? null
-            : res.data;
+          return res.data;
         }
         return null;
       } catch (e: any) {

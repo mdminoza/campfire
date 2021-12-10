@@ -13,4 +13,8 @@ export type MemberParams = {
   isActive?: boolean;
   socketId?: string;
   peerId?: string;
+  member?: any;
+  title?: string;
+  isPrivate?: boolean;
+  isAdmin?: boolean;
 };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Layout, Modal, Button, Result } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
+import { LoadingOutlined, ShareAltOutlined } from '@ant-design/icons';
 import { useQuery, useMutation } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 // import { isMobile } from 'react-device-detect';
@@ -24,6 +24,7 @@ import { useUserState } from '../../../hooks/user';
 import { useTurnAction } from '../../../hooks/turn';
 import { MemberItemParams } from '../../molecules/MemberItem/types';
 import { sortByName } from '../../../utils/helpers/common';
+import { MemberParams } from '../../../../common/domain/entities/member';
 
 const ActiveSpeakersWrapper = styled.div`
   &&& {
@@ -53,6 +54,23 @@ const NotSupportedContainer = styled.div`
 const Container = styled(Layout)`
   &&& {
     min-height: 100vh;
+  }
+`;
+
+const ShareButton = styled(Button)`
+  &&& {
+    position: fixed;
+    z-index: 1;
+    bottom: 70px;
+    left: 10px;
+    background-color: #f55819;
+    border-color: #f55819;
+
+    &:hover,
+    &:focus {
+      background-color: #ff7d4a;
+      border-color: #ff7d4a;
+    }
   }
 `;
 
@@ -93,6 +111,7 @@ const NewActiveTemplate = (): React.ReactElement => {
   const {
     fetchMember,
     // updateMemberStatus,
+    addMember,
     deleteMember,
     deleteMembers,
   } = useMemberAction();
@@ -189,11 +208,11 @@ const NewActiveTemplate = (): React.ReactElement => {
     ['campfire-member', campfireIdParam, activeUser?.uid],
     () => fetchMember({ uid: activeUser?.uid || '', id: campfireIdParam }),
     {
-      onSuccess: (res) => {
-        if (!res) {
-          navigate(`/campfires`);
-        }
-      },
+      // onSuccess: (res) => {
+      //   if (!res) {
+      //     navigate(`/campfires`);
+      //   }
+      // },
       onError: () => {
         navigate(`/campfires`);
       },
@@ -258,6 +277,40 @@ const NewActiveTemplate = (): React.ReactElement => {
   } = useMutation((params: { uid: string; id: string }) =>
     deleteMember(params),
   );
+
+  const {
+    mutate: addMemberMutation,
+    isLoading: isAddingMemberLoading,
+    isSuccess: isMemberAdded,
+  } = useMutation((values: { member: MemberParams; id: string }) =>
+    addMember(values),
+  );
+
+  const handleAddMemberMutation = useCallback(
+    (values: { member: MemberParams; id: string }) => {
+      addMemberMutation(values, {
+        onSuccess: () => {
+          refetchCampfireMember();
+        },
+      });
+    },
+    [refetchCampfireMember, addMemberMutation],
+  );
+
+  const handleOnClick = useCallback(() => {
+    handleAddMemberMutation({
+      member: {
+        profileUrl: currentUser?.profileUrl || '',
+        name: currentUser?.name || '',
+        uid: currentUser?.id || '',
+        campfire: campfireIdParam,
+        status:
+          campfireMember && campfireMember.isPrivate ? 'pending' : 'invited',
+        isActive: true,
+      },
+      id: campfireIdParam,
+    });
+  }, [campfireMember, currentUser, campfireIdParam, handleAddMemberMutation]);
 
   const handleClickMember = (id: string) => {
     if (
@@ -415,6 +468,11 @@ const NewActiveTemplate = (): React.ReactElement => {
     }
   };
 
+  const onClickShareButton = () => {
+    navigator.clipboard.writeText(window.location.href);
+    ToastMessage('success', 'Success', 'Link copied to clipboard', 2);
+  };
+
   // USE EFFECTS
   useEffect(() => {
     if (!localUser?.isRaising) {
@@ -557,12 +615,24 @@ const NewActiveTemplate = (): React.ReactElement => {
       !isFetchingTurnCredentialsLoading &&
       turnCredentials &&
       turnServers &&
-      turnServers?.[1]
+      turnServers?.[1] &&
+      !isFetchingCampfireMemberLoading &&
+      ((campfireMember && campfireMember?.isAdmin) ||
+        (campfireMember &&
+          campfireMember.status &&
+          campfireMember.status !== 'pending' &&
+          campfireMember.member))
     ) {
       getLocalStream();
       connectWithMyPeer();
     }
-  }, [isFetchingTurnCredentialsLoading, turnCredentials, turnServers]);
+  }, [
+    isFetchingTurnCredentialsLoading,
+    turnCredentials,
+    turnServers,
+    campfireMember,
+    isFetchingCampfireMemberLoading,
+  ]);
   // END USE EFFECTS
 
   // STYLES
@@ -678,6 +748,93 @@ const NewActiveTemplate = (): React.ReactElement => {
   }
 
   if (
+    !campfireMember?.isAdmin &&
+    !isFetchingCampfireMemberLoading &&
+    campfireMember &&
+    !campfireMember.status &&
+    !campfireMember.member &&
+    !campfireMember.isPrivate
+  ) {
+    return (
+      <NotSupportedContainer>
+        <Result
+          title={campfireMember?.title}
+          subTitle="You still havent join this campfire"
+          extra={[
+            isAddingMemberLoading || isMemberAdded ? (
+              <LoadingOutlined style={loaderStyle} />
+            ) : (
+              <Button type="primary" key="console" onClick={handleOnClick}>
+                Join Now
+              </Button>
+            ),
+            <Button onClick={() => navigate('/campfires')}>
+              Back to Home
+            </Button>,
+          ]}
+        />
+      </NotSupportedContainer>
+    );
+  }
+
+  if (
+    !campfireMember?.isAdmin &&
+    !isFetchingCampfireMemberLoading &&
+    campfireMember &&
+    !campfireMember.status &&
+    !campfireMember.member &&
+    campfireMember.isPrivate
+  ) {
+    return (
+      <NotSupportedContainer>
+        <Result
+          title={campfireMember?.title}
+          subTitle="Request an invite in order to join this private campfire"
+          extra={[
+            isAddingMemberLoading || isMemberAdded ? (
+              <LoadingOutlined style={loaderStyle} />
+            ) : (
+              <Button type="primary" key="console" onClick={handleOnClick}>
+                Request invite
+              </Button>
+            ),
+            <Button onClick={() => navigate('/campfires')}>
+              Back to Home
+            </Button>,
+          ]}
+        />
+      </NotSupportedContainer>
+    );
+  }
+
+  if (
+    !campfireMember?.isAdmin &&
+    !isFetchingCampfireMemberLoading &&
+    campfireMember &&
+    campfireMember.status &&
+    campfireMember.status === 'pending' &&
+    campfireMember.member &&
+    campfireMember.isPrivate
+  ) {
+    return (
+      <NotSupportedContainer>
+        <Result
+          title={campfireMember?.title}
+          subTitle="Waiting for approval"
+          extra={
+            <Button
+              type="primary"
+              key="console"
+              onClick={() => navigate('/campfires')}>
+              Back to Home
+            </Button>
+          }
+        />
+      </NotSupportedContainer>
+    );
+  }
+
+  if (
     (fetchingCampfireError || localStreamError || fetchingTurnError) &&
     !isFetchingCampfireLoading &&
     !isFetchingCampfireMemberLoading &&
@@ -710,7 +867,7 @@ const NewActiveTemplate = (): React.ReactElement => {
 
   if (
     campfireIdParam &&
-    campfireMember &&
+    // campfireMember &&
     localStream &&
     myPeerId &&
     turnCredentials
@@ -737,6 +894,16 @@ const NewActiveTemplate = (): React.ReactElement => {
             data={sortedAudienceData as MemberItemParams[]}
           />
         </AudienceWrapper>
+        {((campfire && campfire.openTo === 'Everyone') ||
+          currentUser?.id === campfire?.creator?.uid) && (
+          <ShareButton
+            onClick={onClickShareButton}
+            type="primary"
+            shape="round"
+            icon={<ShareAltOutlined />}>
+            Share Campfire Link
+          </ShareButton>
+        )}
         <CampfireFooter1
           id={activeUser?.uid || ''}
           profileUrl={activeUser?.profileUrl || ''}

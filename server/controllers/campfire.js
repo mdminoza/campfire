@@ -229,6 +229,18 @@ export const fetchCampfireMember = async (req, res, next) => {
     try {
         const { id, uid } = req.body
         if (!uid || !id) throw new Error('[uid, id] fields are required!');
+
+        const campfire = await Campfire.findOne(
+            {
+                _id: id,
+                createdAt: { 
+                    $lt: new Date(), 
+                    $gte: new Date(new Date().setDate(new Date().getDate()-1))
+                },
+            },
+            { members: 0 }
+        );
+
         const isAdmin = await Campfire.findOne(
             {
                 '_id': id,
@@ -243,11 +255,22 @@ export const fetchCampfireMember = async (req, res, next) => {
             },
             { '_id': 0, 'members': { '$elemMatch': { uid } } },
         );
-
-        if (isAdmin !== null && data === null) return res.status(200).json({ isAdmin: true });
-        if (isAdmin === null && data === null) return res.status(200).json({ message: 'Campfire or user id does not exist.' });
+        if (campfire === null) throw new Error('Campfire or user id does not exist.');
+        if (isAdmin !== null && data === null) return res.status(200).json({ isAdmin: true, isPrivate: campfire.openTo === 'Invite Only' });
+        if (isAdmin === null && data === null) 
+            return res.status(200).json({ 
+                isPrivate: campfire.openTo === 'Invite Only',
+                status: null,
+                member: null,
+                title: campfire.topic,
+            });
         const filter = data.members[0];
-        return res.status(200).json(filter);
+        return res.status(200).json({
+            isPrivate: campfire.openTo === 'Invite Only',
+            member: filter,
+            status: filter.status,
+            title: campfire.topic,
+        });
     } catch (error) {
         next(error);
     }
