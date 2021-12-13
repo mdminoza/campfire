@@ -103,7 +103,7 @@ const EmojisWrapper = styled.div`
     align-items: center;
     justify-content: space-around;
     display: ${(props: { isOpen?: boolean }) =>
-      props.isOpen ? 'flex' : 'none'};
+    props.isOpen ? 'flex' : 'none'};
   }
 `;
 
@@ -302,11 +302,11 @@ const CampfireFooter1 = ({
   isRaising = false,
   micEnabled = true,
   onClickRaiseHand,
-  onClickEmoji = () => {},
-  onClickMic = () => {},
+  onClickEmoji = () => { },
+  onClickMic = () => { },
   isAdmin = false,
   onMute = false,
-  onClickProfileMenu = () => {},
+  onClickProfileMenu = () => { },
 }: Props): React.ReactElement => {
   // const [onMute, setOnMute] = useState(false);
   const [onMenuProfile, setMenuProfile] = useState(false);
@@ -539,7 +539,7 @@ const CampfireFooter1 = ({
               {/* <EmojiSmiley width={38} height={35} /> */}
               <img
                 className="emoji-icon"
-                src={smileyEmoji}
+                src={'/static/media/smileyEmoji.80685b2f.png' || smileyEmoji}
                 alt=""
                 style={{ width: 35, height: 35 }}
               />
@@ -551,7 +551,7 @@ const CampfireFooter1 = ({
                 onClick={() => onClickEmoji(id, 'wink')}>
                 <img
                   className="emoji-icon"
-                  src={winkEmoji}
+                  src={'/static/media/winkEmoji.30b8e8f9.png' || winkEmoji}
                   alt=""
                   style={{ width: 35, height: 35 }}
                 />
@@ -563,7 +563,7 @@ const CampfireFooter1 = ({
                 onClick={() => onClickEmoji(id, 'cool')}>
                 <img
                   className="emoji-icon"
-                  src={coolEmoji}
+                  src={'/static/media/coolEmoji.a8227c2e.png' || coolEmoji}
                   alt=""
                   style={{ width: 35, height: 35 }}
                 />
@@ -575,7 +575,7 @@ const CampfireFooter1 = ({
                 onClick={() => onClickEmoji(id, 'sweat')}>
                 <img
                   className="emoji-icon"
-                  src={sweatEmoji}
+                  src={'/static/media/sweatEmoji.fe9986d0.png' || sweatEmoji}
                   alt=""
                   style={{ width: 35, height: 35 }}
                 />
@@ -587,7 +587,7 @@ const CampfireFooter1 = ({
                 onClick={() => onClickEmoji(id, 'smile')}>
                 <img
                   className="emoji-icon"
-                  src={smileyEmoji}
+                  src={'/static/media/smileyEmoji.80685b2f.png' || smileyEmoji}
                   alt=""
                   style={{ width: 35, height: 35 }}
                 />
