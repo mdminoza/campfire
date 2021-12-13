@@ -11,7 +11,8 @@ const Container = styled.div`
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: ${theme.colors.mainWhite};
+    background-color: #f0f2f5;
+    margin-top: 25px;
   }
 `;
 
