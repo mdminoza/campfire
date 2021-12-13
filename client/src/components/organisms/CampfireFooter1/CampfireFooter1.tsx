@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 /* eslint-disable no-nested-ternary */
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
@@ -540,7 +541,8 @@ const CampfireFooter1 = ({
               <img
                 className="emoji-icon"
                 // src={'/static/media/smileyEmoji.80685b2f.png' || smileyEmoji}
-                src={`${window.location.origin}${smileyEmoji}`}
+                // src={`${window.location.origin}${smileyEmoji}`}
+                src={require('../../../assets/images/smileyEmoji.png')}
                 alt=""
                 style={{ width: 35, height: 35 }}
               />
@@ -552,7 +554,8 @@ const CampfireFooter1 = ({
                 onClick={() => onClickEmoji(id, 'wink')}>
                 <img
                   className="emoji-icon"
-                  src={`${window.location.origin}${winkEmoji}`}
+                  // src={`${window.location.origin}${winkEmoji}`}
+                  src={require('../../../assets/images/winkEmoji.png')}
                   alt=""
                   style={{ width: 35, height: 35 }}
                 />
@@ -564,7 +567,8 @@ const CampfireFooter1 = ({
                 onClick={() => onClickEmoji(id, 'cool')}>
                 <img
                   className="emoji-icon"
-                  src={`${window.location.origin}${coolEmoji}`}
+                  // src={`${window.location.origin}${coolEmoji}`}
+                  src={require('../../../assets/images/coolEmoji.png')}
                   alt=""
                   style={{ width: 35, height: 35 }}
                 />
@@ -576,7 +580,8 @@ const CampfireFooter1 = ({
                 onClick={() => onClickEmoji(id, 'sweat')}>
                 <img
                   className="emoji-icon"
-                  src={`${window.location.origin}${sweatEmoji}`}
+                  // src={`${window.location.origin}${sweatEmoji}`}
+                  src={require('../../../assets/images/sweatEmoji.png')}
                   alt=""
                   style={{ width: 35, height: 35 }}
                 />
@@ -588,7 +593,8 @@ const CampfireFooter1 = ({
                 onClick={() => onClickEmoji(id, 'smile')}>
                 <img
                   className="emoji-icon"
-                  src={`${window.location.origin}${smileyEmoji}`}
+                  // src={`${window.location.origin}${smileyEmoji}`}
+                  src={require('../../../assets/images/smileyEmoji.png')}
                   alt=""
                   style={{ width: 35, height: 35 }}
                 />
