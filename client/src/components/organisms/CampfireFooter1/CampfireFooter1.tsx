@@ -5,7 +5,10 @@ import { Layout, Row, Col, Dropdown, Menu, Grid } from 'antd';
 // import { Link } from 'react-router-dom';
 import { Button } from '../../atoms/Button';
 import { Avatar } from '../../atoms/Avatar';
-import { coolEmoji, sweatEmoji, smileyEmoji, winkEmoji } from '../../../assets';
+import coolEmoji from '../../../assets/images/coolEmoji.png';
+import sweatEmoji from '../../../assets/images/sweatEmoji.png';
+import smileyEmoji from '../../../assets/images/smileyEmoji.png';
+import winkEmoji from '../../../assets/images/winkEmoji.png';
 // import { AudioMeter } from '../../atoms/AudioMeter';
 // import { RoomControls } from '../../atoms/RoomControls';
 import {
@@ -103,7 +106,7 @@ const EmojisWrapper = styled.div`
     align-items: center;
     justify-content: space-around;
     display: ${(props: { isOpen?: boolean }) =>
-    props.isOpen ? 'flex' : 'none'};
+      props.isOpen ? 'flex' : 'none'};
   }
 `;
 
@@ -302,11 +305,11 @@ const CampfireFooter1 = ({
   isRaising = false,
   micEnabled = true,
   onClickRaiseHand,
-  onClickEmoji = () => { },
-  onClickMic = () => { },
+  onClickEmoji = () => {},
+  onClickMic = () => {},
   isAdmin = false,
   onMute = false,
-  onClickProfileMenu = () => { },
+  onClickProfileMenu = () => {},
 }: Props): React.ReactElement => {
   // const [onMute, setOnMute] = useState(false);
   const [onMenuProfile, setMenuProfile] = useState(false);
