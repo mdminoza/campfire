@@ -542,7 +542,8 @@ const CampfireFooter1 = ({
               {/* <EmojiSmiley width={38} height={35} /> */}
               <img
                 className="emoji-icon"
-                src={'/static/media/smileyEmoji.80685b2f.png' || smileyEmoji}
+                // src={'/static/media/smileyEmoji.80685b2f.png' || smileyEmoji}
+                src={smileyEmoji}
                 alt=""
                 style={{ width: 35, height: 35 }}
               />
@@ -554,7 +555,7 @@ const CampfireFooter1 = ({
                 onClick={() => onClickEmoji(id, 'wink')}>
                 <img
                   className="emoji-icon"
-                  src={'/static/media/winkEmoji.30b8e8f9.png' || winkEmoji}
+                  src={winkEmoji}
                   alt=""
                   style={{ width: 35, height: 35 }}
                 />
@@ -566,7 +567,7 @@ const CampfireFooter1 = ({
                 onClick={() => onClickEmoji(id, 'cool')}>
                 <img
                   className="emoji-icon"
-                  src={'/static/media/coolEmoji.a8227c2e.png' || coolEmoji}
+                  src={coolEmoji}
                   alt=""
                   style={{ width: 35, height: 35 }}
                 />
@@ -578,7 +579,7 @@ const CampfireFooter1 = ({
                 onClick={() => onClickEmoji(id, 'sweat')}>
                 <img
                   className="emoji-icon"
-                  src={'/static/media/sweatEmoji.fe9986d0.png' || sweatEmoji}
+                  src={sweatEmoji}
                   alt=""
                   style={{ width: 35, height: 35 }}
                 />
@@ -590,7 +591,7 @@ const CampfireFooter1 = ({
                 onClick={() => onClickEmoji(id, 'smile')}>
                 <img
                   className="emoji-icon"
-                  src={'/static/media/smileyEmoji.80685b2f.png' || smileyEmoji}
+                  src={smileyEmoji}
                   alt=""
                   style={{ width: 35, height: 35 }}
                 />
