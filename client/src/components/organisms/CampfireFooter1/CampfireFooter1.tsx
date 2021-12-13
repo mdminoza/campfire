@@ -5,10 +5,7 @@ import { Layout, Row, Col, Dropdown, Menu, Grid } from 'antd';
 // import { Link } from 'react-router-dom';
 import { Button } from '../../atoms/Button';
 import { Avatar } from '../../atoms/Avatar';
-import coolEmoji from '../../../assets/images/coolEmoji.png';
-import sweatEmoji from '../../../assets/images/sweatEmoji.png';
-import smileyEmoji from '../../../assets/images/smileyEmoji.png';
-import winkEmoji from '../../../assets/images/winkEmoji.png';
+import { coolEmoji, sweatEmoji, smileyEmoji, winkEmoji } from '../../../assets';
 // import { AudioMeter } from '../../atoms/AudioMeter';
 // import { RoomControls } from '../../atoms/RoomControls';
 import {
@@ -543,7 +540,7 @@ const CampfireFooter1 = ({
               <img
                 className="emoji-icon"
                 // src={'/static/media/smileyEmoji.80685b2f.png' || smileyEmoji}
-                src={smileyEmoji}
+                src={`${window.location.origin}${smileyEmoji}`}
                 alt=""
                 style={{ width: 35, height: 35 }}
               />
@@ -555,7 +552,7 @@ const CampfireFooter1 = ({
                 onClick={() => onClickEmoji(id, 'wink')}>
                 <img
                   className="emoji-icon"
-                  src={winkEmoji}
+                  src={`${window.location.origin}${winkEmoji}`}
                   alt=""
                   style={{ width: 35, height: 35 }}
                 />
@@ -567,7 +564,7 @@ const CampfireFooter1 = ({
                 onClick={() => onClickEmoji(id, 'cool')}>
                 <img
                   className="emoji-icon"
-                  src={coolEmoji}
+                  src={`${window.location.origin}${coolEmoji}`}
                   alt=""
                   style={{ width: 35, height: 35 }}
                 />
@@ -579,7 +576,7 @@ const CampfireFooter1 = ({
                 onClick={() => onClickEmoji(id, 'sweat')}>
                 <img
                   className="emoji-icon"
-                  src={sweatEmoji}
+                  src={`${window.location.origin}${sweatEmoji}`}
                   alt=""
                   style={{ width: 35, height: 35 }}
                 />
@@ -591,7 +588,7 @@ const CampfireFooter1 = ({
                 onClick={() => onClickEmoji(id, 'smile')}>
                 <img
                   className="emoji-icon"
-                  src={smileyEmoji}
+                  src={`${window.location.origin}${smileyEmoji}`}
                   alt=""
                   style={{ width: 35, height: 35 }}
                 />
