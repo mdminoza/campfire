@@ -120,9 +120,10 @@ const EmojiButtonWrapper = styled.button`
     background-color: transparent;
     cursor: pointer;
     border-radius: 10px;
-    &:focus {
-      outline: none;
-      box-shadow: none;
+    &:focus,
+    &:hover {
+      outline: none !important;
+      box-shadow: none !important;
     }
   }
 `;
@@ -155,6 +156,9 @@ const EmojiMainWrapper = styled.div`
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+    &:hover {
+      box-shadow: none !important;
+    }
   }
 `;
 
@@ -433,7 +437,7 @@ const CampfireFooter1 = ({
       if (
         e.target &&
         // e.target.id !== '_emojis' &&
-        e.target.className !== 'emoji-icon'
+        !e.target.className.includes('emoji-icon')
       ) {
         setEmojisOpen(false);
       }
@@ -542,11 +546,8 @@ const CampfireFooter1 = ({
             <EmojiMainWrapper
               className="emoji-icon"
               onClick={handleOnClickEmojisOpen}>
-              {/* <EmojiSmiley width={38} height={35} /> */}
               <img
                 className="emoji-icon"
-                // src={'/static/media/smileyEmoji.80685b2f.png' || smileyEmoji}
-                // src={`${window.location.origin}${smileyEmoji}`}
                 src={smileyEmoji}
                 alt=""
                 style={{ width: 35, height: 35 }}
@@ -559,12 +560,10 @@ const CampfireFooter1 = ({
                 onClick={() => onClickEmoji(id, 'wink')}>
                 <img
                   className="emoji-icon"
-                  // src={`${window.location.origin}${winkEmoji}`}
                   src={winkEmoji}
                   alt=""
                   style={{ width: 35, height: 35 }}
                 />
-                {/* <EmojiWink style={emojiWinkStyle} width={38} height={36} /> */}
               </EmojiButtonWrapper>
               <EmojiButtonWrapper
                 id="_emojimains"
@@ -572,12 +571,10 @@ const CampfireFooter1 = ({
                 onClick={() => onClickEmoji(id, 'cool')}>
                 <img
                   className="emoji-icon"
-                  // src={`${window.location.origin}${coolEmoji}`}
                   src={coolEmoji}
                   alt=""
                   style={{ width: 35, height: 35 }}
                 />
-                {/* <EmojiCool width={38} height={35} /> */}
               </EmojiButtonWrapper>
               <EmojiButtonWrapper
                 id="_emojimains"
@@ -585,12 +582,10 @@ const CampfireFooter1 = ({
                 onClick={() => onClickEmoji(id, 'sweat')}>
                 <img
                   className="emoji-icon"
-                  // src={`${window.location.origin}${sweatEmoji}`}
                   src={sweatEmoji}
                   alt=""
                   style={{ width: 35, height: 35 }}
                 />
-                {/* <EmojiSweat style={emojiSweatStyle} width={35} height={45} /> */}
               </EmojiButtonWrapper>
               <EmojiButtonWrapper
                 id="_emojimains"
@@ -598,12 +593,10 @@ const CampfireFooter1 = ({
                 onClick={() => onClickEmoji(id, 'smile')}>
                 <img
                   className="emoji-icon"
-                  // src={`${window.location.origin}${smileyEmoji}`}
                   src={smileyEmoji}
                   alt=""
                   style={{ width: 35, height: 35 }}
                 />
-                {/* <EmojiSmiley style={emojiSmileyStyle} width={38} height={35} /> */}
               </EmojiButtonWrapper>
             </EmojisWrapper>
           </EmojiCol>
