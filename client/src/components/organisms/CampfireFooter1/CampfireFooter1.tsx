@@ -1,4 +1,4 @@
-/* eslint-disable global-require */
+/* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable no-nested-ternary */
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
@@ -25,6 +25,11 @@ import {
   // Settings,
 } from '../../atoms/Icons';
 import { theme } from '../../../constants';
+
+// const smileyEmoji = require('../../../assets/images/smileyEmoji.png');
+// const sweatEmoji = require('../../../assets/images/sweatEmoji.png');
+// const winkEmoji = require('../../../assets/images/winkEmoji.png');
+// const coolEmoji = require('../../../assets/images/coolEmoji.png');
 
 const { Footer } = Layout;
 
@@ -542,7 +547,7 @@ const CampfireFooter1 = ({
                 className="emoji-icon"
                 // src={'/static/media/smileyEmoji.80685b2f.png' || smileyEmoji}
                 // src={`${window.location.origin}${smileyEmoji}`}
-                src={require('../../../assets/images/smileyEmoji.png')}
+                src={smileyEmoji}
                 alt=""
                 style={{ width: 35, height: 35 }}
               />
@@ -555,7 +560,7 @@ const CampfireFooter1 = ({
                 <img
                   className="emoji-icon"
                   // src={`${window.location.origin}${winkEmoji}`}
-                  src={require('../../../assets/images/winkEmoji.png')}
+                  src={winkEmoji}
                   alt=""
                   style={{ width: 35, height: 35 }}
                 />
@@ -568,7 +573,7 @@ const CampfireFooter1 = ({
                 <img
                   className="emoji-icon"
                   // src={`${window.location.origin}${coolEmoji}`}
-                  src={require('../../../assets/images/coolEmoji.png')}
+                  src={coolEmoji}
                   alt=""
                   style={{ width: 35, height: 35 }}
                 />
@@ -581,7 +586,7 @@ const CampfireFooter1 = ({
                 <img
                   className="emoji-icon"
                   // src={`${window.location.origin}${sweatEmoji}`}
-                  src={require('../../../assets/images/sweatEmoji.png')}
+                  src={sweatEmoji}
                   alt=""
                   style={{ width: 35, height: 35 }}
                 />
@@ -594,7 +599,7 @@ const CampfireFooter1 = ({
                 <img
                   className="emoji-icon"
                   // src={`${window.location.origin}${smileyEmoji}`}
-                  src={require('../../../assets/images/smileyEmoji.png')}
+                  src={smileyEmoji}
                   alt=""
                   style={{ width: 35, height: 35 }}
                 />

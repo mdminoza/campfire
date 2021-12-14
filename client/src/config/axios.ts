@@ -1,9 +1,10 @@
 /* eslint-disable no-param-reassign */
 import axios from 'axios';
 import urls from '../constants/urls';
+import { isDev } from '../constants';
 
 const instance = axios.create({
-  baseURL: urls.campfireBaseUrl,
+  baseURL: isDev ? urls.devCampfireBaseUrl : urls.campfireBaseUrl,
 });
 
 instance.interceptors.request.use(

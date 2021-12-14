@@ -2,6 +2,7 @@
 export default {
   // baseUrl: 'https://staging.godtribe.com/wp-json/api/v1/',
   campfireBaseUrl: 'https://staging-campfire-api.azurewebsites.net/api/',
+  devCampfireBaseUrl: 'https://dev-campfire-api.azurewebsites.net/api/',
   // campfireBaseUrl: 'http://localhost:5000/api/',
   web: {
     dev: 'https://staging.godtribe.com/wp-json/wp/v1/',

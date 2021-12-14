@@ -1,3 +1,5 @@
 import theme from './themes';
 
-export { theme };
+const isDev = true;
+
+export { theme, isDev };

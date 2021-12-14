@@ -5,10 +5,12 @@ dotenv.config();
 
 const { DB_CONN, DB_USER, DB_PW } = process.env;
 
+const isDev = true;
+
 mongoose.connect(
     DB_CONN,
     {
-        dbName: 'staging-campfire', 
+        dbName: isDev ? 'dev-campfire' : 'staging-campfire', 
         useNewUrlParser: true, 
         useUnifiedTopology: true,
     }
