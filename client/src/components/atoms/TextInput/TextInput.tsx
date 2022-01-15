@@ -10,7 +10,9 @@ type Props = {
   value: string;
   type?: string;
   addonBefore?: ReactNode;
+  addonAfter?: ReactNode;
   maxLength?: number;
+  nameClass?: string;
   onChange: (value: string) => void;
 };
 
@@ -22,8 +24,10 @@ const TextInput = ({
   value,
   type,
   addonBefore,
+  addonAfter,
   onChange,
   maxLength,
+  nameClass = '',
 }: Props): React.ReactElement => (
   <InputWrapper>
     {addonBefore}
@@ -39,7 +43,9 @@ const TextInput = ({
         onChange(ev.target.value)
       }
       maxLength={maxLength}
+      className={nameClass}
     />
+    {addonAfter}
   </InputWrapper>
 );
 

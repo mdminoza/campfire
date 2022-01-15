@@ -7,10 +7,12 @@ import { theme } from '../../../constants';
 // Default Values
 export const StyledInput: React.FunctionComponent<InputProps> = styled(Input)`
   &&& {
-    border: 0;
+    border: 1px solid #c1c1c1;
     border-radius: 0;
     height: auto;
     font-family: ${theme.fonts.fontFamily};
+    background-color: #fafafa;
+    color: ${theme.colors.mainBlack};
   }
 `;
 
