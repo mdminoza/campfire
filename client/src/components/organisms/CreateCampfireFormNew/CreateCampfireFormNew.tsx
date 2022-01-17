@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { Formik } from 'formik';
 import moment, { Moment } from 'moment';
+import { Input } from 'antd';
+import { CreateCampfireNewSchema } from './validation';
 
 import { CreateCampfireInline } from '../../molecules/CreateCampfireInline';
 import { CreateCampfireSchedule } from '../../molecules/CreateCampfireSchedule';
@@ -9,6 +11,7 @@ import { CreateCampfireSideBar } from '../../molecules/CreateCampfireSideBar';
 import { CreateCampfireFooter } from '../../molecules/CreateCampfireFooter';
 import { CreateCampfireHeader } from '../../molecules/CreateCampfireHeader';
 import { CreateCampfireInviteList } from '../../molecules/CreateCampfireInviteList';
+import { CloseOutlined } from '../../atoms/Icons';
 
 const Container = styled.div``;
 
@@ -52,6 +55,92 @@ const InviteListsWrapper = styled.div`
 
 const InviteEmailWrapper = styled.div`
   flex: 1;
+  background-color: #f4f4f4;
+  margin: 18px;
+  border-radius: 4px;
+  padding: 12px 14px 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  .invite-frnds-label {
+    color: black;
+    font-weight: bold;
+  }
+`;
+
+const BtnWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  bottom: 30px;
+`;
+
+const SelectAllBtn = styled.button`
+  background-color: white;
+  border: none;
+  box-shadow: 0px 4px 4px rgb(0 0 0 / 25%);
+  color: black;
+  padding: 4px 20px;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 4px;
+  &:active {
+    background-color: #f5f5f5;
+  }
+`;
+
+const PendingLabel = styled.span`
+  background-color: #f55819;
+  padding: 4px 18px;
+  border-radius: 4px;
+  color: #ffffff;
+  font-weight: bold;
+  letter-spacing: 1px;
+`;
+
+const EmailPendingLabel = styled.span`
+  background-color: #f55819;
+  padding: 4px 30px;
+  border-radius: 4px;
+  color: #ffffff;
+  font-weight: bold;
+  letter-spacing: 1px;
+`;
+
+const EmailLabelWrapper = styled.div`
+  position: absolute;
+  top: 432px;
+  right: 60px;
+`;
+
+const BtnIcon = styled.button`
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  padding-left: 0;
+  padding-right: 0;
+`;
+
+const InputWrapper = styled.div`
+  .ant-input-affix-wrapper-lg {
+    border-bottom: 1px solid #9e9e9e;
+    border-radius: 0;
+    padding-left: 2px;
+  }
+  .ant-input-prefix {
+    margin-right: 20px;
+  }
+  .last-input {
+    margin-bottom: 0;
+    border-bottom: none;
+  }
+  .ant-input-lg {
+    font-size: 16px;
+  }
+`;
+
+const EmptyDiv = styled.div`
+  height: 27.1375px;
 `;
 
 const CreateCampfireFormNew = (): React.ReactElement => {
@@ -130,6 +219,16 @@ const CreateCampfireFormNew = (): React.ReactElement => {
     ]);
   };
 
+  const onClickSelectAll = () => {
+    const selectedUser = users.map((user) => ({
+      ...user,
+      selected: true,
+    }));
+    setUsers(selectedUser);
+  };
+
+  const selectedUsers = users.filter((user) => user.selected);
+
   return (
     <Formik
       initialValues={{
@@ -148,8 +247,14 @@ const CreateCampfireFormNew = (): React.ReactElement => {
         invited: [],
         duration: '01:00',
         hasSchedule: false,
+        email1: '',
+        email2: '',
+        email3: '',
+        email4: '',
+        email5: '',
+        email6: '',
       }}
-      // validationSchema={CreateCampfireSchema}
+      validationSchema={CreateCampfireNewSchema}
       onSubmit={onSubmit}
       innerRef={formRef}>
       {({ values, handleChange, handleSubmit, setFieldValue }) => {
@@ -170,6 +275,17 @@ const CreateCampfireFormNew = (): React.ReactElement => {
         const onClickSchedule = () => {
           setFieldValue('hasSchedule', !values.hasSchedule);
         };
+
+        const emails = [
+          values.email1,
+          values.email2,
+          values.email3,
+          values.email4,
+          values.email5,
+          values.email6,
+        ];
+
+        const pendingEmails = emails.filter((email) => email).length;
 
         return (
           <Container>
@@ -216,8 +332,142 @@ const CreateCampfireFormNew = (): React.ReactElement => {
                               users={sortedUsers}
                               onClick={onClickInviteUser}
                             />
+                            <BtnWrapper>
+                              <SelectAllBtn onClick={onClickSelectAll}>
+                                SELECT ALL
+                              </SelectAllBtn>
+                              {selectedUsers.length > 0 && (
+                                <PendingLabel>
+                                  {selectedUsers.length} INVITATION
+                                  {selectedUsers.length > 1 ? 'S' : ''} PENDING
+                                </PendingLabel>
+                              )}
+                            </BtnWrapper>
                           </InviteListsWrapper>
-                          <InviteEmailWrapper>Test</InviteEmailWrapper>
+                          <InviteEmailWrapper>
+                            <span className="invite-frnds-label">
+                              Invite friends by email:
+                            </span>
+                            <InputWrapper>
+                              <Input
+                                bordered={false}
+                                prefix={
+                                  values.email1 ? (
+                                    <BtnIcon
+                                      onClick={() =>
+                                        setFieldValue('email1', '')
+                                      }>
+                                      <CloseOutlined />
+                                    </BtnIcon>
+                                  ) : (
+                                    <EmptyDiv />
+                                  )
+                                }
+                                size="large"
+                                value={values.email1}
+                                onChange={handleChange('email1')}
+                              />
+                              <Input
+                                bordered={false}
+                                prefix={
+                                  values.email2 ? (
+                                    <BtnIcon
+                                      onClick={() =>
+                                        setFieldValue('email2', '')
+                                      }>
+                                      <CloseOutlined />
+                                    </BtnIcon>
+                                  ) : (
+                                    <EmptyDiv />
+                                  )
+                                }
+                                size="large"
+                                value={values.email2}
+                                onChange={handleChange('email2')}
+                              />
+                              <Input
+                                bordered={false}
+                                prefix={
+                                  values.email3 ? (
+                                    <BtnIcon
+                                      onClick={() =>
+                                        setFieldValue('email3', '')
+                                      }>
+                                      <CloseOutlined />
+                                    </BtnIcon>
+                                  ) : (
+                                    <EmptyDiv />
+                                  )
+                                }
+                                size="large"
+                                value={values.email3}
+                                onChange={handleChange('email3')}
+                              />
+                              <Input
+                                bordered={false}
+                                prefix={
+                                  values.email4 ? (
+                                    <BtnIcon
+                                      onClick={() =>
+                                        setFieldValue('email4', '')
+                                      }>
+                                      <CloseOutlined />
+                                    </BtnIcon>
+                                  ) : (
+                                    <EmptyDiv />
+                                  )
+                                }
+                                size="large"
+                                value={values.email4}
+                                onChange={handleChange('email4')}
+                              />
+                              <Input
+                                bordered={false}
+                                prefix={
+                                  values.email5 ? (
+                                    <BtnIcon
+                                      onClick={() =>
+                                        setFieldValue('email5', '')
+                                      }>
+                                      <CloseOutlined />
+                                    </BtnIcon>
+                                  ) : (
+                                    <EmptyDiv />
+                                  )
+                                }
+                                size="large"
+                                value={values.email5}
+                                onChange={handleChange('email5')}
+                              />
+                              <Input
+                                bordered={false}
+                                prefix={
+                                  values.email6 ? (
+                                    <BtnIcon
+                                      onClick={() =>
+                                        setFieldValue('email6', '')
+                                      }>
+                                      <CloseOutlined />
+                                    </BtnIcon>
+                                  ) : (
+                                    <EmptyDiv />
+                                  )
+                                }
+                                size="large"
+                                value={values.email6}
+                                onChange={handleChange('email6')}
+                                className="last-input"
+                              />
+                            </InputWrapper>
+                            {pendingEmails > 0 && (
+                              <EmailLabelWrapper>
+                                <EmailPendingLabel>
+                                  {pendingEmails} EMAIL
+                                  {pendingEmails > 1 ? 'S' : ''} PENDING
+                                </EmailPendingLabel>
+                              </EmailLabelWrapper>
+                            )}
+                          </InviteEmailWrapper>
                         </InviteWrapper>
                       )}
                     </BodyWrapper>

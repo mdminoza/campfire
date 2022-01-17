@@ -32,9 +32,9 @@ export const InviteUserItemContainer = styled.div`
   display: flex;
   background-color: white;
   align-items: center;
-  padding: 8px 10px;
+  padding: 6px 10px;
   border-radius: 4px;
-  margin: 6px 0;
+  margin: 5px 0;
   cursor: pointer;
   .name-label {
     margin-left: 20px;
