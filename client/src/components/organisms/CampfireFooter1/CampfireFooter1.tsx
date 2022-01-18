@@ -200,7 +200,7 @@ const RaiseHandLabel = styled.span`
     font-family: ${theme.fonts.fontFamily};
     font-style: normal;
     font-weight: bold;
-    font-size: ${(props: { xs?: boolean }) => (props.xs ? 12 : 16)}px;
+    font-size: ${(props: { xs?: boolean }) => (props.xs ? 10 : 16)}px;
     line-height: 112.7%;
     letter-spacing: 0.02em;
     color: ${theme.colors.mainWhite};
@@ -283,6 +283,26 @@ const MicWrapper = styled(Col)`
   }
 `;
 
+const RaiseHandColWrapper = styled(Col)`
+  &&& {
+    display: flex;
+    align-items: center;
+
+    .btn-raised {
+      background-color: ${theme.colors.gray.gray29};
+      text-align: start;
+      height: 100%;
+      width: 100% !important;
+    }
+    .btn-unraised {
+      background-color: ${theme.colors.gray.gray29};
+      padding: 0;
+      width: 45px !important;
+      height: 100%;
+    }
+  }
+`;
+
 const { useBreakpoint } = Grid;
 
 type Props = {
@@ -328,20 +348,12 @@ const CampfireFooter1 = ({
   const { xs } = screens;
 
   const raiseHandBtnStyle = {
-    backgroundColor: theme.colors.gray.gray29,
-    padding: 0,
-    width: 45,
-    height: '100%',
     marginLeft: micEnabled ? 0 : 12,
   };
 
   const raisedHandBtnStyle = {
-    backgroundColor: theme.colors.gray.gray29,
-    textAlign: 'start',
     paddingRight: xs ? 15 : 24,
     paddingLeft: xs ? 0 : 15,
-    height: '100%',
-    width: '100% !important',
   };
 
   const emojiWinkStyle = { marginTop: 10 };
@@ -521,13 +533,16 @@ const CampfireFooter1 = ({
               </IconLogo>
             </MicWrapper>
           )}
-          <Col flex="auto">
+          <RaiseHandColWrapper flex="auto">
             {!isSpeaker && (
               <Button
                 style={
                   isRaising && !isSpeaker
                     ? raisedHandBtnStyle
                     : raiseHandBtnStyle
+                }
+                className={
+                  isRaising && !isSpeaker ? 'btn-raised' : 'btn-unraised'
                 }
                 onClick={() => onClickRaiseHand(id, isRaising)}>
                 {!isSpeaker && isRaising ? (
@@ -541,7 +556,7 @@ const CampfireFooter1 = ({
                 )}
               </Button>
             )}
-          </Col>
+          </RaiseHandColWrapper>
           <EmojiCol>
             <EmojiMainWrapper
               className="emoji-icon"

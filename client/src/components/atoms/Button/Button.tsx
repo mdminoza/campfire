@@ -7,6 +7,7 @@ type Props = {
   children: React.ReactElement | string;
   style?: Object;
   disabled?: boolean;
+  className?: string;
 };
 
 const Button = ({
@@ -14,8 +15,13 @@ const Button = ({
   children,
   style = {},
   disabled,
+  className = '',
 }: Props): React.ReactElement => (
-  <StyledButton style={style} onClick={onClick} disabled={disabled}>
+  <StyledButton
+    className={className}
+    style={style}
+    onClick={onClick}
+    disabled={disabled}>
     {children}
   </StyledButton>
 );
