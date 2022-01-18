@@ -303,6 +303,11 @@ const RaiseHandColWrapper = styled(Col)`
   }
 `;
 
+const BtnRaiseHand = styled.div`
+  display: contents;
+  cursor: pointer;
+`;
+
 const { useBreakpoint } = Grid;
 
 type Props = {
@@ -535,7 +540,7 @@ const CampfireFooter1 = ({
           )}
           <RaiseHandColWrapper flex="auto">
             {!isSpeaker && (
-              <Button
+              <BtnRaiseHand
                 style={
                   isRaising && !isSpeaker
                     ? raisedHandBtnStyle
@@ -554,7 +559,7 @@ const CampfireFooter1 = ({
                     <RaiseHand width={28} height={40} />
                   </RaiseHandBtnContent>
                 )}
-              </Button>
+              </BtnRaiseHand>
             )}
           </RaiseHandColWrapper>
           <EmojiCol>
