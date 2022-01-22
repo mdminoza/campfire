@@ -36,6 +36,7 @@ type Props = {
   onClickMinute: (val: number) => void;
   onClickPeriod: (val: 'am' | 'pm') => void;
   onSelectDate: (val: Moment) => void;
+  valueDate: Moment;
 };
 
 type TimePickerProps = {
@@ -153,6 +154,7 @@ const CreateCampfireSchedule = ({
   onSelectDate,
   onClickSchedule,
   hasSchedule,
+  valueDate,
 }: Props): React.ReactElement => (
   <Container>
     <TimePickerWrapper>
@@ -194,6 +196,7 @@ const CreateCampfireSchedule = ({
       <Calendar
         className={hasSchedule ? 'main-calendar' : 'disabled-main-calendar'}
         onSelect={onSelectDate}
+        value={valueDate}
         headerRender={({ value, onChange }) => {
           const localeData = value.localeData();
           const months = localeData.months();

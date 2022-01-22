@@ -57,3 +57,8 @@ export const GoButton = styled.button`
   padding: 8px 12px;
   cursor: pointer;
 `;
+
+export const LoaderWrapper = styled.div`
+  display: flex;
+  padding: 10px 10px;
+`;

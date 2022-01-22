@@ -29,7 +29,7 @@ export const ItemWrapper = styled.div`
     span {
       font-weight: 300;
       color: ${theme.colors.mainBlack};
-      font-size: 17px;
+      font-size: 15px;
       margin-top: 20px;
       cursor: pointer;
 

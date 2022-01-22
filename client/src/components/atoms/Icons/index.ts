@@ -26,6 +26,7 @@ import Dots from './Dots';
 import MuteMicMember from './MuteMicMember';
 import NewMuteMic from './NewMuteMic';
 import CloseOutlined from './CloseOutlined';
+import JoinClose from './JoinClose';
 
 export {
   AppLogo,
@@ -56,4 +57,5 @@ export {
   MuteMicMember,
   NewMuteMic,
   CloseOutlined,
+  JoinClose,
 };

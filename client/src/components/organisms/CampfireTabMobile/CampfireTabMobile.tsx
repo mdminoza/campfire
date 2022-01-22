@@ -24,7 +24,7 @@ const TabWrapper = styled.div`
 
 const TabTitleWrapper = styled.div`
   background-color: ${(props: { isActive?: boolean }) =>
-    props.isActive ? '#000000' : 'transparent'};
+    props.isActive ? '#484848' : 'transparent'};
   width: 100%;
   text-align: center;
   padding: 12px;
@@ -42,7 +42,7 @@ const TabTitleLabel = styled.span`
     line-height: 24px;
     letter-spacing: 0.02em;
     color: ${(props: { isActive?: boolean }) =>
-      props.isActive ? theme.colors.mainWhite : theme.colors.mainBlack};
+      props.isActive ? theme.colors.mainWhite : '#484848'};
   }
 `;
 
@@ -54,9 +54,10 @@ const TabBadge = styled.span`
     font-size: 0.8rem;
     line-height: 24px;
     color: ${theme.colors.mainWhite};
-    background-color: ${theme.colors.red.light};
+    background-color: ${theme.colors.orange1};
     padding: 4px 10px;
-    margin-left: 8px;
+    margin-left: 16px;
+    border-radius: 6px;
   }
 `;
 

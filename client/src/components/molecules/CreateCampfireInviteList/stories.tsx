@@ -10,33 +10,45 @@ storiesOf('molecule/CreateCampfireInviteList', module).add('default', () => {
     setUsers([
       {
         id: 'bvn88',
-        name: 'Johnny',
+        username: 'Johnny',
         selected: false,
+        avatar:
+          'https://i.picsum.photos/id/1/200/300.jpg?hmac=jH5bDkLr6Tgy3oAg5khKCHeunZMHq0ehBZr6vGifPLY',
       },
       {
         id: 'qw33e',
-        name: 'Steven',
+        username: 'Steven',
         selected: false,
+        avatar:
+          'https://i.picsum.photos/id/237/200/300.jpg?hmac=TmmQSbShHz9CdQm0NkEjx1Dyh_Y984R9LpNrpvH2D_U',
       },
       {
         id: '4rwer',
-        name: 'Charles',
+        username: 'Charles',
         selected: false,
+        avatar:
+          'https://i.picsum.photos/id/866/200/300.jpg?hmac=rcadCENKh4rD6MAp6V_ma-AyWv641M4iiOpe1RyFHeI',
       },
       {
         id: 'trett',
-        name: 'Brent',
+        username: 'Brent',
         selected: false,
+        avatar:
+          'https://i.picsum.photos/id/866/200/300.jpg?hmac=rcadCENKh4rD6MAp6V_ma-AyWv641M4iiOpe1RyFHeI',
       },
       {
         id: 'rghg',
-        name: 'Abel',
+        username: 'Abel',
         selected: false,
+        avatar:
+          'https://i.picsum.photos/id/866/200/300.jpg?hmac=rcadCENKh4rD6MAp6V_ma-AyWv641M4iiOpe1RyFHeI',
       },
       {
         id: 'qemn42',
-        name: 'Cain',
+        username: 'Cain',
         selected: false,
+        avatar:
+          'https://i.picsum.photos/id/866/200/300.jpg?hmac=rcadCENKh4rD6MAp6V_ma-AyWv641M4iiOpe1RyFHeI',
       },
     ]);
   }, []);
@@ -53,7 +65,9 @@ storiesOf('molecule/CreateCampfireInviteList', module).add('default', () => {
     ]);
   };
 
-  const sortedUsers = users.sort((a, b) => a.name.localeCompare(b.name));
+  const sortedUsers = users.sort((a, b) =>
+    a.username.localeCompare(b.username),
+  );
 
   return (
     <StoryContainer>

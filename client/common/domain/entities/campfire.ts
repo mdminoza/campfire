@@ -4,7 +4,7 @@ export type CampfireParams = {
   topic: string;
   description: string;
   openTo?: 'Everyone' | 'Invite Only';
-  scheduleToStart: Date;
+  scheduleToStart: any;
   hidden: boolean;
   status?: 'pending' | 'invited' | '';
   isLoading?: boolean;

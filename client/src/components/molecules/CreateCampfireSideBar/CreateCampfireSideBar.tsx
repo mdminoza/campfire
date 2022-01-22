@@ -8,12 +8,14 @@ type Props = {
   profile?: string;
   onClickItem: (value: string) => void;
   selected?: string;
+  invited?: number;
 };
 
 const CreateCampfireSideBar = ({
   profile = 'https://i.picsum.photos/id/1/200/300.jpg?hmac=jH5bDkLr6Tgy3oAg5khKCHeunZMHq0ehBZr6vGifPLY',
   selected = 'schedule',
   onClickItem,
+  invited = 0,
 }: Props): React.ReactElement => (
   <Container>
     <Avatar size={80} src={profile} />
@@ -28,7 +30,7 @@ const CreateCampfireSideBar = ({
         className={selected === 'invite' ? 'selected' : ''}
         role="button"
         onClick={() => onClickItem('invite')}>
-        Invite
+        {`Invite ${invited > 0 ? `(${invited})` : ''}`}
       </span>
     </ItemWrapper>
   </Container>

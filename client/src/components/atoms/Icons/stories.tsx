@@ -24,6 +24,7 @@ import Asterisks from './Asterisks';
 import BlackCrown from './BlackCrown';
 import Settings from './Settings';
 import CloseOutlined from './CloseOutlined';
+import JoinClose from './JoinClose';
 
 import { theme } from '../../../constants';
 
@@ -63,4 +64,5 @@ storiesOf('atom/Icons', module)
   .add('Asterisks', () => <Asterisks />)
   .add('BlackCrown', () => <BlackCrown />)
   .add('Settings', () => <Settings />)
-  .add('CloseOutlined', () => <CloseOutlined />);
+  .add('CloseOutlined', () => <CloseOutlined />)
+  .add('JoinClose', () => <JoinClose />);

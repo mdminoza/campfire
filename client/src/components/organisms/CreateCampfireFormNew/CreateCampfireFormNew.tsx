@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { Formik } from 'formik';
 import moment, { Moment } from 'moment';
-import { Input } from 'antd';
+import { Input, Modal } from 'antd';
 import { CreateCampfireNewSchema } from './validation';
 
 import { CreateCampfireInline } from '../../molecules/CreateCampfireInline';
@@ -13,7 +13,25 @@ import { CreateCampfireHeader } from '../../molecules/CreateCampfireHeader';
 import { CreateCampfireInviteList } from '../../molecules/CreateCampfireInviteList';
 import { CloseOutlined } from '../../atoms/Icons';
 
-const Container = styled.div``;
+const Container = styled.div`
+  @media (min-width: 1200px) {
+    margin: 0 100px;
+  }
+
+  .ant-modal {
+    width: calc(100vw - 230px);
+  }
+
+  .ant-modal-content {
+    border-radius: 4px;
+  }
+
+  .ant-modal-body {
+    padding: 0;
+  }
+
+  margin: 0 40px;
+`;
 
 const MainBodyWrapper = styled.div`
   display: flex;
@@ -109,7 +127,7 @@ const EmailPendingLabel = styled.span`
 
 const EmailLabelWrapper = styled.div`
   position: absolute;
-  top: 432px;
+  top: 392px;
   right: 60px;
 `;
 
@@ -143,48 +161,36 @@ const EmptyDiv = styled.div`
   height: 27.1375px;
 `;
 
-const CreateCampfireFormNew = (): React.ReactElement => {
+type Props = {
+  onSubmit: (values: any) => void;
+  onClickCreate: () => void;
+  toggle: boolean;
+  isLoading?: boolean;
+  isLoadingInvite?: boolean;
+  members: any[];
+  selectedMembers: any[];
+  onClickInviteUser: (id: string) => void;
+  onClickSelectAll: () => void;
+  profileUrl?: string;
+};
+
+const CreateCampfireFormNew = ({
+  onSubmit,
+  onClickCreate,
+  toggle,
+  isLoading = false,
+  isLoadingInvite = false,
+  members,
+  selectedMembers,
+  onClickInviteUser,
+  onClickSelectAll,
+  profileUrl = 'https://i.picsum.photos/id/1/200/300.jpg?hmac=jH5bDkLr6Tgy3oAg5khKCHeunZMHq0ehBZr6vGifPLY',
+}: Props): React.ReactElement => {
   const formRef = useRef<any>(null);
   const [selected, setSelected] = useState('schedule');
-  const [toggle, setToggle] = useState(false);
   const [activeHour, setActiveHour] = useState(1);
   const [activeMinute, setActiveMinute] = useState(0);
-  const [users, setUsers] = useState<any[]>([]);
-
-  useEffect(() => {
-    setUsers([
-      {
-        id: 'bvn88',
-        name: 'Johnny',
-        selected: false,
-      },
-      {
-        id: 'qw33e',
-        name: 'Steven',
-        selected: false,
-      },
-      {
-        id: '4rwer',
-        name: 'Charles',
-        selected: false,
-      },
-      {
-        id: 'trett',
-        name: 'Brent',
-        selected: false,
-      },
-      {
-        id: 'rghg',
-        name: 'Abel',
-        selected: false,
-      },
-      {
-        id: 'qemn42',
-        name: 'Cain',
-        selected: false,
-      },
-    ]);
-  }, []);
+  const [dateValue, setDateValue] = useState(moment());
 
   const now = moment();
   const strDate = now.format('hh:mm A');
@@ -199,35 +205,26 @@ const CreateCampfireFormNew = (): React.ReactElement => {
     setSelected(value);
   };
 
-  const onSubmit = (values: any) => {
-    console.log(values, 'test');
-  };
+  useEffect(() => {
+    if (formRef && toggle === false) {
+      setActiveHour(+hourNow);
+      setActiveMinute(now.minutes());
+      setDateValue(moment());
+      setSelected('schedule');
+      formRef?.current?.resetForm();
+    }
+  }, [formRef, toggle]);
 
-  const onClickCreate = () => setToggle(true);
-
-  const sortedUsers = users.sort((a, b) => a.name.localeCompare(b.name));
-
-  const onClickInviteUser = (id: string) => {
-    const selectedUser = users.find((user) => user.id === id);
-    const filtered = users.filter((user) => user.id !== id);
-    setUsers([
-      ...filtered,
-      {
-        ...selectedUser,
-        selected: !selectedUser.selected,
-      },
-    ]);
-  };
-
-  const onClickSelectAll = () => {
-    const selectedUser = users.map((user) => ({
-      ...user,
-      selected: true,
-    }));
-    setUsers(selectedUser);
-  };
-
-  const selectedUsers = users.filter((user) => user.selected);
+  useEffect(() => {
+    if (formRef) {
+      formRef?.current?.setFieldValue('invited', selectedMembers);
+      if (selectedMembers.length > 0) {
+        formRef?.current?.setFieldValue('openTo', 'Invite Only');
+      } else {
+        formRef?.current?.setFieldValue('openTo', 'Everyone');
+      }
+    }
+  }, [formRef, selectedMembers]);
 
   return (
     <Formik
@@ -235,7 +232,7 @@ const CreateCampfireFormNew = (): React.ReactElement => {
         topic: '',
         description: '',
         hidden: true,
-        scheduleToStart: moment(),
+        scheduleToStart: new Date(),
         hour: +hourNow || '12',
         minutes: `${
           now.minutes() >= 0 && now.minutes() < 10
@@ -289,214 +286,233 @@ const CreateCampfireFormNew = (): React.ReactElement => {
 
         return (
           <Container>
-            {toggle ? (
-              <>
-                <MainBodyWrapper>
-                  <SideBarWrapper>
-                    <CreateCampfireSideBar
-                      selected={selected}
-                      onClickItem={onSelect}
-                    />
-                  </SideBarWrapper>
-                  <Content>
-                    <HeaderWrapper>
-                      <CreateCampfireHeader
-                        onChangeCheckbox={() => {
-                          setFieldValue('hidden', !values.hidden);
-                        }}
-                        topic={values.topic}
-                        description={values.description}
-                        checked={!values.hidden}
-                        type={!values.hidden ? '' : 'hidden-type'}
+            <>
+              <Modal
+                width={1150}
+                centered
+                visible={toggle}
+                closable={false}
+                footer={null}
+                bodyStyle={{
+                  padding: 0,
+                }}
+                className="cf-create-form"
+                wrapClassName="cf-create-form-wrapper"
+                maskClosable
+                onCancel={onClickCreate}>
+                <>
+                  <MainBodyWrapper>
+                    <SideBarWrapper>
+                      <CreateCampfireSideBar
+                        selected={selected}
+                        onClickItem={onSelect}
+                        invited={pendingEmails + selectedMembers.length}
                       />
-                    </HeaderWrapper>
-                    <BodyWrapper>
-                      {selected === 'schedule' ? (
-                        <CreateCampfireSchedule
-                          activeHour={activeHour}
-                          onClickHour={handleHour}
-                          activeMinute={activeMinute}
-                          onClickMinute={handleMinutes}
-                          activePeriod={values.period}
-                          onClickPeriod={handleChange('period')}
-                          onSelectDate={(val: Moment) => {
-                            setFieldValue('scheduleToStart', val);
+                    </SideBarWrapper>
+                    <Content>
+                      <HeaderWrapper>
+                        <CreateCampfireHeader
+                          onChangeCheckbox={() => {
+                            setFieldValue('hidden', !values.hidden);
                           }}
-                          hasSchedule={values.hasSchedule}
-                          onClickSchedule={onClickSchedule}
+                          topic={values.topic}
+                          description={values.description}
+                          checked={!values.hidden}
+                          type={!values.hidden ? '' : 'hidden-type'}
                         />
-                      ) : (
-                        <InviteWrapper>
-                          <InviteListsWrapper>
-                            <CreateCampfireInviteList
-                              users={sortedUsers}
-                              onClick={onClickInviteUser}
-                            />
-                            <BtnWrapper>
-                              <SelectAllBtn onClick={onClickSelectAll}>
-                                SELECT ALL
-                              </SelectAllBtn>
-                              {selectedUsers.length > 0 && (
-                                <PendingLabel>
-                                  {selectedUsers.length} INVITATION
-                                  {selectedUsers.length > 1 ? 'S' : ''} PENDING
-                                </PendingLabel>
+                      </HeaderWrapper>
+                      <BodyWrapper>
+                        {selected === 'schedule' ? (
+                          <CreateCampfireSchedule
+                            activeHour={activeHour}
+                            onClickHour={handleHour}
+                            activeMinute={activeMinute}
+                            onClickMinute={handleMinutes}
+                            activePeriod={values.period}
+                            onClickPeriod={handleChange('period')}
+                            valueDate={dateValue}
+                            onSelectDate={(val: Moment) => {
+                              setFieldValue('scheduleToStart', val);
+                              setDateValue(val);
+                            }}
+                            hasSchedule={values.hasSchedule}
+                            onClickSchedule={onClickSchedule}
+                          />
+                        ) : (
+                          <InviteWrapper>
+                            <InviteListsWrapper>
+                              <CreateCampfireInviteList
+                                users={members}
+                                onClick={onClickInviteUser}
+                                isLoading={isLoadingInvite}
+                              />
+                              <BtnWrapper>
+                                <SelectAllBtn onClick={onClickSelectAll}>
+                                  SELECT ALL
+                                </SelectAllBtn>
+                                {selectedMembers.length > 0 && (
+                                  <PendingLabel>
+                                    {selectedMembers.length} INVITATION
+                                    {selectedMembers.length > 1 ? 'S' : ''}{' '}
+                                    PENDING
+                                  </PendingLabel>
+                                )}
+                              </BtnWrapper>
+                            </InviteListsWrapper>
+                            <InviteEmailWrapper>
+                              <span className="invite-frnds-label">
+                                Invite friends by email:
+                              </span>
+                              <InputWrapper>
+                                <Input
+                                  bordered={false}
+                                  prefix={
+                                    values.email1 ? (
+                                      <BtnIcon
+                                        onClick={() =>
+                                          setFieldValue('email1', '')
+                                        }>
+                                        <CloseOutlined />
+                                      </BtnIcon>
+                                    ) : (
+                                      <EmptyDiv />
+                                    )
+                                  }
+                                  size="large"
+                                  value={values.email1}
+                                  onChange={handleChange('email1')}
+                                />
+                                <Input
+                                  bordered={false}
+                                  prefix={
+                                    values.email2 ? (
+                                      <BtnIcon
+                                        onClick={() =>
+                                          setFieldValue('email2', '')
+                                        }>
+                                        <CloseOutlined />
+                                      </BtnIcon>
+                                    ) : (
+                                      <EmptyDiv />
+                                    )
+                                  }
+                                  size="large"
+                                  value={values.email2}
+                                  onChange={handleChange('email2')}
+                                />
+                                <Input
+                                  bordered={false}
+                                  prefix={
+                                    values.email3 ? (
+                                      <BtnIcon
+                                        onClick={() =>
+                                          setFieldValue('email3', '')
+                                        }>
+                                        <CloseOutlined />
+                                      </BtnIcon>
+                                    ) : (
+                                      <EmptyDiv />
+                                    )
+                                  }
+                                  size="large"
+                                  value={values.email3}
+                                  onChange={handleChange('email3')}
+                                />
+                                <Input
+                                  bordered={false}
+                                  prefix={
+                                    values.email4 ? (
+                                      <BtnIcon
+                                        onClick={() =>
+                                          setFieldValue('email4', '')
+                                        }>
+                                        <CloseOutlined />
+                                      </BtnIcon>
+                                    ) : (
+                                      <EmptyDiv />
+                                    )
+                                  }
+                                  size="large"
+                                  value={values.email4}
+                                  onChange={handleChange('email4')}
+                                />
+                                <Input
+                                  bordered={false}
+                                  prefix={
+                                    values.email5 ? (
+                                      <BtnIcon
+                                        onClick={() =>
+                                          setFieldValue('email5', '')
+                                        }>
+                                        <CloseOutlined />
+                                      </BtnIcon>
+                                    ) : (
+                                      <EmptyDiv />
+                                    )
+                                  }
+                                  size="large"
+                                  value={values.email5}
+                                  onChange={handleChange('email5')}
+                                />
+                                <Input
+                                  bordered={false}
+                                  prefix={
+                                    values.email6 ? (
+                                      <BtnIcon
+                                        onClick={() =>
+                                          setFieldValue('email6', '')
+                                        }>
+                                        <CloseOutlined />
+                                      </BtnIcon>
+                                    ) : (
+                                      <EmptyDiv />
+                                    )
+                                  }
+                                  size="large"
+                                  value={values.email6}
+                                  onChange={handleChange('email6')}
+                                  className="last-input"
+                                />
+                              </InputWrapper>
+                              {pendingEmails > 0 && (
+                                <EmailLabelWrapper>
+                                  <EmailPendingLabel>
+                                    {pendingEmails} EMAIL
+                                    {pendingEmails > 1 ? 'S' : ''} PENDING
+                                  </EmailPendingLabel>
+                                </EmailLabelWrapper>
                               )}
-                            </BtnWrapper>
-                          </InviteListsWrapper>
-                          <InviteEmailWrapper>
-                            <span className="invite-frnds-label">
-                              Invite friends by email:
-                            </span>
-                            <InputWrapper>
-                              <Input
-                                bordered={false}
-                                prefix={
-                                  values.email1 ? (
-                                    <BtnIcon
-                                      onClick={() =>
-                                        setFieldValue('email1', '')
-                                      }>
-                                      <CloseOutlined />
-                                    </BtnIcon>
-                                  ) : (
-                                    <EmptyDiv />
-                                  )
-                                }
-                                size="large"
-                                value={values.email1}
-                                onChange={handleChange('email1')}
-                              />
-                              <Input
-                                bordered={false}
-                                prefix={
-                                  values.email2 ? (
-                                    <BtnIcon
-                                      onClick={() =>
-                                        setFieldValue('email2', '')
-                                      }>
-                                      <CloseOutlined />
-                                    </BtnIcon>
-                                  ) : (
-                                    <EmptyDiv />
-                                  )
-                                }
-                                size="large"
-                                value={values.email2}
-                                onChange={handleChange('email2')}
-                              />
-                              <Input
-                                bordered={false}
-                                prefix={
-                                  values.email3 ? (
-                                    <BtnIcon
-                                      onClick={() =>
-                                        setFieldValue('email3', '')
-                                      }>
-                                      <CloseOutlined />
-                                    </BtnIcon>
-                                  ) : (
-                                    <EmptyDiv />
-                                  )
-                                }
-                                size="large"
-                                value={values.email3}
-                                onChange={handleChange('email3')}
-                              />
-                              <Input
-                                bordered={false}
-                                prefix={
-                                  values.email4 ? (
-                                    <BtnIcon
-                                      onClick={() =>
-                                        setFieldValue('email4', '')
-                                      }>
-                                      <CloseOutlined />
-                                    </BtnIcon>
-                                  ) : (
-                                    <EmptyDiv />
-                                  )
-                                }
-                                size="large"
-                                value={values.email4}
-                                onChange={handleChange('email4')}
-                              />
-                              <Input
-                                bordered={false}
-                                prefix={
-                                  values.email5 ? (
-                                    <BtnIcon
-                                      onClick={() =>
-                                        setFieldValue('email5', '')
-                                      }>
-                                      <CloseOutlined />
-                                    </BtnIcon>
-                                  ) : (
-                                    <EmptyDiv />
-                                  )
-                                }
-                                size="large"
-                                value={values.email5}
-                                onChange={handleChange('email5')}
-                              />
-                              <Input
-                                bordered={false}
-                                prefix={
-                                  values.email6 ? (
-                                    <BtnIcon
-                                      onClick={() =>
-                                        setFieldValue('email6', '')
-                                      }>
-                                      <CloseOutlined />
-                                    </BtnIcon>
-                                  ) : (
-                                    <EmptyDiv />
-                                  )
-                                }
-                                size="large"
-                                value={values.email6}
-                                onChange={handleChange('email6')}
-                                className="last-input"
-                              />
-                            </InputWrapper>
-                            {pendingEmails > 0 && (
-                              <EmailLabelWrapper>
-                                <EmailPendingLabel>
-                                  {pendingEmails} EMAIL
-                                  {pendingEmails > 1 ? 'S' : ''} PENDING
-                                </EmailPendingLabel>
-                              </EmailLabelWrapper>
-                            )}
-                          </InviteEmailWrapper>
-                        </InviteWrapper>
-                      )}
-                    </BodyWrapper>
-                  </Content>
-                </MainBodyWrapper>
-                <FooterWrapper>
-                  <CreateCampfireFooter
-                    schedule={
-                      values.hasSchedule && selected === 'schedule'
-                        ? `${values.hour}:${
-                            values.minutes
-                          } ${values.period.toUpperCase()} ON ${transformDate}`
-                        : ''
-                    }
-                    onClickGo={handleSubmit}
-                    hasInvite={selected === 'invite'}
-                  />
-                </FooterWrapper>
-              </>
-            ) : (
+                            </InviteEmailWrapper>
+                          </InviteWrapper>
+                        )}
+                      </BodyWrapper>
+                    </Content>
+                  </MainBodyWrapper>
+                  <FooterWrapper>
+                    <CreateCampfireFooter
+                      schedule={
+                        values.hasSchedule && selected === 'schedule'
+                          ? `${values.hour}:${
+                              values.minutes
+                            } ${values.period.toUpperCase()} ON ${transformDate}`
+                          : ''
+                      }
+                      onClickGo={handleSubmit}
+                      hasInvite={selected === 'invite'}
+                      isLoading={isLoading}
+                    />
+                  </FooterWrapper>
+                </>
+              </Modal>
               <CreateCampfireInline
-                profileUrl="https://i.picsum.photos/id/1/200/300.jpg?hmac=jH5bDkLr6Tgy3oAg5khKCHeunZMHq0ehBZr6vGifPLY"
+                profileUrl={profileUrl}
                 onChangeTopic={handleChange('topic')}
                 topicValue={values.topic}
                 onChangeDescription={handleChange('description')}
                 descriptionValue={values.description}
                 onClickCreate={onClickCreate}
               />
-            )}
+            </>
           </Container>
         );
       }}

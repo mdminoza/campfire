@@ -12,7 +12,8 @@ export type UserHooks = {
       email: string;
       profileUrl: string;
     }>;
-    fetchAllUsers: () => Promise<UserInterface[] | undefined>;
+    fetchAllUsers: () => Promise<any[] | undefined>;
+    fetchAllFriends: () => Promise<any[] | undefined>;
   };
   useUserState: {
     currentUser?: {
