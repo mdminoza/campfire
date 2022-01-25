@@ -17,20 +17,16 @@ const Container = styled.div`
 `;
 storiesOf('molecule/JoinCampfire', module)
   .add('default', () => (
-    <Container>
-      <JoinCampfire
-        title="Study the bible"
-        description="This is a great bible study"
-        isStarted
-      />
-    </Container>
+    <JoinCampfire
+      title="Study the bible"
+      description="This is a great bible study"
+      isStarted
+    />
   ))
   .add('not started', () => (
-    // <Container>
     <JoinCampfire
       title="Study the bible"
       description="This is a great bible study"
       hasInvites
     />
-    // </Container>
   ));
