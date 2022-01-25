@@ -22,20 +22,29 @@ type Props = {
 const StyledTabs = styled(Tabs)`
   &&& {
     background-color: ${theme.colors.gray.light};
+    .ant-tabs-tab-active {
+      span {
+        font-weight: bold;
+      }
+    }
   }
 `;
 
 const TabWrapper = styled.div`
   &&& {
     .ant-tabs-ink-bar {
-      height: 1.5px !important;
+      height: 1.2px !important;
       background: ${theme.colors.mainBlack} !important;
     }
 
     .ant-tabs-nav {
       &:before {
-        border-bottom: 1.5px solid ${theme.colors.gray.grayb9};
+        border-bottom: 1.2px solid ${theme.colors.gray.grayb9};
       }
+    }
+
+    .ant-tabs-tab + .ant-tabs-tab {
+      margin: 0 0 0 50px;
     }
   }
 `;
@@ -46,11 +55,11 @@ const TabTitleLabel = styled.span`
   &&& {
     font-family: ${theme.fonts.fontFamily};
     font-style: normal;
-    font-weight: bold;
+    font-weight: normal;
     font-size: 1rem;
     line-height: 24px;
     letter-spacing: 0.02em;
-    color: ${theme.colors.mainBlack};
+    color: #484848;
   }
 `;
 
@@ -62,9 +71,10 @@ const TabBadge = styled.span`
     font-size: 0.8rem;
     line-height: 24px;
     color: ${theme.colors.mainWhite};
-    background-color: ${theme.colors.red.light};
+    background-color: ${theme.colors.orange1};
     padding: 4px 10px;
-    margin-left: 8px;
+    margin-left: 16px;
+    border-radius: 6px;
   }
 `;
 
@@ -89,7 +99,7 @@ const CampfireTab = ({
       className={
         !md && (xs || sm) ? 'campfireTabs1 _campfireTabs' : 'campfireTabs1'
       }>
-      <StyledTabs activeKey={activeKey} onChange={onChange}>
+      <StyledTabs centered activeKey={activeKey} onChange={onChange}>
         {tabs.map((tab) => (
           <TabPane
             tab={<TabTitle title={tab.title} count={tab.count} />}

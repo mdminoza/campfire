@@ -1,12 +1,14 @@
 import React from 'react';
+import { LoadingOutlined } from '@ant-design/icons';
 
-import { InviteUserItemContainer, Container } from './elements';
-
+import { InviteUserItemContainer, Container, LoaderWrapper } from './elements';
+import { theme } from '../../../constants';
 import { Avatar } from '../../atoms/Avatar';
 
 type Props = {
   users: any[];
   onClick: (id: string) => void;
+  isLoading?: boolean;
 };
 
 type InviteUserItemProps = {
@@ -14,6 +16,7 @@ type InviteUserItemProps = {
   id: string;
   selected: boolean;
   name: string;
+  profile: string;
 };
 
 const InviteUserItem = ({
@@ -21,6 +24,7 @@ const InviteUserItem = ({
   id,
   selected,
   name,
+  profile,
 }: InviteUserItemProps) => {
   const handleOnClick = () => onClick(id);
 
@@ -28,7 +32,7 @@ const InviteUserItem = ({
     <InviteUserItemContainer
       className={selected ? 'selected-user' : ''}
       onClick={handleOnClick}>
-      <Avatar src="https://i.picsum.photos/id/1/200/300.jpg?hmac=jH5bDkLr6Tgy3oAg5khKCHeunZMHq0ehBZr6vGifPLY" />
+      <Avatar src={profile} />
       <span className={selected ? 'name-label-selected' : 'name-label'}>
         {name}
       </span>
@@ -36,9 +40,15 @@ const InviteUserItem = ({
   );
 };
 
+const loaderStyle = {
+  fontSize: 23,
+  color: theme.colors.mainBlack,
+};
+
 const CreateCampfireInviteList = ({
   users,
   onClick,
+  isLoading = false,
 }: Props): React.ReactElement => {
   const handleOnClick = (id: string) => {
     onClick(id);
@@ -46,14 +56,21 @@ const CreateCampfireInviteList = ({
 
   return (
     <Container>
-      {users.map((user: any) => (
-        <InviteUserItem
-          id={user.id}
-          name={user.name}
-          onClick={handleOnClick}
-          selected={user.selected}
-        />
-      ))}
+      {isLoading ? (
+        <LoaderWrapper>
+          <LoadingOutlined style={loaderStyle} />
+        </LoaderWrapper>
+      ) : (
+        users.map((user: any) => (
+          <InviteUserItem
+            id={user.id}
+            profile={user.avatar}
+            name={user.username}
+            onClick={handleOnClick}
+            selected={user.selected}
+          />
+        ))
+      )}
     </Container>
   );
 };

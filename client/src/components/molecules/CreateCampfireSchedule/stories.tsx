@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { storiesOf } from '@storybook/react';
-import { Moment } from 'moment';
+import moment, { Moment } from 'moment';
 import CreateCampfireSchedule from './CreateCampfireSchedule';
 import { StoryContainer } from './elements';
 
@@ -9,9 +9,11 @@ storiesOf('molecule/CreateCampfireSchedule', module).add('default', () => {
   const [activeHour, setActiveHour] = useState(1);
   const [activeMinute, setActiveMinute] = useState(1);
   const [activePeriod, setActivePeriod] = useState('am');
+  const [value, setValue] = useState(moment());
 
   const onSelectDate = (val: Moment) => {
     console.log(val, 'selected date');
+    setValue(val);
   };
 
   const onClickSchedule = () => {
@@ -21,6 +23,7 @@ storiesOf('molecule/CreateCampfireSchedule', module).add('default', () => {
   return (
     <StoryContainer>
       <CreateCampfireSchedule
+        valueDate={value}
         activeHour={activeHour}
         onClickHour={setActiveHour}
         activeMinute={activeMinute}

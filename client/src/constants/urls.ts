@@ -1,11 +1,14 @@
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
   // baseUrl: 'https://staging.godtribe.com/wp-json/api/v1/',
+  // campfireBaseUrl: 'https://staging-campfire-api.azurewebsites.net/api/',
   campfireBaseUrl: 'https://staging-campfire-api.azurewebsites.net/api/',
-  devCampfireBaseUrl: 'https://dev-campfire-api.azurewebsites.net/api/',
+  devCampfireBaseUrl: 'http://localhost:5000/api/',
   // campfireBaseUrl: 'http://localhost:5000/api/',
   web: {
     dev: 'https://staging.godtribe.com/wp-json/wp/v1/',
+    buddyBossDev: 'https://staging.godtribe.com/wp-json/buddyboss/v1/',
+    buddyBossProd: 'https://godtribe.com/wp-json/buddyboss/v1/',
     prod: 'https://godtribe.com/wp-json/api/v1/',
     jwt: 'https://staging.godtribe.com/wp-json/jwt-auth/v1/token',
   },

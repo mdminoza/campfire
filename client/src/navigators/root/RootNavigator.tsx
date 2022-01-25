@@ -142,19 +142,19 @@ const Navigator = () => {
     setAllUsers(arr || []);
   };
 
-  const { mutate: getAllUsers } = useMutation(() => fetchAllUsers(), {
-    onSuccess: (res) => {
-      handleAllUsers(res);
-    },
-    onError: (error) => {
-      console.log('getALl Error: ', error);
-    },
-  });
+  // const { mutate: getAllUsers } = useMutation(() => fetchAllUsers(), {
+  //   onSuccess: (res) => {
+  //     handleAllUsers(res);
+  //   },
+  //   onError: (error) => {
+  //     console.log('getALl Error: ', error);
+  //   },
+  // });
 
   useEffect(() => {
     if (token) {
       refetchCurrentUser();
-      getAllUsers();
+      // getAllUsers();
     } else {
       setCurrentUser(undefined);
     }

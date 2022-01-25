@@ -2,10 +2,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-nested-ternary */
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Row, Col, Spin, Empty, Divider, Grid } from 'antd';
+import { Row, Col, Spin, Empty, Divider, Grid, Modal } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useQuery, useMutation } from 'react-query';
+import moment, { Moment } from 'moment';
 
 import { theme } from '../../../constants';
 import { arrayToObject } from '../../../utils/helpers/common';
@@ -14,10 +15,12 @@ import { Search } from '../../atoms/Icons';
 import { Loader } from '../../atoms/Loader';
 import { TitleContent } from '../../molecules/TitleContent';
 import { CreateCampfireForm } from '../../organisms/CreateCampfireForm';
+import { CreateCampfireFormNew } from '../../organisms/CreateCampfireFormNew';
 import { CampfireTab } from '../../organisms/CampfireTab';
 import { CampfireTabMobile } from '../../organisms/CampfireTabMobile';
 import { TopicCard } from '../../organisms/TopicCard';
 import { SponsoredTopicCard } from '../../organisms/SponsoredTopicCard';
+import { JoinCampfire } from '../../molecules/JoinCampfire';
 import { AntdMessage } from '../../HOCs/AntdMessage';
 import {
   Campfire,
@@ -27,7 +30,7 @@ import { MemberParams } from '../../../../common/domain/entities/member';
 // import { joinCampfire } from '../../../utils/socketConnection/socketConnection';
 
 import { useCampfireAction } from '../../../hooks/campfire';
-import { useUserState } from '../../../hooks/user';
+import { useUserState, useUserAction } from '../../../hooks/user';
 import { useMediaStreamAction } from '../../../hooks/mediaStream';
 import { useMemberAction } from '../../../hooks/member';
 import { useSocketAction } from '../../../hooks/socket';
@@ -37,18 +40,17 @@ import {
   WrapperTemp,
   SponsonsoredFillerContainer,
 } from './elements';
+// import { minutes } from '../../../utils/helpers/constants';
 
 const { useBreakpoint } = Grid;
 
 const TabWrapper = styled.div<{ campfiretoggled: boolean }>`
   &&& {
     @media (min-width: 1200px) {
-      margin: 0 120px;
+      margin: 50px 100px 0;
     }
-    @media (min-width: 1300px) {
-      margin: 0 190px;
-    }
-    margin: 0 40px;
+
+    margin: 50px 40px 0;
     z-index: ${(props) => (props.campfiretoggled ? '-1;' : 'auto')};
   }
 `;
@@ -82,7 +84,7 @@ const CardWrapper = styled(Row)`
 
 const CreateCampFireWrapper = styled.div`
   &&& {
-    margin: -70px 0 24px;
+    margin: -50px 0 24px;
     z-index: 1;
   }
 `;
@@ -152,6 +154,7 @@ const MainTemplate = (): React.ReactElement => {
   const { md } = screens;
   const [searchValue, setSearchValue] = useState('');
   const [isToggled, setCampfireToggled] = useState<boolean>(false);
+  const [isToggledCreate, setToggledCreate] = useState<boolean>(false);
   const [showInvites, setShowInvites] = useState(false);
   const [showLoading, setShowLoading] = useState(true);
   const [showLoadingPrivate, setShowLoadingPrivate] = useState(true);
@@ -165,6 +168,13 @@ const MainTemplate = (): React.ReactElement => {
   const [ownedCampfires, setOwnedCampfires] = useState<{
     [_id: string]: Campfire;
   }>({});
+  const [allFriends, setAllFriends] = useState<any[]>([]);
+  const [successTopic, setSuccessTopic] = useState<string>('');
+  const [successDesc, setSuccessDesc] = useState<string>('');
+  const [joinToggled, setJoinToggled] = useState<boolean>(false);
+  const [hasInvites, setHasInvites] = useState<boolean>(false);
+  const [campfireStarted, setCampfireStarted] = useState<boolean>(false);
+  const [newCampfireId, setNewCampfireId] = useState<string>('');
 
   const navigate = useNavigate();
 
@@ -173,13 +183,13 @@ const MainTemplate = (): React.ReactElement => {
     fetchPublicCampfires,
     fetchPrivateCampfires,
     addCampfire,
-    updateOwnedCampfireActiveStatus,
     searchCampfires,
   } = useCampfireAction();
   const { addMember, updateMemberActiveStatus } = useMemberAction();
   const { currentUser, isLoading } = useUserState();
   const { useMediaStreamState } = useMediaStreamAction();
-  const { useSocketState, testJoin } = useSocketAction();
+  const { useSocketState } = useSocketAction();
+  const { fetchAllFriends } = useUserAction();
 
   const {
     setLocalUser,
@@ -303,6 +313,24 @@ const MainTemplate = (): React.ReactElement => {
   } = useMutation((values: CampfireParams) => addCampfire(values));
 
   const {
+    isFetching: isFetchingAllFriends,
+    refetch: refetchAllFriends,
+  } = useQuery(['all-friends'], () => fetchAllFriends(), {
+    onSuccess: (res) => {
+      if (res) {
+        console.log(res, 'resss');
+        const mappedData = res.map((val) => ({
+          id: val.id,
+          username: val.profile_name,
+          avatar: val.avatar_urls.full,
+        }));
+        setAllFriends(mappedData);
+      }
+    },
+    enabled: false,
+  });
+
+  const {
     mutate: addMemberMutation,
     isLoading: isAddingMember,
     // isSuccess: isMemberAdded,
@@ -338,9 +366,13 @@ const MainTemplate = (): React.ReactElement => {
     [],
   );
 
-  const handleToggle = useCallback(() => setCampfireToggled(!isToggled), [
-    isToggled,
-  ]);
+  // const handleToggle = useCallback(() => setCampfireToggled(!isToggled), [
+  //   isToggled,
+  // ]);
+
+  const onClickCreate = () => {
+    setToggledCreate(!isToggledCreate);
+  };
 
   const handleAddCampfire = useCallback(
     (values: CampfireParams) => {
@@ -355,7 +387,15 @@ const MainTemplate = (): React.ReactElement => {
             });
             setCampfireToggled(false);
             setActiveTab('ownedCampfire');
+            setToggledCreate(false);
           }
+          setSuccessDesc(values.description);
+          setSuccessTopic(values.topic);
+          setJoinToggled(true);
+          setHasInvites(!!(values.members && values.members?.length > 0));
+          const hasStarted = moment(values.scheduleToStart).diff(moment()) >= 0;
+          setCampfireStarted(!hasStarted);
+          setNewCampfireId(res?._id || '');
         },
         onError: (err) => {
           console.log(err, 'err');
@@ -490,13 +530,24 @@ const MainTemplate = (): React.ReactElement => {
       openTo,
       hidden,
       invited,
+      hour,
+      minutes,
+      period,
+      hasSchedule,
     } = values;
+
+    const strSched = `${moment(scheduleToStart).format(
+      'MMMM DD YYYY',
+    )}, ${hour}:${minutes} ${period}`;
+
+    const lessThanCurrentDate =
+      moment(strSched).diff(moment()) >= 0 ? moment(strSched) : new Date();
 
     const details = {
       topic,
       description,
       duration,
-      scheduleToStart,
+      scheduleToStart: hasSchedule ? lessThanCurrentDate : new Date(),
       openTo,
       hidden,
       altTopic: topic,
@@ -508,11 +559,18 @@ const MainTemplate = (): React.ReactElement => {
       name: currentUser?.name || '',
     };
 
+    const mappedInvite = invited.map((val: any) => ({
+      uid: val.id,
+      profileUrl: val.avatar,
+      name: val.username,
+    }));
+
     const params = {
       ...details,
       creator,
-      members: invited,
+      members: mappedInvite,
     };
+    // console.log(params, 'params');
     handleAddCampfire(params);
   };
 
@@ -533,6 +591,14 @@ const MainTemplate = (): React.ReactElement => {
   };
 
   // USE EffECTS
+
+  useEffect(() => {
+    if (!isToggledCreate) {
+      setAllFriends([]);
+    } else {
+      refetchAllFriends();
+    }
+  }, [isToggledCreate]);
 
   useEffect(() => {
     if (!isPublicCampfiresLoading) {
@@ -625,6 +691,41 @@ const MainTemplate = (): React.ReactElement => {
     }
   }, [isKicked]);
   // USE EFFECTS
+
+  const sortedFriends = allFriends.sort((a, b) =>
+    a.username.localeCompare(b.username),
+  );
+
+  const onClickInviteUser = (id: string) => {
+    const selectedUser = allFriends.find((member) => member.id === id);
+    const filtered = allFriends.filter((member) => member.id !== id);
+    setAllFriends([
+      ...filtered,
+      {
+        ...selectedUser,
+        selected: !selectedUser.selected,
+      },
+    ]);
+  };
+
+  const onClickSelectAll = () => {
+    const selectedUser = allFriends.map((member) => ({
+      ...member,
+      selected: true,
+    }));
+    setAllFriends(selectedUser);
+  };
+
+  const selectedMembers = allFriends.filter((member) => member.selected);
+
+  const handleJoinToggle = () => setJoinToggled(!joinToggled);
+
+  const handleJoin = () => {
+    localStorage.setItem('active-campfire', newCampfireId);
+    setCampfireEnded(false);
+    setKicked(false);
+    navigate(`/campfires/active/${newCampfireId}`);
+  };
 
   const campfiresMock: {
     publicCampfire: { data: Campfire[]; lastId: undefined };
@@ -877,7 +978,7 @@ const MainTemplate = (): React.ReactElement => {
     },
     {
       key: 'privateCampfire',
-      title: 'Invite Only Campfires',
+      title: 'Invited',
       count: privateCampfire.data.length,
       children: (
         <TabContentWrapper>
@@ -985,7 +1086,7 @@ const MainTemplate = (): React.ReactElement => {
           <Cover>
             <Wrapper>
               <CreateCampFireWrapper ref={CreateCampfireRef}>
-                <CreateCampfireForm
+                {/* <CreateCampfireForm
                   toggle={isToggled}
                   onPress={handleToggle}
                   onSubmit={handleSubmit}
@@ -993,6 +1094,18 @@ const MainTemplate = (): React.ReactElement => {
                   isInviteTagOpen={showInvites}
                   isLoading={isAddingCampfire}
                   // fetchUserList={fetchUserList}
+                /> */}
+                <CreateCampfireFormNew
+                  members={sortedFriends}
+                  selectedMembers={selectedMembers}
+                  onClickInviteUser={onClickInviteUser}
+                  onClickSelectAll={onClickSelectAll}
+                  onClickCreate={onClickCreate}
+                  toggle={isToggledCreate}
+                  onSubmit={handleSubmit}
+                  isLoading={isAddingCampfire}
+                  isLoadingInvite={isFetchingAllFriends}
+                  profileUrl={currentUser?.profileUrl}
                 />
               </CreateCampFireWrapper>
             </Wrapper>
@@ -1017,6 +1130,28 @@ const MainTemplate = (): React.ReactElement => {
       {(isAddingMember || isAddingMemberUpcoming) && (
         <Loader style={mainLoader} />
       )}
+      <Modal
+        width={1150}
+        centered
+        visible={joinToggled}
+        closable={false}
+        footer={null}
+        bodyStyle={{
+          padding: 0,
+        }}
+        className="cf-create-form"
+        maskClosable
+        onCancel={handleJoinToggle}>
+        <JoinCampfire
+          title={successTopic}
+          description={successDesc}
+          onClose={handleJoinToggle}
+          hasInvites={hasInvites}
+          isStarted={campfireStarted}
+          profile={currentUser?.profileUrl}
+          onClickJoin={handleJoin}
+        />
+      </Modal>
     </Container>
   );
 };

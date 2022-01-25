@@ -46,3 +46,10 @@ export const InviteUserItemContainer = styled.div`
     font-weight: bold;
   }
 `;
+
+export const LoaderWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+`;
