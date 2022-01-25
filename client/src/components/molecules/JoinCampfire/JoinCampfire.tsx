@@ -1,11 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
+import { string } from 'yup';
+import { theme } from '../../../constants';
 import { Avatar } from '../../atoms/Avatar';
 
 type Props = {
   title: string;
   description: string;
   isStarted?: boolean;
+  hasInvites?: boolean;
+  onClose: any;
+  onClickJoin: any;
+  profile?: string;
 };
 
 // const Container = styled.div<{ onActive: boolean }>`
@@ -19,18 +25,13 @@ const Container = styled.div`
     background: #f55819;
     position: relative;
     padding: 10px;
-    border-radius: 10px;
+    border-radius: 4px;
+    width: 95%;
   }
 `;
 
-const Wrapper = styled.div`
+const DivWrapper = styled.div`
   &&& {
-    @media (min-width: 1200px) {
-      padding: 30px 120px 15px 120px;
-    }
-    @media (min-width: 1300px) {
-      padding: 30px 190px 15px 190px;
-    }
     padding-bottom: 30px;
     display: flex;
     align-items: center;
@@ -47,6 +48,10 @@ const Title = styled.p`
     line-height: 45px;
     color: #fff;
     letter-spacing: 2px;
+    @media ${theme.breakpoints.mobile} {
+      font-size: 8vw;
+      line-height: 34px;
+    }
   }
 `;
 
@@ -57,6 +62,9 @@ const Description = styled.p<{ onStarted?: boolean }>`
     text-align: center;
     margin-bottom: 0;
     color: #fff;
+    @media ${theme.breakpoints.mobile} {
+      font-size: 4vw;
+    }
   }
 `;
 
@@ -68,6 +76,9 @@ const CustomBtn = styled.div`
     padding: 8px;
     margin-top: 30px;
     cursor: pointer;
+    @media ${theme.breakpoints.mobile} {
+      margin-top: 0px;
+    }
   }
 `;
 
@@ -88,43 +99,76 @@ const BtnText = styled.div`
     margin-bottom: 0;
     color: #fff;
     letter-spacing: 1px;
+    @media ${theme.breakpoints.mobile} {
+      font-size: 4vw;
+    }
   }
+`;
+
+const CloseBtn = styled.button`
+  color: white;
+  border: none;
+  background-color: transparent;
+  font-weight: bold;
+  font-size: 26px;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: pointer;
+  height: 37px;
+  padding: 0;
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: #00000070;
 `;
 
 const JoinCampfire = ({
   title,
   description,
   isStarted,
-}: Props): React.ReactElement => {
-  const handleJoin = () => {
-    console.log('Join Campfire');
-  };
-
-  return (
+  hasInvites = false,
+  onClose = () => { },
+  onClickJoin = () => { },
+  profile = 'https://i.picsum.photos/id/1/200/300.jpg?hmac=jH5bDkLr6Tgy3oAg5khKCHeunZMHq0ehBZr6vGifPLY',
+}: Props): React.ReactElement => (
+  <Wrapper>
     <Container>
-      <Wrapper>
+      <DivWrapper>
+        {!isStarted && (
+          <CloseBtn onClick={onClose}>
+            <JoinClose />
+          </CloseBtn>
+        )}
+
         <AvatarWrapper>
-          <Avatar
-            size={82}
-            src="https://i.picsum.photos/id/1/200/300.jpg?hmac=jH5bDkLr6Tgy3oAg5khKCHeunZMHq0ehBZr6vGifPLY"
-          />
+          <Avatar size={82} src={profile} />
         </AvatarWrapper>
         <Title>{title.toUpperCase()}</Title>
         <Description>{description.toUpperCase()}</Description>
-      </Wrapper>
-      <Wrapper>
+      </DivWrapper>
+      <DivWrapper>
         <Description onStarted>
-          {isStarted ? 'CAMPFIRE HAS STARTED' : 'CAMPFIRE NOT YET STARTED'}
+          {isStarted ? 'CAMPFIRE HAS STARTED' : 'CAMPFIRE HAS BEEN SCHEDULED'}
         </Description>
-        <Description>INVITES HAS BEEN SENT</Description>
-      </Wrapper>
+        <Description>{hasInvites ? 'INVITES HAVE BEEN SENT' : ''}</Description>
+      </DivWrapper>
       {isStarted && (
-        <CustomBtn onClick={handleJoin}>
+        <CustomBtn onClick={onClickJoin}>
           <BtnText>JOIN YOUR CAMPFIRE</BtnText>
         </CustomBtn>
       )}
     </Container>
-  );
-};
+  </Wrapper>
+);
 
 export default JoinCampfire;

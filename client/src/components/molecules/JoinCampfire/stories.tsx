@@ -8,6 +8,12 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
 `;
 storiesOf('molecule/JoinCampfire', module)
   .add('default', () => (
@@ -20,10 +26,11 @@ storiesOf('molecule/JoinCampfire', module)
     </Container>
   ))
   .add('not started', () => (
-    <Container>
-      <JoinCampfire
-        title="Study the bible"
-        description="This is a great bible study"
-      />
-    </Container>
+    // <Container>
+    <JoinCampfire
+      title="Study the bible"
+      description="This is a great bible study"
+      hasInvites
+    />
+    // </Container>
   ));
