@@ -5,6 +5,8 @@ import io from 'socket.io-client';
 import { SocketHooksContext } from '.';
 import { JoinedParams } from '../../../common/domain/entities/campfire';
 import { useMediaStreamAction } from '../mediaStream';
+import urls from '../../constants/urls';
+import { isDev } from '../../constants';
 
 const SocketProvider = (props: any): React.ReactElement => {
   const [socketId, setSocketId] = useState<string>('');
@@ -57,8 +59,7 @@ const SocketProvider = (props: any): React.ReactElement => {
     setSocketId,
   };
 
-  const SERVER = 'https://staging-campfire-api.azurewebsites.net';
-  // const SERVER = 'http://localhost:5000';
+  const SERVER = isDev ? urls.rootDevUrl : urls.rootStagingUrl;
 
   const socketInit = (): any => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
