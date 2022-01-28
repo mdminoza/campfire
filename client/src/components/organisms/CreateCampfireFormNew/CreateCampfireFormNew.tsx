@@ -146,12 +146,12 @@ const InputWrapper = styled.div`
     padding-left: 2px;
     height: 42px;
     padding: 0 0 0 2px;
-    &::hover {
+    &:hover {
       border-bottom: 1px solid #9e9e9e;
     }
   }
   .ant-input-affix-wrapper-borderless {
-    &::hover {
+    &:hover {
       border-bottom: 1px solid #9e9e9e !important;
       border-color: #9e9e9e !important;
     }
@@ -162,7 +162,7 @@ const InputWrapper = styled.div`
   .last-input {
     margin-bottom: 0;
     border-bottom: none;
-    &::hover {
+    &:hover {
       border-bottom: none !important;
     }
   }
