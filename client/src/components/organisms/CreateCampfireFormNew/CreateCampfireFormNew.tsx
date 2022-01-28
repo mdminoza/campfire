@@ -150,6 +150,12 @@ const InputWrapper = styled.div`
       border-bottom: 1px solid #9e9e9e;
     }
   }
+  .ant-input-affix-wrapper-borderless {
+    &::hover {
+      border-bottom: 1px solid #9e9e9e !important;
+      border-color: #9e9e9e !important;
+    }
+  }
   .ant-input-prefix {
     margin-right: 20px;
   }
@@ -157,7 +163,7 @@ const InputWrapper = styled.div`
     margin-bottom: 0;
     border-bottom: none;
     &::hover {
-      border-bottom: none;
+      border-bottom: none !important;
     }
   }
   .ant-input-lg {

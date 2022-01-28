@@ -85,7 +85,7 @@ export const DatePickerWrapper = styled.div`
   .main-calendar {
     .ant-picker-content {
       & {
-        height: 190px;
+        height: 198px;
         thead {
           tr {
             th {
@@ -113,7 +113,7 @@ export const DatePickerWrapper = styled.div`
     }
     .ant-picker-content {
       & {
-        height: 190px;
+        height: 198px;
         thead {
           tr {
             th {
@@ -200,6 +200,7 @@ export const TodayButton = styled.button`
 `;
 
 export const CalendarHeaderBtnWrapper = styled.div`
+  display: flex;
   .header-month {
     font-size: 17px;
     font-weight: 700;
@@ -221,6 +222,7 @@ export const CalendarHeaderButton = styled.button`
   &:active {
     background-color: #ebebeb;
   }
+  padding: 1px 6px;
 `;
 
 export const UpArrowBtn = styled.button`
