@@ -137,6 +137,7 @@ const BtnIcon = styled.button`
   background-color: transparent;
   padding-left: 0;
   padding-right: 0;
+  box-shadow: none !important;
 `;
 
 const InputWrapper = styled.div`
