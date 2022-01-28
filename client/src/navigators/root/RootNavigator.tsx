@@ -1,21 +1,16 @@
 /* eslint-disable no-nested-ternary */
 import React, { useEffect } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 import ErrorBoundary from '../../components/HOCs/ErrorBoundary';
 import { Loader } from '../../components/atoms/Loader';
 import { MainPage } from '../../components/pages/MainPage';
-import { ActivePage } from '../../components/pages/ActivePage';
 import { NewActivePage } from '../../components/pages/NewActivePage';
-import { TestPage } from '../../components/pages/TestPage';
 import { LoginPage } from '../../components/pages/LoginPage';
 
 import { useUserState, useUserAction } from '../../hooks/user';
 import { useSocketAction } from '../../hooks/socket';
-import { UserInterface } from '../../hooks/user/combined/types';
-import { ErrorModal } from '../../components/HOCs/ErrorModal';
-// import { socketInit } from '../../utils/socketConnection/socketConnection';
 
 const ProtectedRoutes = () => (
   <Routes>
@@ -39,18 +34,10 @@ const Navigator = () => {
     setIsLoading,
     token: stateToken,
     setToken,
-    allUsers,
-    setAllUsers,
   } = useUserState();
-  const {
-    fetchCurrentUser,
-    fetchAllUsers,
-    fetchRandomTestUser,
-  } = useUserAction();
+  const { fetchCurrentUser } = useUserAction();
 
-  const { socketInit, useSocketState } = useSocketAction();
-
-  const { socketError, setSocketError } = useSocketState;
+  const { socketInit } = useSocketAction();
 
   // TODO: use this to manually logout for testing purposes
   // localStorage.removeItem('access-token');
@@ -138,9 +125,9 @@ const Navigator = () => {
   //   },
   // );
 
-  const handleAllUsers = (arr: UserInterface[] | undefined) => {
-    setAllUsers(arr || []);
-  };
+  // const handleAllUsers = (arr: UserInterface[] | undefined) => {
+  //   setAllUsers(arr || []);
+  // };
 
   // const { mutate: getAllUsers } = useMutation(() => fetchAllUsers(), {
   //   onSuccess: (res) => {

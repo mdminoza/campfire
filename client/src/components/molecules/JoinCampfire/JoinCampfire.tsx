@@ -142,8 +142,8 @@ const JoinCampfire = ({
   description,
   isStarted,
   hasInvites = false,
-  onClose = () => { },
-  onClickJoin = () => { },
+  onClose = () => {},
+  onClickJoin = () => {},
   profile = 'https://i.picsum.photos/id/1/200/300.jpg?hmac=jH5bDkLr6Tgy3oAg5khKCHeunZMHq0ehBZr6vGifPLY',
 }: Props): React.ReactElement => (
   <Wrapper>

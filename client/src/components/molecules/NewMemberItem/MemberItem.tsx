@@ -1,6 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { Card, Menu, Dropdown } from 'antd';
+import hark from 'hark';
 
 import { Avatar } from '../../atoms/Avatar';
 import {
@@ -276,6 +277,7 @@ const MemberItem = ({
   stream,
   role,
 }: Props): React.ReactElement => {
+  const [isSpeaking, setSpeaking] = useState<boolean>(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   // const ref = useRef<any>();
   const videoRef = useRef<
@@ -297,6 +299,19 @@ const MemberItem = ({
 
   useEffect(() => {
     if (stream && stream.id) {
+      const options = {
+        threshold: -60,
+      };
+
+      const speechEvents = hark(stream, options);
+      speechEvents.on('speaking', () => {
+        setSpeaking(true);
+      });
+
+      speechEvents.on('stopped_speaking', () => {
+        setSpeaking(false);
+      });
+
       const remoteVideoStream = videoRef.current;
       // eslint-disable-next-line dot-notation
       remoteVideoStream.srcObject = stream;
@@ -439,14 +454,14 @@ const MemberItem = ({
     // eslint-disable-next-line no-nested-ternary
     background: isMuted
       ? theme.colors.gray.grayb8
-      : isSpeaker
+      : isSpeaking
       ? theme.colors.orange1
       : theme.colors.mainWhite,
     borderTopLeftRadius: 5,
     padding: 4,
     height: 18,
     width: 18,
-    fill: isSpeaker ? theme.colors.mainWhite : theme.colors.mainBlack,
+    fill: isSpeaking ? theme.colors.mainWhite : theme.colors.mainBlack,
   };
 
   const muteMicStyle = {
@@ -476,7 +491,7 @@ const MemberItem = ({
       onClick={handleClick}
       hoverable
       isMuted={isMuted}
-      isSpeaker={!!isSpeaker}
+      isSpeaker={isSpeaking}
       style={cardStyle}
       bordered={false}
       bodyStyle={cardBodyStyle}
@@ -510,7 +525,7 @@ const MemberItem = ({
           {/* {isMuted && <MuteMicMember style={muteMicStyle} />} */}
 
           <Avatar src={profileUrl} size={size || 110} alt="Sample" />
-          <BorderActive isSpeaker={isSpeaker} isMuted={isMuted} size={size} />
+          <BorderActive isSpeaker={isSpeaking} isMuted={isMuted} size={size} />
           {!isSpeaker && isRaising && (
             <RaiseHandWrapper size={size}>
               <RaiseHand width={45} height={60} />
