@@ -51,7 +51,7 @@ export const GoButton = styled.button`
   background-color: #ac3e12;
   color: ${theme.colors.mainWhite};
   border: none;
-  border-radius: 0 0 4px 0;
+  border-radius: 0 0 4px 0 !important;
   font-size: 18px;
   font-weight: bold;
   padding: 8px 12px;

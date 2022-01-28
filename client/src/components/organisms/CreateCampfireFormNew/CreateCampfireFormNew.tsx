@@ -144,6 +144,11 @@ const InputWrapper = styled.div`
     border-bottom: 1px solid #9e9e9e;
     border-radius: 0;
     padding-left: 2px;
+    height: 42px;
+    padding: 0 0 0 2px;
+    &::hover {
+      border-bottom: 1px solid #9e9e9e;
+    }
   }
   .ant-input-prefix {
     margin-right: 20px;
@@ -151,6 +156,9 @@ const InputWrapper = styled.div`
   .last-input {
     margin-bottom: 0;
     border-bottom: none;
+    &::hover {
+      border-bottom: none;
+    }
   }
   .ant-input-lg {
     font-size: 16px;

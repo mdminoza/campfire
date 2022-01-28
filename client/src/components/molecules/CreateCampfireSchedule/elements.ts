@@ -71,6 +71,13 @@ export const DatePickerWrapper = styled.div`
         border: none;
       }
     }
+    .ant-picker-cell-in-view.ant-picker-cell-today {
+      .ant-picker-cell-inner {
+        &::before {
+          border: none;
+        }
+      }
+    }
     .ant-picker-calendar-date-value {
       font-size: 12px;
     }
@@ -78,14 +85,21 @@ export const DatePickerWrapper = styled.div`
   .main-calendar {
     .ant-picker-content {
       & {
-        height: 198px;
+        height: 190px;
         thead {
           tr {
             th {
               font-weight: bold;
               font-size: 12px;
+              text-align: center;
             }
           }
+        }
+        th {
+          border-bottom: none;
+        }
+        td {
+          border-bottom: none;
         }
       }
     }
@@ -99,14 +113,22 @@ export const DatePickerWrapper = styled.div`
     }
     .ant-picker-content {
       & {
-        height: 198px;
+        height: 190px;
         thead {
           tr {
             th {
               font-weight: bold;
               color: #ababab;
+              font-size: 12px;
+              text-align: center;
             }
           }
+        }
+        th {
+          border-bottom: none;
+        }
+        td {
+          border-bottom: none;
         }
       }
     }
@@ -205,6 +227,8 @@ export const UpArrowBtn = styled.button`
   border: none;
   background: none;
   cursor: pointer;
+  padding: 1px 6px;
+  margin: 0;
   &:active {
     background-color: #ebebeb;
   }
@@ -212,6 +236,8 @@ export const UpArrowBtn = styled.button`
 export const DownArrowBtn = styled.button`
   border: none;
   background: none;
+  padding: 1px 6px;
+  margin: 0;
   cursor: pointer;
   &:active {
     background-color: #ebebeb;
