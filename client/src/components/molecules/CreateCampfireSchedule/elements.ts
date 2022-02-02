@@ -13,6 +13,9 @@ export const Container = styled.div`
   background-color: ${theme.colors.mainWhite};
   display: flex;
   padding: 10px;
+  @media (max-width: 700px) {
+    flex-direction: column;
+  }
 `;
 
 export const TimePickerWrapper = styled.div`
@@ -48,6 +51,18 @@ export const TimePickerDiv = styled.div`
 export const DatePickerWrapper = styled.div`
   padding: 0 20px;
   width: 400px;
+
+  @media (min-width: 700px) and (max-width: 805px) {
+    width: auto;
+  }
+
+  @media (max-width: 700px) {
+    margin-top: 24px;
+  }
+
+  @media (max-width: 568px) {
+    width: auto;
+  }
 
   .ant-picker-calendar {
     .ant-picker-cell {
@@ -172,6 +187,9 @@ export const ScheduleButton = styled.button`
   &:active {
     background-color: #f9d4c6;
   }
+  @media (max-width: 700px) {
+    max-width: 220px;
+  }
 `;
 
 export const CalendarHeaderContainer = styled.div`
@@ -197,18 +215,40 @@ export const TodayButton = styled.button`
   &:active {
     background-color: #dddddd;
   }
+  @media (min-width: 700px) and (max-width: 805px) {
+    padding: 5px 12px;
+  }
+  @media (max-width: 568px) {
+    padding: 5px 12px;
+  }
 `;
 
 export const CalendarHeaderBtnWrapper = styled.div`
   display: flex;
   .header-month {
     font-size: 17px;
+    @media (min-width: 700px) and (max-width: 805px) {
+      font-size: 13px;
+      padding: 0;
+    }
+    @media (max-width: 568px) {
+      font-size: 13px;
+      padding: 0;
+    }
     font-weight: 700;
     color: ${theme.colors.mainBlack};
     padding: 0 5px;
   }
   .disabled-header-month {
     font-size: 17px;
+    @media (min-width: 700px) and (max-width: 805px) {
+      font-size: 13px;
+      padding: 0;
+    }
+    @media (max-width: 568px) {
+      font-size: 13px;
+      padding: 0;
+    }
     font-weight: 700;
     color: #ababab;
     padding: 0 5px;

@@ -36,6 +36,9 @@ const Container = styled.div`
 const MainBodyWrapper = styled.div`
   display: flex;
   height: 430px;
+  @media (max-width: 768px) {
+    height: auto;
+  }
   background-color: white;
   border-radius: 4px 4px 0 0;
 `;
@@ -62,6 +65,9 @@ const Content = styled.div`
 
 const InviteWrapper = styled.div`
   display: flex;
+  @media (max-width: 630px) {
+    flex-direction: column;
+  }
 `;
 
 const InviteListsWrapper = styled.div`
@@ -69,6 +75,10 @@ const InviteListsWrapper = styled.div`
   padding: 20px 15px 0 24px;
   border-right: 1px solid #c0c0c0;
   height: 344px;
+  @media (max-width: 630px) {
+    border-right: none;
+    border-bottom: 1px solid #c0c0c0;
+  }
 `;
 
 const InviteEmailWrapper = styled.div`
@@ -105,6 +115,13 @@ const SelectAllBtn = styled.button`
   &:active {
     background-color: #f5f5f5;
   }
+
+  @media (max-width: 1020px) {
+    letter-spacing: unset;
+    padding: 8px;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+  }
 `;
 
 const PendingLabel = styled.span`
@@ -114,6 +131,12 @@ const PendingLabel = styled.span`
   color: #ffffff;
   font-weight: bold;
   letter-spacing: 1px;
+  @media (max-width: 1020px) {
+    letter-spacing: unset;
+    padding: 8px;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+  }
 `;
 
 const EmailPendingLabel = styled.span`
@@ -123,12 +146,34 @@ const EmailPendingLabel = styled.span`
   color: #ffffff;
   font-weight: bold;
   letter-spacing: 1px;
+
+  @media (max-width: 1020px) {
+    letter-spacing: unset;
+    padding: 8px;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+  }
 `;
 
 const EmailLabelWrapper = styled.div`
   position: absolute;
   top: 392px;
   right: 60px;
+  z-index: 1;
+
+  @media (max-width: 768px) {
+    top: 450px;
+    right: 10px;
+  }
+  @media (max-width: 630px) {
+    top: unset;
+    right: 10px;
+    bottom: 80px;
+  }
+
+  @media (max-width: 550px) {
+    bottom: 110px;
+  }
 `;
 
 const BtnIcon = styled.button`
@@ -304,13 +349,13 @@ const CreateCampfireFormNew = ({
             <>
               <Modal
                 width={1150}
-                centered
                 visible={toggle}
                 closable={false}
                 footer={null}
                 bodyStyle={{
                   padding: 0,
                 }}
+                style={{ top: 100 }}
                 className="cf-create-form"
                 wrapClassName="cf-create-form-wrapper"
                 maskClosable

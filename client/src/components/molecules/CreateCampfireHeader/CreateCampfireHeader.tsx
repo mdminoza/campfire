@@ -27,8 +27,8 @@ const CreateCampfireHeader = ({
   onChangeCheckbox,
   type = '',
 }: Props): React.ReactElement => (
-  <CampfireHeaderRow>
-    <Col sm={12}>
+  <CampfireHeaderRow gutter={[6, 8]}>
+    <Col xs={24} sm={24} md={12}>
       <CheckBoxWrapper>
         <CheckboxContainer>
           <Checkbox checked={checked} onChange={onChangeCheckbox} />
@@ -48,7 +48,7 @@ const CreateCampfireHeader = ({
         </CheckboxLabelWrapper>
       </CheckBoxWrapper>
     </Col>
-    <Col className="campfire-header-2" sm={12}>
+    <Col className="campfire-header-2" xs={24} sm={24} md={12}>
       <TopicWrapper>
         <span className="topic-label">{topic.toUpperCase()}</span>
         <span className="description-label">{description.toUpperCase()}</span>
