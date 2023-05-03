@@ -3,14 +3,14 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const { DB_CONN, DB_USER, DB_PW } = process.env;
+const { DB_CONN, DB_NAME } = process.env;
 
 const isDev = true;
 
 mongoose.connect(
     DB_CONN,
     {
-        dbName: isDev ? 'dev-campfire' : 'staging-campfire', 
+        dbName: DB_NAME, 
         useNewUrlParser: true, 
         useUnifiedTopology: true,
     }

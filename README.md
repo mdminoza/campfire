@@ -3,8 +3,9 @@
 # Client Side
 
 ## Prerequisites
+## Prerequisites
 
-- NodeJS
+- NodeJS v16.15.1
 - Global node modules
   - react-devtools
   - eslint

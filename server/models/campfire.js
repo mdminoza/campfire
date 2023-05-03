@@ -36,7 +36,7 @@ const campfireSchema = new Schema({
             uid: {
                 type: String,
                 required: true,
-                unique: true,
+                unique: false,
             },
             profileUrl: {
                 type: String,

@@ -12,14 +12,13 @@ import { errorHandler } from './controllers/error.js';
 import './dbConn.js';
 
 const app = express();
-
-const allowedOrigins = ['http://localhost:3000', 'http://localhost:5000', 'https://campfire.godtribe.com', 'http://staging.godtribe.com'];
+const allowedOrigins = ['http://localhost:3000'];
 
 const corsOptions = {
 	origin: allowedOrigins,
+	allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
 	methods: ['GET', 'POST', 'PATCH', 'DELETE'],
-	allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
-	// credentials: true,
+	credentials: true,
 };
 
 app.use(bodyParser.json({ limit: "30mb", extended: true }));

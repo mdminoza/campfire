@@ -4,7 +4,8 @@ import urls from '../constants/urls';
 import { isDev } from '../constants';
 
 const instance = axios.create({
-  baseURL: isDev ? urls.devCampfireBaseUrl : urls.campfireBaseUrl,
+  // baseURL: isDev ? urls.devCampfireBaseUrl : urls.campfireBaseUrl,
+  baseURL: urls.campfireBaseUrl,
 });
 
 instance.interceptors.request.use(
@@ -18,9 +19,12 @@ instance.interceptors.request.use(
     // }
     config.headers.Authorization = null;
     config.headers['Content-Type'] = 'application/json';
-    config.headers.accept = 'application/json';
-    config.headers['Access-Control-Allow-Origin'] = '*';
-    config.headers['Access-Control-Allow-Methods'] = 'GET,POST,DELETE,PATCH';
+    // config.headers.accept = 'application/json';
+    // config.headers['Access-Control-Allow-Origin'] = [
+    //   'http://localhost:3000',
+    //   'http://localhost:5000',
+    // ];
+    // config.headers['Access-Control-Allow-Methods'] = 'GET,POST,DELETE,PATCH';
     return config;
   },
   (error: any) => Promise.reject(error),
